@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../src/css/inscription.css">
+    <script src="../src/js/create.js"></script>
+    <title>Inscription</title>
+</head>
+<body>
+    <div class="main">
+        <div class="box">
+            <h1>Inscription</h1>
+            <p id="error"></p>
+            <br>
+            <form id="myForm">
+                <div>
+                    <p id="err"></p>
+                    <br>
+                </div>
+
+                <div class="unInput">
+                    <input type="text" id="email" name="email" autocomplete="off" required>
+                    <label>Email</label>
+                </div>
+
+                <div class="unInput">
+                    <input type="text" id="username" name="username" autocomplete="off" required>
+                    <label>Nom d'utilisateur</label>
+                </div>
+
+                <div class="unInput">
+                    <input id="password" type="password" name="password" autocomplete="off" required>
+                    <label>Mot de passe</label>
+                </div>
+
+
+                <input id="btncreate" type="submit" value="S'inscrire" disabled>
+                    
+        
+            
+            </form>
+        </div>
+    </div>
+</body>
+</html>

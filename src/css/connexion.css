@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;400;500;600;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Josefin Sans', sans-serif;
+  max-height: 100vh;
+}
+
+body{
+  height: 100vh;
+  widows: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url(../img/casino.jpg);
+  background-size: cover;
+  background-repeat: no-repeat no-repeat;
+}
+
+.box{
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 400px;
+  transform: translate(-50%,-50%);
+  padding: 50px;
+  background: #101010;
+  border-radius: 15px;
+}
+
+.box h1{
+  color: #fff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.box .unInput{
+  position: relative;
+}
+
+.box .unInput input{
+  color: #fff;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #fff;
+  outline: none;
+}
+
+.box .unInput label{
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #726e7c;
+  letter-spacing: 1px;
+  font-size: 16px;
+  padding: 12px 0;
+  transition: .4s;
+}
+
+.box .inscrConnexion input[type="submit"]{
+  border: none;
+  outline: none;
+  background: #ea1538;
+  color: #201a30;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.box .inscrConnexion a{
+  padding: 8px 8px;
+  color: #fff;
+  }
+
+.box .inscrConnexion input[type="submit"]:hover{
+  transform: scale(1.1);
+  transition: .3s;
+  cursor: pointer;
+}
+
+.box .unInput input:focus~label,
+.box .unInput input:valid~label{
+  top:-20px;
+  left: 0;
+  color:#ea1538;
+  font-size: 12px;
+}
