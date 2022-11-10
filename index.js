@@ -48,7 +48,7 @@ app.use(session({
 //Function pour render la page grâce a ejs et envoyer les données.
 //Ne pas oublier de lui donner un nom(page voulu qui se situe dans /views),req,res en paramètre.
 function renderpage(name, req, res) {
-    if (req.session.loggedin) {
+    if (req.session.loggedin == true) {
         let usernames = req.session.username;
 
         res.render(name, {
@@ -57,6 +57,20 @@ function renderpage(name, req, res) {
     } else {
         res.redirect("/login");
     }
+}
+
+function validate(string) {
+    return validator.escape(string);
+}
+
+
+function hash3(passwords) {
+
+    const salute = `U@1${passwords}ds-`;
+    const buf_salute = Buffer.from(salute);
+    const newpassword = XXHash32.hash(buf_salute).toString('hex');
+    return validate(newpassword);
+
 }
 
 
@@ -76,46 +90,81 @@ app.get("/login", (req, res) => {
 app.get("/create", (req, res) => {
     res.render("create")
 });
-
-function validate(string) {
-    return validator.escape(string);
-}
-
-
+app.get("/play", (req, res) => {
+    renderpage("play", req, res)
+});
 
 // Création de compte :
 app.post('/create', function (req, res) {
     console.log(req.body)
-        //Vérification de la sécurité de l'entrée utilisateur avec validator.
-        let email = validate(req.body.email);
-        if (email == "" || !email || email == null || email == undefined) {
-            email = NULL // si le email est vide ou n'existe pas, on lui donne un email NULL pour éviter les erreurs.
-        }
-        let username = validate(req.body.username);
-        let password = hash3(req.body.password); //hashage du mot de passe
-    
-    
-        // Vérification de l'existence du compte
-        if (username && password) { // si les champs sont remplis
-            //Exemple d'insertion sql : INSERT INTO `accounts` (`id`, `username`, `password`, `highscore1`) VALUES (1, 'test', 'test', 0);
-            connection.query(`INSERT INTO \`accounts\`(\`username\`, \`password\`, \`email\`) VALUES (?,?,?)`,[username,password,email],function (error, results, fields) {
-                // If there is an issue with the query, output the error
-                if (error) {
-                    console.log(error);
-                    return res.json({ "create": `${err}` })
-                }
-                if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
-                    req.session.loggedin = true;
-                    req.session.username = username;
-                    // redirection vers la page de jeu
-                    res.json({ "create": true })
-                } else {
-                    res.json({ "create": false })
-                }
-                res.end();
-            });
-    
-        } else {
-            res.json({ "create": false })
-        }
-    });
+    if (req.body.email == "" || !req.body.email || req.body.email == null || req.body.email == undefined) {
+        req.body.email = "no" // si le email est vide ou n'existe pas, on lui donne un email "no" pour éviter les erreurs.
+    }
+    //Vérification de la sécurité de l'entrée utilisateur avec validator.
+    let email = validate(req.body.email);
+
+    let username = validate(req.body.username);
+    let password = hash3(req.body.password); //hashage du mot de passe
+
+
+    // Vérification de l'existence du compte
+    if (username && password) { // si les champs sont remplis
+        //Exemple d'insertion sql : INSERT INTO `accounts` (`id`, `username`, `password`, `highscore1`) VALUES (1, 'test', 'test', 0);
+        connection.query(`INSERT INTO \`accounts\`(\`username\`, \`password\`, \`email\`) VALUES (?,?,?)`, [username, password, email], function (error, results, fields) {
+            // If there is an issue with the query, output the error
+            if (error) {
+                console.log(error);
+                return res.json({ "create": `${err}` })
+            }
+            if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
+                req.session.loggedin = true;
+                req.session.username = username;
+                // redirection vers la page de jeu
+                res.json({ "create": true })
+            } else {
+                res.json({ "create": false })
+            }
+            res.end();
+        });
+
+    } else {
+        res.json({ "create": false })
+    }
+});
+
+var centralusername = "anonymous";
+
+app.post('/auth', function (req, res) {
+
+    let password = hash3(req.body.password);
+    let username = validate(req.body.username);
+
+    console.log("pass " + password);
+    console.log("user " + username);
+
+    if (username && password && username != undefined && password != undefined) {
+        connection.query(`SELECT username FROM accounts WHERE username = '${username}' AND password = '${password}'`, function (error, results, fields) {
+            if (error) {
+                console.log(error);
+                return res.json({ "login": false });
+            }
+            console.log(results);
+            if (results.length > 0) {
+                req.session.loggedin = true;
+                req.session.username = username;
+                centralusername = username;
+                res.json({ "login": true })
+                return res.end();
+            } else {
+                console.log("tome")
+                return res.json({ "login": false });
+            }
+        });
+    } else {
+        res.json({ "login": false })
+        res.end();
+    }
+
+
+
+});
