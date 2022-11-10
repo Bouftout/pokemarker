@@ -1,0 +1,25 @@
+{
+  "name": "pokemarker",
+  "version": "1.0.0",
+  "description": "Un créateur de pokemon,et que on puisse voir tout les pokemon",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "pokemon",
+    "create"
+  ],
+  "author": "ToniPortal",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql": "^2.18.1",
+    "path": "^0.12.7",
+    "validator": "^13.7.0",
+    "xxhash-addon": "^2.0.1"
+  }
+}
