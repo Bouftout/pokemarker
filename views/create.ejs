@@ -1,38 +1,36 @@
-<%- include('./partials/head', {title:'Création',script:'create',css:'create'}) %>
+<%- include('./partials/head', {title:'Création',script:'create'}) %>
 
-    <div class="main">
+    <body>
         <div class="box">
             <h1>Inscription</h1>
-            <p id="error"></p>
-            <br>
             <form id="myForm">
                 <div>
                     <p id="err"></p>
                     <br>
                 </div>
 
-                <div class="unInput">
-                    <input type="text" id="email" name="email" autocomplete="off" required>
-                    <label>Email</label>
-                </div>
-
-                <div class="unInput">
-                    <input type="text" id="username" name="username" autocomplete="off" required>
-                    <label>Nom d'utilisateur</label>
-                </div>
-
-                <div class="unInput">
-                    <input id="password" type="password" name="password" autocomplete="off" required>
-                    <label>Mot de passe</label>
-                </div>
+                <label>Email</label>
+                <input type="text" id="email" name="email" autocomplete="off" required>
 
 
-                <input id="btncreate" type="submit" value="S'inscrire" disabled>
-                    
-        
-            
+
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" autocomplete="off" required>
+
+
+                <label>Mot de passe</label>
+                <input id="password" type="password" name="password" autocomplete="off" required>
+
+
+
+                <div class="twobtn">
+                    <input id="btncreate" type="submit" value="S'inscrire" disabled>
+                    <button action="/login">Connexion</a>
+                    </a>
+
+
             </form>
         </div>
-    </div>
-</body>
-</html>
+    </body>
+
+    </html>

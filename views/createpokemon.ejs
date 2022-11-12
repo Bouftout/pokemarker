@@ -1,0 +1,44 @@
+<%- include('./partials/head', {title:'Create a pokemon',script: 'createpoke' }) %>
+
+    <body>
+        <div class="box">
+        <h1>Création du pokemon de <i>
+                <%= username %>
+            </i> </h1>
+
+        <p>Le total doit faire au maximum 250</p>
+        <form id="form">
+            <div>
+                <p id="err"></p>
+                <br>
+            </div>
+            <label>Nom</label>
+            <input type="text" name="name"></input>
+
+            <label>Pv</label>
+            <input type="number" name="pv"></input>
+
+            <label>Force</label>
+            <input type="number" name="force"></input>
+
+            <label>Defense</label>
+            <input type="number" name="defense"></input>
+
+            <label>vitesse</label>
+            <input type="number" name="vitesse"></input>
+
+            <label>Spéciale</label>
+            <input type="number" name="special"></input>
+
+            <label>nature</label>
+            <input type="text" name="nature"></input>
+
+            <label>Iv</label>
+            <input type="number" name="iv" readonly value="0"></input>
+
+            <input type="submit"></input>
+        </form>
+    </div>
+    </body>
+
+    </html>

@@ -23,7 +23,7 @@ window.onload = function () {
         myError.style.color = "green";
     }
 
-    const myError = document.getElementById("error");
+    const myError = document.getElementById("err");
 
     function testformok() {
         let password = document.getElementById("password").value;
@@ -94,7 +94,7 @@ async function formenvoie() {
         const log = await response.json();
         if (log.create === true) {
 
-            window.location.href = `${loc}/play`;
+            window.location.href = `${loc}/pokemon`;
 
         } else if (log.create === false) {
             err.innerText = "Mauvais identifiant ou mot de passe";

@@ -12,7 +12,6 @@ const mysql = require('mysql'),
     fs = require('fs');
 app = express();
 
-
 app.set('view engine', 'ejs')
 
 app.use('/src', express.static(path.join(__dirname, 'src')))
@@ -85,14 +84,106 @@ app.get('/', function (req, res) {
 
 
 app.get("/login", (req, res) => {
-    res.render("login")
+    if (!req.session.loggedin) {
+        res.render("login")
+    } else {
+        res.redirect('/pokemon')
+    }
 });
 app.get("/create", (req, res) => {
-    res.render("create")
+    if (!req.session.loggedin) {
+        res.render("create")
+    } else {
+        res.redirect('/pokemon')
+    }
 });
+app.get("/pokemon", (req, res) => {
+    renderpage("pokemon", req, res)
+});
+
+app.get("/pokemarker", (req, res) => {
+    renderpage("createpokemon", req, res)
+});
+
 app.get("/play", (req, res) => {
     renderpage("play", req, res)
 });
+
+app.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.redirect("/login");
+});
+
+app.get("/get/jsonpokemon", (req, res) => {
+    if (req.session.loggedin) {
+        let ide = req.session.userid;
+        connection.query('SELECT * FROM pokemon WHERE id = ?',[ide], function (error, results, fields) {
+            if (error) throw error;
+            res.json(results);
+        });
+    } else {
+        res.json({error: "Vous n'êtes pas connecté."});
+    }
+});
+
+app.get('/disco', function (req, res) {
+
+    if (req.session.loggedin) {
+        req.session.destroy();
+        res.redirect("/")
+    } else {
+        res.redirect("/")
+    }
+
+})
+
+
+//Création d'un pokemon dans la bdd.
+app.post('/create/pokemon', function (req, res) {
+
+    if (req.session.loggedin) {
+        console.log("create pokemon")
+        console.log(req.body);
+
+        let nom = validate(req.body.name);
+        let pv = validate(req.body.pv);
+        let force = validate(req.body.force);
+        let defense = validate(req.body.defense);
+        let vitesse = validate(req.body.vitesse);
+        let special = validate(req.body.special);
+        let iv = validate(req.body.iv);
+        let nature = validate(req.body.nature);
+        let ide = req.session.userid;
+
+        if (nom && pv && force && defense && vitesse && special && iv) { // si les champs sont remplis
+            // INSERT INTO `pokemon` (`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('', '', '', '', '', '', '', '', '', NULL);
+
+            //INSERT INTO `pokemon`(`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
+            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,'?')`, [nom, pv, force, defense, vitesse, special, iv, nature, ide], function (error, results, fields) {
+                // If there is an issue with the query, output the error
+                if (error) {
+                    console.log(error);
+                    return res.json({ "create": `${error}` })
+                }
+                if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
+
+                    console.log("crée")
+                    // petit message pour prevenir que le compte a bien été créer.
+                    res.json({ "create": true })
+                } else {
+                    res.json({ "create": false })
+                }
+                res.end();
+            });
+
+        } else {
+            res.json({ "create": false })
+        }
+    } else {
+        res.json({ "create": "dontconnect" })
+    }
+})
+
 
 // Création de compte :
 app.post('/create', function (req, res) {
@@ -102,24 +193,38 @@ app.post('/create', function (req, res) {
     }
     //Vérification de la sécurité de l'entrée utilisateur avec validator.
     let email = validate(req.body.email);
-
     let username = validate(req.body.username);
     let password = hash3(req.body.password); //hashage du mot de passe
 
 
     // Vérification de l'existence du compte
     if (username && password) { // si les champs sont remplis
+
+
+
         //Exemple d'insertion sql : INSERT INTO `accounts` (`id`, `username`, `password`, `highscore1`) VALUES (1, 'test', 'test', 0);
-        connection.query(`INSERT INTO \`accounts\`(\`username\`, \`password\`, \`email\`) VALUES (?,?,?)`, [username, password, email], function (error, results, fields) {
+        connection.query(`INSERT INTO \`accounts\`(\`id\` , \`username\`, \`password\`, \`email\`) VALUES (getmaxid(),?,?,?)`, [username, password, email], function (err, results, fields) {
             // If there is an issue with the query, output the error
-            if (error) {
-                console.log(error);
+            if (err) {
+                console.log(err);
                 return res.json({ "create": `${err}` })
             }
             if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
+
+                connection.query(`SELECT id FROM accounts WHERE id = getmaxid()-1`, function (error, resultid, fields) {
+                    // If there is an issue with the query, output the error
+                    if (error) {
+                        console.log(error);
+                        return res.json({ "create": `${error}` })
+                    }
+                    req.session.userid = resultid[0].id;
+                });
+
                 req.session.loggedin = true;
                 req.session.username = username;
-                // redirection vers la page de jeu
+
+
+                // petit message pour prevenir que le compte a bien été créer.
                 res.json({ "create": true })
             } else {
                 res.json({ "create": false })
@@ -127,12 +232,25 @@ app.post('/create', function (req, res) {
             res.end();
         });
 
+
+
     } else {
         res.json({ "create": false })
     }
 });
 
-var centralusername = "anonymous";
+/*   DECLARE varid INT(10) DEFAULT 0;
+   SELECT id INTO varid FROM `accounts` ORDER BY id DESC LIMIT 1;
+   SET varid = varid + 1;
+    INSERT INTO accounts(`id`,`username`, `password`, `email`) VALUES (varid,username,passworde,email)
+         return id; 
+         
+          DECLARE varid INT(11) DEFAULT 0;
+   SELECT id INTO varid FROM `accounts` ORDER BY id DESC LIMIT 1;
+   SET varid = varid + 1;
+   return varid;
+         */
+
 
 app.post('/auth', function (req, res) {
 
@@ -143,7 +261,7 @@ app.post('/auth', function (req, res) {
     console.log("user " + username);
 
     if (username && password && username != undefined && password != undefined) {
-        connection.query(`SELECT username FROM accounts WHERE username = '${username}' AND password = '${password}'`, function (error, results, fields) {
+        connection.query(`SELECT id,username FROM accounts WHERE username = '${username}' AND password = '${password}'`, function (error, results, fields) {
             if (error) {
                 console.log(error);
                 return res.json({ "login": false });
@@ -152,7 +270,8 @@ app.post('/auth', function (req, res) {
             if (results.length > 0) {
                 req.session.loggedin = true;
                 req.session.username = username;
-                centralusername = username;
+                req.session.userid = results[0].id;
+                // petit message pour prevenir que le compte a bien été login.
                 res.json({ "login": true })
                 return res.end();
             } else {

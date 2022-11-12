@@ -4,7 +4,7 @@
   "description": "Un créateur de pokemon,et que on puisse voir tout les pokemon",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index.js",
+    "test": "nodemon index.js --ignore ./src",
     "start": "node index.js",
     "deploy": "node ftpdeploy.js"
   },
