@@ -41,7 +41,7 @@ async function formenvoie() {
         const log = await response.json();
         if (log.create === true) {
 
-            window.location.href = `/play`;
+            window.location.href = `/pokemon`;
 
         } else if (log.create === false) {
             err.innerText = "Mauvais identifiant ou mot de passe";

@@ -98,7 +98,9 @@ app.get("/create", (req, res) => {
     }
 });
 app.get("/pokemon", (req, res) => {
-    renderpage("pokemon", req, res)
+
+        res.render("pokemon")
+
 });
 
 app.get("/pokemarker", (req, res) => {
@@ -114,17 +116,24 @@ app.get("/logout", (req, res) => {
     res.redirect("/login");
 });
 
-app.get("/get/jsonpokemon", (req, res) => {
-    if (req.session.loggedin) {
-        let ide = req.session.userid;
-        connection.query('SELECT * FROM pokemon WHERE id = ?',[ide], function (error, results, fields) {
+app.get("/get/:userid/jsonpokemon", (req, res) => {
+
+        connection.query('SELECT * FROM pokemon WHERE idaccounts = ?',[req.params.userid], function (error, results, fields) {
             if (error) throw error;
             res.json(results);
         });
-    } else {
-        res.json({error: "Vous n'êtes pas connecté."});
-    }
+  
 });
+
+app.get("/get/jsonpokemon", (req, res) => {
+
+    connection.query('SELECT * FROM pokemon', function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
+
+});
+
 
 app.get('/disco', function (req, res) {
 

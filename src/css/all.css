@@ -218,8 +218,22 @@ input:focus {
 .container {
   width: 28rem;
   height: 100%;
-  margin: 0 1rem;
-  position: relative;
+  margin: 10px 1rem;
+  padding-top: 80px;
+  position: static;
+}
+
+.container button {
+  border: none;
+  outline: none;
+  background: #AAC4FF;
+  color: black;
+  padding: 8px 20px;
+
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  width: 100%;
 }
 
 input[type=search] {
@@ -242,3 +256,33 @@ input[type=search] {
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
 }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: monospace;
+  text-align: left;
+  border: 1px solid grey;
+}
+
+th {
+  background-color: #D2DAFF;
+  color: black;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+
+tr {
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+td {
+  border: 1px solid grey;
+  padding: 10px;
+}
+
