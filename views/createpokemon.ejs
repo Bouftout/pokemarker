@@ -1,6 +1,7 @@
 <%- include('./partials/head', {title:'Create a pokemon',script: 'createpoke' }) %>
 
     <body>
+        <br><br><br><br><br><br><br><br><br><br><br><br>
         <div class="box">
         <h1>Création du pokemon de <i>
                 <%= username %>
@@ -15,6 +16,9 @@
             <label>Nom</label>
             <input type="text" name="name"></input>
 
+            <label>Nom données</label>
+            <input type="text" name="nomdonner"></input>
+
             <label>Pv</label>
             <input type="number" name="pv"></input>
 
@@ -27,10 +31,13 @@
             <label>vitesse</label>
             <input type="number" name="vitesse"></input>
 
-            <label>Spéciale</label>
-            <input type="number" name="special"></input>
+            <label>Spéciale Attaque</label>
+            <input type="number" name="specialatt"></input>
 
-            <label>nature</label>
+            <label>Spéciale Defense</label>
+            <input type="number" name="specialdef"></input>
+
+            <label>Nature</label>
             <input type="text" name="nature"></input>
 
             <label>Iv</label>

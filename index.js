@@ -135,6 +135,8 @@ app.get("/get/jsonpokemon", (req, res) => {
 });
 
 
+
+
 app.get('/disco', function (req, res) {
 
     if (req.session.loggedin) {
@@ -146,6 +148,11 @@ app.get('/disco', function (req, res) {
 
 })
 
+function rand(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
 
 //Création d'un pokemon dans la bdd.
 app.post('/create/pokemon', function (req, res) {
@@ -155,20 +162,32 @@ app.post('/create/pokemon', function (req, res) {
         console.log(req.body);
 
         let nom = validate(req.body.name);
-        let pv = validate(req.body.pv);
-        let force = validate(req.body.force);
-        let defense = validate(req.body.defense);
-        let vitesse = validate(req.body.vitesse);
-        let special = validate(req.body.special);
-        let iv = validate(req.body.iv);
-        let nature = validate(req.body.nature);
-        let ide = req.session.userid;
+         nomdonner = validate(req.body.nomdonner),
+         pv = validate(req.body.pv),
+         force = validate(req.body.force),
+         defense = validate(req.body.defense),
+         vitesse = validate(req.body.vitesse),
+         specialatt = validate(req.body.specialatt),
+         specialdef = validate(req.body.specialdef),
+         iv = validate(req.body.iv),
+         nature = validate(req.body.nature),
+         ide = req.session.userid,
+         evvitesse = rand(0,31),
+         evspeatt = rand(0,31),
+         evspedef = rand(0,31),
+         evdef = rand(0,31),
+         evatt = rand(0,31),
+         evpv = rand(0,31);
 
-        if (nom && pv && force && defense && vitesse && special && iv) { // si les champs sont remplis
-            // INSERT INTO `pokemon` (`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('', '', '', '', '', '', '', '', '', NULL);
+         console.log(`${nom} ${nomdonner} ${pv} ${force} ${defense} ${vitesse} ${specialatt} ${specialdef} ${iv} ${nature} ${ide} ${evvitesse} ${evspeatt} ${evspedef} ${evdef} ${evatt} ${evpv}`)
+
+//,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
+//,CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED)
+
+        if (nom && nomdonner && pv && force && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
             //INSERT INTO `pokemon`(`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,'?')`, [nom, pv, force, defense, vitesse, special, iv, nature, ide], function (error, results, fields) {
+            connection.query(` insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom, pv, force, defense, vitesse, specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv, iv, nature, ide,nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);

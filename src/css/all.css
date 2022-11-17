@@ -73,7 +73,7 @@ body {
 
 .box>form>label {
   z-index: -7;
-  position: absolute;
+  position: relative;
   color: #ffffff;
   letter-spacing: 1px;
   font-size: 13px;
@@ -286,3 +286,8 @@ td {
   padding: 10px;
 }
 
+
+.actifsearch {
+  opacity: 0.5;
+  color: #4144ff;
+}
