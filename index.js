@@ -125,7 +125,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/get/:user/pokemon", (req, res) => {
 
-    // connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'force',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
+    // connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'forcer',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
     //     if (error) throw error;
     //     res.json(results);
     // });
@@ -139,7 +139,7 @@ app.get("/get/:user/pokemon", (req, res) => {
 
 app.get("/get/pokemon/:givenname", (req, res) => {
 
-    connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'force',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE pokemon.givenname = ?`, [req.params.givenname], function (error, results, fields) {
+    connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,forcer,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE pokemon.givenname = ?`, [req.params.givenname], function (error, results, fields) {
         if (error) throw error;
         res.json(results);
     });
@@ -148,7 +148,7 @@ app.get("/get/pokemon/:givenname", (req, res) => {
 
 app.get("/get/pokemon", (req, res) => {
 
-    connection.query('SELECT accounts.username,pokemon.id,name,pv,`force`,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature,givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id', function (error, results, fields) {
+    connection.query('SELECT accounts.username,pokemon.id,name,pv,`forcer`,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature,givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id', function (error, results, fields) {
         if (error) throw error;
         res.json(results);
     });
@@ -202,7 +202,7 @@ app.post('/create/pokemon', function (req, res) {
         let nom = validate(req.body.name);
         nomdonner = validate(req.body.nomdonner),
             pv = validate(req.body.pv),
-            force = validate(req.body.force),
+            forcer = validate(req.body.forcer),
             defense = validate(req.body.defense),
             vitesse = validate(req.body.vitesse),
             specialatt = validate(req.body.specialatt),
@@ -221,10 +221,10 @@ app.post('/create/pokemon', function (req, res) {
 
         //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
 
-        if (nom && nomdonner && pv && force && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
+        if (nom && nomdonner && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
-            //INSERT INTO `pokemon`(`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom,nv,pv, force, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
+            //INSERT INTO `pokemon`(`name`, `pv`, `forcer`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
+            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom,nv,pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);
@@ -382,6 +382,10 @@ io.on("connection", (socket) => {
 
     socket.on("envoisi2player", async (nbroom, username,valpokemon) => {
         io.to(`room${nbroom}`).emit(`envoiepokemon`, username,valpokemon);
+    });
+
+    socket.on("lauchcombat", async (nbroom, givenname) => {
+        io.to(`room${nbroom}`).emit(`qqalancer`, username,givenname);
     });
 
 });

@@ -109,15 +109,16 @@ window.onload = function () {
     socket.on('envoiepokemon', function (name, valpokemon) {
         clearInterval(envoisi2player);
         if (name != username && lefairequeunefois == true) {
-           
+
             envoiepokemon2(valpokemon);
-                lefairequeunefois = false;
+            lefairequeunefois = false;
             var select = document.getElementById('pokemon');
             var valsel = select.options[select.selectedIndex].value;
             socket.emit('envoisi2player', input.value, username, valsel);
-            
+
         }
     });
+
 
 };
 
@@ -180,7 +181,7 @@ async function envoie(valsel) {
         log = log[0];
         console.log(log)
         if (log) {
-
+            document.getElementById("pokemonp1").setAttribute("class", "")
 
             document.getElementById("p1username").innerText = log.username;
 
@@ -188,19 +189,23 @@ async function envoie(valsel) {
             document.getElementById("p1name").style.color = "green";
 
             document.getElementById("p1nv").innerText = log.nv;
-            document.getElementById("p1hp").innerText = log.pv;
-            document.getElementById("p1atk").innerText = log.force;
+            const hp = document.getElementById("p1hp")
+            hp.setAttribute("value", log.pv);
+            hp.setAttribute("max", log.pv);
+
+            document.getElementById("p1atk").innerText = log.forcer;
             document.getElementById("p1def").innerText = log.def;
             document.getElementById("p1vitesse").innerText = log.vitesse;
             document.getElementById("p1spdatk").innerText = log.specialatt;
             document.getElementById("p1spddef").innerText = log.specialdef;
             //document.getElementById("type").innerText = log.type;
 
+
             if (log.username == username) {
                 let btn = document.getElementById("btncombat");
                 btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lancercombat(${log.id})`);
-                btn.style.display = "block";
+                btn.setAttribute("onclick", `lancercombat(${log.givenname})`);
+                document.getElementById("combat").setAttribute("class", "block");
                 document.getElementById("combat").appendChild(btn);
             }
         } else {
@@ -234,14 +239,19 @@ async function envoiepokemon2(valsel) {
         console.log("-----------------------")
         console.log(log)
         if (log) {
+            document.getElementById("pokemonp2").setAttribute("class", "")
+
             document.getElementById("p2username").innerText = log.username;
 
             document.getElementById("p2name").innerText = log.givenname;
             document.getElementById("p2name").style.color = "green";
 
             document.getElementById("p2nv").innerText = log.nv;
-            document.getElementById("p2hp").innerText = log.pv;
-            document.getElementById("p2atk").innerText = log.force;
+            const hp = document.getElementById("p2hp")
+            hp.setAttribute("value", log.pv);
+            hp.setAttribute("max", log.pv);
+
+            document.getElementById("p2atk").innerText = log.forcer;
             document.getElementById("p2def").innerText = log.def;
             document.getElementById("p2vitesse").innerText = log.vitesse;
             document.getElementById("p2spdatk").innerText = log.specialatt;
@@ -252,8 +262,8 @@ async function envoiepokemon2(valsel) {
             if (log.username == username) {
                 let btn = document.getElementById("btncombat");
                 btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lancercombat(${log.id})`);
-                btn.style.display = "block";
+                btn.setAttribute("onclick", `lancercombat(${log.givenname})`);
+                document.getElementById("combat").setAttribute("class", "block");
                 document.getElementById("combat").appendChild(btn);
             }
         } else {
@@ -268,6 +278,13 @@ async function envoiepokemon2(valsel) {
         console.log(response.status, response.statusText);
     }
 }
+
+async function lancercombat(givenname) {
+    
+    socket.emit("lauchcombat",input.value,givenname)
+
+}
+
 
 async function calculdesdegat() {
     //Dégâts infligés = (((((((Niveau × 2 ÷ 5) + 2) × Puissance × Att[Spé] ÷ 50) ÷ Def[Spé]) × Mod1) + 2) × CC × Mod2 × R ÷ 100) × STAB × Type1 × Type2 × Mod3
