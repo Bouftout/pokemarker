@@ -363,3 +363,11 @@ td {
     left: 24rem;
   }
 }
+
+.none {
+  display: none;
+}
+
+#pokemonp1{
+  justify-content: left;
+}

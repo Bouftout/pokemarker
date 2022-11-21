@@ -17,8 +17,9 @@
                     <br>
                 </div>
                 <div>
-                    <h2>Veuillez choisir votre pokemon avant de rejoindre une salle</h2>
                     <div id="choixpokemon">
+                    <h2>Veuillez choisir votre pokemon avant de rejoindre une salle</h2>
+                    
                         <label for="pokemon">Choix pokemon :</label>
                     </div>
     
@@ -37,29 +38,13 @@
                 </div>
 
 
-                <div id="pokemonp1">
-                    <h1 id="p1username"></h1>
-                    <h2 id="p1name"></h2>
-                    <h3 id="p1nv"></h3>
-                    <p id="p1hp"></p>
-                    <p id="p1atk"></p>
-                    <p id="p1def"></p>
-                    <p id="p1vitesse"></p>
-                    <p id="p1spdatk"></p>
-                    <p id="p1spddef"></p>
-                </div>
-
-                <br>
-                <div id="combat">
-                    <button id="btncombat" style="display: none;"></button>
-                </div>
-                <br>
-
-                <div id="pokemonp2">
+                <div id="pokemonp2" class="none">
                     <h1 id="p2username"></h1>
                     <h2 id="p2name"></h2>
                     <h3 id="p2nv"></h3>
-                    <p id="p2hp"></p>
+                    <label for="p2hp">Hp:</label>
+                    <progress id="p2hp" max="100" value="100"> </progress>
+                    <div class="none">
                     <p id="p2atk"></p>
                     <p id="p2def"></p>
                     <p id="p2vitesse"></p>
@@ -67,6 +52,32 @@
                     <p id="p2spddef"></p>
                 </div>
 
+
+
+                </div>
+                <div id="pokemonp1" class="none">
+                    <h1 id="p1username"></h1>
+                    <h2 id="p1name"></h2>
+                    <h3 id="p1nv"></h3>
+                    <label for="p1hp">Hp:</label>
+
+<progress id="p1hp" max="100" value="100"> </progress>
+
+                    <div class="none">
+                    <p id="p1atk"></p>
+                    <p id="p1def"></p>
+                    <p id="p1vitesse"></p>
+                    <p id="p1spdatk"></p>
+                    <p id="p1spddef"></p>
+                </div>
+                </div>
+
+                
+                <br>
+                <div id="combat" class="none">
+                    <button id="btncombat" ></button>
+                </div>
+                <br>
 
             </div>
         </div>

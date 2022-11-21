@@ -214,7 +214,7 @@ function creertable(log) {
         tr.appendChild(createtd(log[i].givenname));
         tr.appendChild(createtd(log[i].username));
         tr.appendChild(createtd(log[i].pv));
-        tr.appendChild(createtd(log[i].force));
+        tr.appendChild(createtd(log[i].forcer));
         tr.appendChild(createtd(log[i].def));
         tr.appendChild(createtd(log[i].vitesse));
         tr.appendChild(createtd(log[i].specialatt));
