@@ -1,9 +1,15 @@
 <%- include('./partials/head', {title:'pokemon',script:'pokemon'}) %>
 
   <body>
-
-    <div id="container" class="container">
-      <h1>Bienvenue </h1>
+    <br><br><br><br>
+    <div class="allcontent">
+      <div id="popev" style="display: none">
+        <div id="pdivev"></div>
+      </div>
+      <h1>Bienvenue <% if(locals.username){ %>
+          <%= username %>
+            <% } %>
+      </h1>
 
       <br>
       <div>
@@ -13,6 +19,14 @@
 
       <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher" class="searchbar" />
       <br><br>
+      <div id="container" class="container">
+        <div id="tablediv">
+
+        </div>
+        <br>
+        <button>Get all Ev</button>
+      </div>
+
     </div>
 
   </body>

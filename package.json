@@ -21,8 +21,12 @@
     "express-session": "^1.17.3",
     "ftp-deploy": "^2.4.3",
     "helmet": "^6.0.0",
+    "i": "^0.3.7",
     "mysql": "^2.18.1",
+    "notiflix": "^3.2.5",
+    "npm": "^9.1.2",
     "path": "^0.12.7",
+    "socket.io": "^4.5.3",
     "validator": "^13.7.0",
     "xxhash-addon": "^2.0.1"
   }

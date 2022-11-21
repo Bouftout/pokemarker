@@ -1,9 +1,80 @@
-<%- include('./partials/head', {title:'Play' }) %>
+<%- include('./partials/head', {title:'Play',script:"play" }) %>
 
-<body>
+    <body>
+        <br><br><br><br>
+        <div class="allcontent">
+
+            <h1>Bienvenue
+                <span id="usernames">
+                    <%= username %>
+                </span>
+            </h1>
+
+            <br>
+            <div class="container">
+                <div>
+                    <p id="err"></p>
+                    <br>
+                </div>
+                <div>
+                    <h2>Veuillez choisir votre pokemon avant de rejoindre une salle</h2>
+                    <div id="choixpokemon">
+                        <label for="pokemon">Choix pokemon :</label>
+                    </div>
+    
+                    <br>
+                    <p name="pjoueurs">Nombre de joueurs : <span id="nbjoueurs">0</span></p>
+                </div>
+                <br>
+                <div>
+                    <label>Room a join</label>
+                    <input type="text" id="inputroom"></input>
+                    <br>
+                    <div class="twobutton">
+                        <button id="joinroom">Join</button>
+                        <button id="quitroom">Quittez</button>
+                    </div>
+                </div>
 
 
+                <div id="pokemonp1">
+                    <h1 id="p1username"></h1>
+                    <h2 id="p1name"></h2>
+                    <h3 id="p1nv"></h3>
+                    <p id="p1hp"></p>
+                    <p id="p1atk"></p>
+                    <p id="p1def"></p>
+                    <p id="p1vitesse"></p>
+                    <p id="p1spdatk"></p>
+                    <p id="p1spddef"></p>
+                </div>
+
+                <br>
+                <div id="combat">
+                    <button id="btncombat" style="display: none;"></button>
+                </div>
+                <br>
+
+                <div id="pokemonp2">
+                    <h1 id="p2username"></h1>
+                    <h2 id="p2name"></h2>
+                    <h3 id="p2nv"></h3>
+                    <p id="p2hp"></p>
+                    <p id="p2atk"></p>
+                    <p id="p2def"></p>
+                    <p id="p2vitesse"></p>
+                    <p id="p2spdatk"></p>
+                    <p id="p2spddef"></p>
+                </div>
 
 
-</body>
-</html>
+            </div>
+        </div>
+
+
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+            integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+            crossorigin="anonymous"></script>
+    </body>
+
+    </html>

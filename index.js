@@ -46,11 +46,11 @@ app.use(session({
 
 //Function pour render la page grâce a ejs et envoyer les données.
 //Ne pas oublier de lui donner un nom(page voulu qui se situe dans /views),req,res en paramètre.
-function renderpage(name, req, res) {
+function renderpage(names, req, res) {
     if (req.session.loggedin == true) {
         let usernames = req.session.username;
 
-        res.render(name, {
+        res.render(names, {
             username: usernames
         });
     } else {
@@ -99,8 +99,15 @@ app.get("/create", (req, res) => {
 });
 app.get("/pokemon", (req, res) => {
 
+    if (!req.session.loggedin) {
         res.render("pokemon")
+    } else {
+        let usernames = req.session.username;
 
+        res.render("pokemon", {
+            username: usernames
+        });
+    }
 });
 
 app.get("/pokemarker", (req, res) => {
@@ -116,24 +123,55 @@ app.get("/logout", (req, res) => {
     res.redirect("/login");
 });
 
-app.get("/get/:userid/jsonpokemon", (req, res) => {
+app.get("/get/:user/pokemon", (req, res) => {
 
-        connection.query('SELECT * FROM pokemon WHERE idaccounts = ?',[req.params.userid], function (error, results, fields) {
-            if (error) throw error;
-            res.json(results);
-        });
-  
-});
+    // connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'force',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
+    //     if (error) throw error;
+    //     res.json(results);
+    // });
 
-app.get("/get/jsonpokemon", (req, res) => {
-
-    connection.query('SELECT * FROM pokemon', function (error, results, fields) {
+    connection.query(`SELECT givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
         if (error) throw error;
         res.json(results);
     });
 
 });
 
+app.get("/get/pokemon/:givenname", (req, res) => {
+
+    connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'force',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE pokemon.givenname = ?`, [req.params.givenname], function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
+
+});
+
+app.get("/get/pokemon", (req, res) => {
+
+    connection.query('SELECT accounts.username,pokemon.id,name,pv,`force`,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature,givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id', function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
+
+});
+
+app.delete("/delete/:idpoke/pokemon", (req, res) => {
+
+    if (req.session.loggedin) {
+        connection.query(`DELETE FROM \`pokemon\` WHERE pokemon.idaccounts = ? AND pokemon.id = ?`, [req.session.userid, req.params.idpoke], function (error, results, fields) {
+            if (error) throw error;
+            console.log(results.affectedRows);
+            if (results.affectedRows > 0) {
+                res.json({ "delete": true })
+            } else {
+                res.json({ "delete": false })
+            }
+        });
+    } else {
+        res.json({ "delete": "doncconnect" })
+    }
+
+});
 
 
 
@@ -152,7 +190,7 @@ function rand(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
-  }
+}
 
 //Création d'un pokemon dans la bdd.
 app.post('/create/pokemon', function (req, res) {
@@ -162,32 +200,31 @@ app.post('/create/pokemon', function (req, res) {
         console.log(req.body);
 
         let nom = validate(req.body.name);
-         nomdonner = validate(req.body.nomdonner),
-         pv = validate(req.body.pv),
-         force = validate(req.body.force),
-         defense = validate(req.body.defense),
-         vitesse = validate(req.body.vitesse),
-         specialatt = validate(req.body.specialatt),
-         specialdef = validate(req.body.specialdef),
-         iv = validate(req.body.iv),
-         nature = validate(req.body.nature),
-         ide = req.session.userid,
-         evvitesse = rand(0,31),
-         evspeatt = rand(0,31),
-         evspedef = rand(0,31),
-         evdef = rand(0,31),
-         evatt = rand(0,31),
-         evpv = rand(0,31);
+        nomdonner = validate(req.body.nomdonner),
+            pv = validate(req.body.pv),
+            force = validate(req.body.force),
+            defense = validate(req.body.defense),
+            vitesse = validate(req.body.vitesse),
+            specialatt = validate(req.body.specialatt),
+            specialdef = validate(req.body.specialdef),
+            iv = validate(req.body.iv),
+            nature = validate(req.body.nature),
+            ide = req.session.userid,
+            evvitesse = rand(0, 31),
+            evspeatt = rand(0, 31),
+            evspedef = rand(0, 31),
+            evdef = rand(0, 31),
+            evatt = rand(0, 31),
+            nv = 1,
+            evpv = rand(0, 31);
 
-         console.log(`${nom} ${nomdonner} ${pv} ${force} ${defense} ${vitesse} ${specialatt} ${specialdef} ${iv} ${nature} ${ide} ${evvitesse} ${evspeatt} ${evspedef} ${evdef} ${evatt} ${evpv}`)
 
-//,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
-//,CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED),CAST(RAND()*(32-0)+5 as UNSIGNED)
+        //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
 
         if (nom && nomdonner && pv && force && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
             //INSERT INTO `pokemon`(`name`, `pv`, `force`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(` insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom, pv, force, defense, vitesse, specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv, iv, nature, ide,nomdonner], function (error, results, fields) {
+            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom,nv,pv, force, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);
@@ -267,18 +304,6 @@ app.post('/create', function (req, res) {
     }
 });
 
-/*   DECLARE varid INT(10) DEFAULT 0;
-   SELECT id INTO varid FROM `accounts` ORDER BY id DESC LIMIT 1;
-   SET varid = varid + 1;
-    INSERT INTO accounts(`id`,`username`, `password`, `email`) VALUES (varid,username,passworde,email)
-         return id; 
-         
-          DECLARE varid INT(11) DEFAULT 0;
-   SELECT id INTO varid FROM `accounts` ORDER BY id DESC LIMIT 1;
-   SET varid = varid + 1;
-   return varid;
-         */
-
 
 app.post('/auth', function (req, res) {
 
@@ -313,5 +338,50 @@ app.post('/auth', function (req, res) {
     }
 
 
+
+});
+
+
+// Pokemon socket.io
+const io = require("socket.io")(server);
+
+// server-side
+io.on("connection", (socket) => {
+    // console.log("Connection:" + socket.id); // x8WIv7-mJelg7on_ALbx
+
+    socket.conn.on("upgrade", () => {
+        const upgradedTransport = socket.conn.transport.name;
+        console.log(upgradedTransport) // ws
+    });
+
+
+    //Serv court
+    socket.on("connectpoke", async (id, nbroom) => {
+        console.log(`nbchambre: ${nbroom}, id: ${id}`)
+        await socket.join(`room${nbroom}`);
+
+
+
+        io.to(`room${nbroom}`).emit(`connectpokenew`, id, nbroom);
+
+    });
+
+    socket.on("disconnect", () => {
+        console.log("disconnect")
+    });
+
+    socket.on("discopoke", async (id, nbroom) => {
+        console.log(`Disco: nbchambre: ${nbroom}, id: ${id}`)
+        await io.to(`room${nbroom}`).emit(`discopokenew`, id, nbroom);
+        await socket.leave(`room${nbroom}`);
+    });
+
+    socket.on("retablirjoueursserv", async (nbroom, username) => {
+        io.to(`room${nbroom}`).emit(`retablirjoueursclient`, username);
+    });
+
+    socket.on("envoisi2player", async (nbroom, username,valpokemon) => {
+        io.to(`room${nbroom}`).emit(`envoiepokemon`, username,valpokemon);
+    });
 
 });

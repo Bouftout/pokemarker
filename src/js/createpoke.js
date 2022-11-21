@@ -44,7 +44,7 @@ async function formenvoie() {
             window.location.href = `/pokemon`;
 
         } else if (log.create === false) {
-            err.innerText = "Mauvais identifiant ou mot de passe";
+            err.innerText = "Erreur lors de la création du pokemon(Champs manquant ou invalide)";
             err.style.color = "red";
         } else {
             err.innerText = "Erreur inconnue: " + log.create;
