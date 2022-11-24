@@ -36,6 +36,15 @@ window.onload = function () {
       //  getpokemon()
     }, 10000);
 
+    document.getElementById("getallevbtn").addEventListener('click', function (e) {
+
+        var el = document.getElementById('popev');
+        el.style.display = 'block';
+
+        const tableev = document.getElementById("tableev");
+        (tableev.firstElementChild.firstChild.firstChild).setAttribute("class", "")
+
+    })
 
 };
 

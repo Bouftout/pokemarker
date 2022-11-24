@@ -207,7 +207,7 @@ app.post('/create/pokemon', function (req, res) {
             vitesse = validate(req.body.vitesse),
             specialatt = validate(req.body.specialatt),
             specialdef = validate(req.body.specialdef),
-            iv = validate(req.body.iv),
+            iv = rand(0, 31),
             nature = validate(req.body.nature),
             ide = req.session.userid,
             evvitesse = rand(0, 31),
@@ -224,7 +224,7 @@ app.post('/create/pokemon', function (req, res) {
         if (nom && nomdonner && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
             //INSERT INTO `pokemon`(`name`, `pv`, `forcer`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nom,nv,pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
+            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv,nom,pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);

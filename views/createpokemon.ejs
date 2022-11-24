@@ -7,8 +7,8 @@
                 <%= username %>
             </i> </h1>
 
-        <p>Le total doit faire au maximum 250</p>
-        <form id="form">
+        <p>Le total doit faire au maximum <span id="totmaxstat"></span> et par stats <span id="maxstat"> </span></p>
+        <form id="form" onchange="maxstat()" onsubmit="maxstat()">
             <div>
                 <p id="err"></p>
                 <br>
@@ -40,11 +40,12 @@
             <label>Nature</label>
             <input type="text" name="nature"></input>
 
-            <label>Iv</label>
-            <input type="number" name="iv" readonly value="0"></input>
-
             <input type="submit"></input>
         </form>
+    </div>
+    <div class="boxN1">
+        <label for="contpoint">contpoint</label>
+       <input id="contpoint" value="0" readonly></input>
     </div>
     </body>
 
