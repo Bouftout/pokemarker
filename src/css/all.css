@@ -120,6 +120,62 @@ h1,input{
   transition: .4s;
 }
 
+.boxN2{
+  position: absolute;
+  top: 45%;
+  left: 18%;
+  width: 400px;
+  transform: translate(-50%,-50%);
+  padding: 50px;
+  background: #0e003f;
+  border-radius: 15px;
+}
+
+.boxN2>p {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+
+.boxN2>h1 {
+  color: rgb(255, 255, 255);
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.boxN2>h2 {
+  color: rgb(255, 255, 255);
+  font-weight: 200;
+  font-size: 20px;
+}
+
+.boxN2>div>input {
+  color: rgb(0, 0, 0);
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid rgb(0, 0, 0);
+  outline: none;
+}
+
+.boxN2>label {
+  z-index: -7;
+  position: relative;
+  color: #ffffff;
+  letter-spacing: 1px;
+  font-size: 13px;
+  transition: .4s;
+}
+
 
 .box {
   position: relative;
@@ -430,11 +486,21 @@ td {
   display: none;
 }
 
-#pokemonp1{
-  justify-content: left;
+body>div>div>#pokemonp1{
+  display: inline;
+  float: right;
+  text-align: left;
 }
 
-body>div>div>#pokemonp2{
+body>div>div>#pokemonp1{
+  display: inline;
   float: left;
   text-align:right;
+}
+
+progress{
+  width: 30%;
+  height: 20px;
+  background-color: #D2DAFF;
+  border : 1px solid black;
 }

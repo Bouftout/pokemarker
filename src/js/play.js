@@ -60,6 +60,7 @@ window.onload = function () {
         let nbjoueurs = document.getElementById("nbjoueurs");
         nbjoueursinner = nbjoueurs.innerText;
         if (nbjoueursinner == 2) {
+            document.getElementById("rejoin").style.display = "none"
             clearInterval(refreshIntervalId);
             socket.emit('retablirjoueursserv', input.value, username);
         }
@@ -102,7 +103,7 @@ window.onload = function () {
             var valsel = select.options[select.selectedIndex].value;
             socket.emit('envoisi2player', input.value, username, valsel);
         }
-    }, 1000);
+    }, 100);
 
     var lefairequeunefois = true;
 
@@ -118,6 +119,61 @@ window.onload = function () {
 
         }
     });
+
+    var combatfirst = 0;
+
+    socket.on('qqalancer', function (name, nompokemon, vitesse) {
+        const err = document.getElementById("err");
+        console.log(name)
+        console.log(combatfirst)
+        if (combatfirst == 0) {
+            combatfirst++;
+
+            const p2username = document.getElementById("p2username").innerText;
+            const p1vitesse = document.getElementById("p1vitesse").innerText;
+            const p2vitesse = document.getElementById("p2vitesse").innerText;
+
+
+            if (name == username && p1vitesse <= vitesse) {
+                document.getElementById("combat").style.display = "none";
+            } else if (name != username && p1vitesse <= vitesse) {
+                document.getElementById("combat").style.display = "none";
+            }
+
+            if (name == username && p1vitesse > vitesse) {
+                document.getElementById("combat").style.display = "block";
+            } else if (name != username && p1vitesse > vitesse) {
+                document.getElementById("combat").style.display = "block";
+            }
+        }
+
+
+    });
+
+    socket.on('btncmb', function (name,nompokemon) {
+        console.log("btncmb")
+        const p2username = document.getElementById("p2username").innerText;
+        if (name == username) {
+            err.innerText = (`Vous avez lancé le combat ${name} avec votre pokemon ${nompokemon} VS ${p2username}`);
+            err.style.color = "grey";
+            socket.emit('prendredgt', input.value, name, );
+        } else if (name != username) {
+            err.innerText = (`${name} a lancé le combat avec son pokemon ${nompokemon} contre vous ${username}`);
+            err.style.color = "grey";
+        } else {
+            alert("Oups, il y a un problème");
+        }
+
+    });
+
+    socket.on('prendredgt', function (name,degat) {
+
+        if(name != username){
+            document.getElementById("p2pv").innerText = Number(document.getElementById("p2pv").innerText) - Number(degat);
+        }
+
+    })
+
 
 
 };
@@ -181,7 +237,7 @@ async function envoie(valsel) {
         log = log[0];
         console.log(log)
         if (log) {
-            document.getElementById("pokemonp1").setAttribute("class", "block")
+            document.getElementById("pokemonp1").style.display = "block";
 
             document.getElementById("p1username").innerText = log.username;
 
@@ -204,9 +260,12 @@ async function envoie(valsel) {
             if (log.username == username) {
                 let btn = document.getElementById("btncombat");
                 btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lancercombat(${log.givenname})`);
+                btn.setAttribute("onclick", `lacmbbtn("${log.givenname}")`);
                 document.getElementById("combat").setAttribute("class", "block");
                 document.getElementById("combat").appendChild(btn);
+                setTimeout(() => {
+                    lancercombat(log.givenname, log.vitesse);
+                }, 2000);
             }
         } else {
             document.getElementById("p1name").innerText = "Vous n'avez pas de pokemon";
@@ -262,7 +321,7 @@ async function envoiepokemon2(valsel) {
             if (log.username == username) {
                 let btn = document.getElementById("btncombat");
                 btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lancercombat(${log.givenname})`);
+                btn.setAttribute("onclick", `lacmbbtn("${log.givenname}")`);
                 document.getElementById("combat").setAttribute("class", "block");
                 document.getElementById("combat").appendChild(btn);
             }
@@ -279,14 +338,50 @@ async function envoiepokemon2(valsel) {
     }
 }
 
-async function lancercombat(givenname) {
-    
-    socket.emit("lauchcombat",input.value,givenname)
+
+
+async function lancercombat(givenname, vitesse) {
+    const loc = location.origin;// Avoir l'adresse du site sans /
+    const socket = io(`${loc}`);// Connexion au serveur
+    var input = document.getElementById('inputroom');
+    var username = document.getElementById('usernames').innerText;
+    socket.emit("lauchcombat", input.value, username, givenname, vitesse)
 
 }
+function lacmbbtn(nompokemon) {
+    const loc = location.origin;// Avoir l'adresse du site sans /
+    const socket = io(`${loc}`);// Connexion au serveur
+    var input = document.getElementById('inputroom');
+    var username = document.getElementById('usernames').innerText;
+    socket.emit('btncmbserv', input.value, username,nompokemon);
+}
+
+async function puiss() {
+// Puissance = HH × BP × IT × CHG × MS × WS × UA × FA
+/*
+HH (Helping Hand) : 1,5 si le lanceur a reçu l'effet de Coud'main dans le tour ; 1 dans les autres cas.
+
+BP (Base Power) : La puissance de base de l'attaque, que vous pouvez aisément récupérer dans le Pokédex du site ou bien tout simplement dans le descriptif de votre Pokémon sur votre jeu.
+
+IT (Item) : Le modificateur provoqué par l'objet tenu. Vous trouverez une liste des objets affectant la puissance de l'attaque ici.
+
+CHG (Chargeur) : 2 si le Pokémon a lancé Chargeur au tour précédent et que l'attaque est de type Electrik ; 1 dans les autres cas.
+
+MS (Mud Sport) : 0,5 si l'un des Pokémon en jeu a lancé Lance-Boue et que l'attaque est de type Electrik ; 1 dans les autres cas.
+
+WS (Water Sport) : 0,5 si l'un des Pokémon en jeu a lancé Tourniquet et que l'attaque est de type Feu ; 1 dans les autres cas.
+
+UA (User Ability) : Le modificateur apporté par la capacité du lanceur (voir ici).
+
+FA (Foe Ability) : Le modificateur apporté par la capacité de l'adversaire (voir ici).
+*/
+
+return Number(1.5 * 100 * 1 * 1 * 1 * 1 * 1 * 1);
+}
+
+async function calculdesdegat(niv,att,def,attsp,defsp,attspdef,defspdef) {
 
 
-async function calculdesdegat() {
     //Dégâts infligés = (((((((Niveau × 2 ÷ 5) + 2) × Puissance × Att[Spé] ÷ 50) ÷ Def[Spé]) × Mod1) + 2) × CC × Mod2 × R ÷ 100) × STAB × Type1 × Type2 × Mod3
 
 

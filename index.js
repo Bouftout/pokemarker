@@ -384,8 +384,15 @@ io.on("connection", (socket) => {
         io.to(`room${nbroom}`).emit(`envoiepokemon`, username,valpokemon);
     });
 
-    socket.on("lauchcombat", async (nbroom, givenname) => {
-        io.to(`room${nbroom}`).emit(`qqalancer`, username,givenname);
+    socket.on("lauchcombat", async (nbroom,username, givenname,vitesse) => {
+        console.log("combat" + givenname)
+        io.to(`room${nbroom}`).emit(`qqalancer`, username,givenname,vitesse);
     });
+
+    socket.on("btncmbserv", async (nbroom,username,nompokemon) => {
+      
+        io.to(`room${nbroom}`).emit(`btncmb`, username,nompokemon);
+    });
+
 
 });
