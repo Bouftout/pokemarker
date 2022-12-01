@@ -181,7 +181,7 @@ async function envoie(valsel) {
         log = log[0];
         console.log(log)
         if (log) {
-            document.getElementById("pokemonp1").setAttribute("class", "")
+            document.getElementById("pokemonp1").setAttribute("class", "block")
 
             document.getElementById("p1username").innerText = log.username;
 
@@ -239,7 +239,7 @@ async function envoiepokemon2(valsel) {
         console.log("-----------------------")
         console.log(log)
         if (log) {
-            document.getElementById("pokemonp2").setAttribute("class", "")
+            document.getElementById("pokemonp2").setAttribute("class", "block")
 
             document.getElementById("p2username").innerText = log.username;
 

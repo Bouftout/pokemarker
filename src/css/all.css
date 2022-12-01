@@ -36,7 +36,9 @@ navbar {
 body {
   height: 100vh;
   widows: 100%;
-  background-color: white;
+  /* background-color: #21a3ce; */
+  background-color: #87A2FB;
+
 }
 
 h1,input{
@@ -291,6 +293,7 @@ navbar>div>ul>button {
 
 .container {
   margin-top: 1rem;
+  margin-left: 1rem;
   border: 1px solid black;
   flex-direction: column;
   justify-content: space-between;
@@ -429,4 +432,9 @@ td {
 
 #pokemonp1{
   justify-content: left;
+}
+
+body>div>div>#pokemonp2{
+  float: left;
+  text-align:right;
 }

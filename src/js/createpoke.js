@@ -17,7 +17,7 @@ async function formenvoie() {
     const data = Object.fromEntries(formdata.entries());
     const datajson = JSON.stringify(data);
     let err = document.getElementById("err");
-    
+
     const settings = { // Paramètres de la requête
         method: 'POST',
         headers: {
@@ -65,17 +65,14 @@ function maxstat() {
 
     for (i = 0; i < (form.getElementsByTagName("input")).length; i++) {
         let iftypenb = (form.getElementsByTagName("input")[i].getAttribute("type") == "number");
-        if (iftypenb && Number(form.getElementsByTagName("input")[i].value) != 0) {
+        if (iftypenb == true && Number(form.getElementsByTagName("input")[i].value) != 0) {
             console.log("NUMBER: " + nb);
 
 
 
-
-            if (Number(form.getElementsByTagName("input")[i].value) <= max && nb <= totmax && ((Number(form.getElementsByTagName("input")[i].value) + nb) <= max) && Number(form.getElementsByTagName("input")[i].value) >= 0 && nb >= 0 && ((Number(form.getElementsByTagName("input")[i].value) + nb) >= 0)) {
+            //&& ((Number(form.getElementsByTagName("input")[i].value) + nb) <= max)
+            if (Number(form.getElementsByTagName("input")[i].value) <= max && nb <= totmax && Number(form.getElementsByTagName("input")[i].value) >= 0 && nb >= 0 && ((Number(form.getElementsByTagName("input")[i].value) + nb) >= 0)) {
                 nb += Number(form.getElementsByTagName("input")[i].value);
-            } else if (Number(form.getElementsByTagName("input")[i].value) >= -999 && nb >= -999 && ((Number(form.getElementsByTagName("input")[i].value) + nb) >= -999)) {
-                alert("Vous essayer de mettre un nombre négatif")
-                form.getElementsByTagName("input")[i].value = 0;
             } else {
                 form.getElementsByTagName("input")[i].value = 100;
                 alert("Vous avez dépasser le maximum de point allouer au pokemon")
@@ -83,16 +80,27 @@ function maxstat() {
 
         }
 
+
+
     }
 
-    if (nb <= 250) {
+
+    if (nb <= 250 && nb >= 0) {
 
         contpoint.value = nb;
 
     } else {
-        //alert("Vous avez dépasser le maximum de point allouer au pokemon")
-    }
+        contpoint.value = 0;
+        alert("Remise a 0 des points");
+        for (i = 0; i < (form.getElementsByTagName("input")).length; i++) {
+            let iftypenb = (form.getElementsByTagName("input")[i].getAttribute("type") == "number");
+            if (iftypenb == true && Number(form.getElementsByTagName("input")[i].value) != 0) {
 
+                form.getElementsByTagName("input")[i].value = "";
+
+            }
+        }
+    }
 
 
 }
