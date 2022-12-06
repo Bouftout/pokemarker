@@ -3,9 +3,6 @@
 <h1 align="center">Pokemarker</h1>
 
 <p align="center">Project to create pokemon and fight other pokemon in a room</p>
- <br>
-
-[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://www.npmjs.com/package/socket.io)
 
 ## Links
 
@@ -25,6 +22,13 @@
 - [ ] Add image for battle pokemon
 - [ ] Finish the battle system
 - [ ] Finish "accueil" page because have just 1 button
+
+## Built With
+
+- [Node](https://nodejs.org/fr/)
+- [NPM](https://npmjs.org/)
+- [Socket.io](https://www.npmjs.com/package/socket.io)
+- [Express](https://www.npmjs.com/package/express)
 
 ## 🤝 Support
 
