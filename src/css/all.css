@@ -1,14 +1,14 @@
 /*CSS COPYRIGHT TONI AND ALAN */
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;400;500;600;700&display=swap");
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
 }
 
-navbar>div>button:disabled {
+navbar > div > button:disabled {
   opacity: 0.5;
   color: black;
 }
@@ -25,23 +25,22 @@ navbar {
 }
 
 .sticky {
-  background-color: #B1B2FF;
+  background-color: #b1b2ff;
   position: fixed;
   top: 0;
   width: 100%;
   padding: 10px;
 }
 
-
 body {
   height: 100vh;
   widows: 100%;
   /* background-color: #21a3ce; */
-  background-color: #87A2FB;
-
+  background-color: #87a2fb;
 }
 
-h1,input{
+h1,
+input {
   margin: 10px 5px;
   position: static;
 }
@@ -53,35 +52,34 @@ h1,input{
   margin: 0 auto;
   width: 80%;
   margin-top: 20px;
-
 }
 
-.twobutton>button {
+.twobutton > button {
   width: 45%;
   height: 10%;
   border: none;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   font-weight: 600;
-  color: #4F4F4F;
+  color: #4f4f4f;
   cursor: pointer;
   font-size: 1.2rem;
   transition: all 0.3s ease-in-out;
-
 }
 
-
-.boxN1{
-  position: absolute;
-  top: 45%;
+.boxN1 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  top: -150%;
   left: 82%;
   width: 400px;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   padding: 50px;
   background: #0e003f;
   border-radius: 15px;
 }
 
-.boxN1>p {
+.boxN1 > p {
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -89,15 +87,14 @@ h1,input{
   margin-bottom: 20px;
 }
 
-
-.boxN1>h1 {
+.boxN1 > h1 {
   color: rgb(255, 255, 255);
   text-align: center;
   margin-bottom: 30px;
   font-weight: 500;
 }
 
-.boxN1>input {
+.boxN1 > input {
   color: #fff;
   width: 100%;
   padding-top: 25px;
@@ -111,27 +108,29 @@ h1,input{
   outline: none;
 }
 
-.boxN1>label {
+.boxN1 > label {
   z-index: -7;
   position: relative;
   color: #ffffff;
   letter-spacing: 1px;
   font-size: 13px;
-  transition: .4s;
+  transition: 0.4s;
 }
 
-.boxN2{
-  position: absolute;
-  top: 45%;
+.boxN2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  top: -112%;
   left: 18%;
   width: 400px;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   padding: 50px;
   background: #0e003f;
   border-radius: 15px;
 }
 
-.boxN2>p {
+.boxN2 > p {
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -139,43 +138,11 @@ h1,input{
   margin-bottom: 20px;
 }
 
-
-.boxN2>h1 {
+.boxN2 > h1,.boxN2>#atck>label {
   color: rgb(255, 255, 255);
   text-align: center;
-  margin-bottom: 30px;
   font-weight: 500;
 }
-
-.boxN2>h2 {
-  color: rgb(255, 255, 255);
-  font-weight: 200;
-  font-size: 20px;
-}
-
-.boxN2>div>input {
-  color: rgb(0, 0, 0);
-  width: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  font-size: 16px;
-  letter-spacing: 1px;
-  margin-bottom: 30px;
-  border: none;
-  background: transparent;
-  border-bottom: 1px solid rgb(0, 0, 0);
-  outline: none;
-}
-
-.boxN2>label {
-  z-index: -7;
-  position: relative;
-  color: #ffffff;
-  letter-spacing: 1px;
-  font-size: 13px;
-  transition: .4s;
-}
-
 
 .box {
   position: relative;
@@ -188,7 +155,7 @@ h1,input{
   border-radius: 15px;
 }
 
-.box>p {
+.box > p {
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -196,17 +163,14 @@ h1,input{
   margin-bottom: 20px;
 }
 
-
-.box>h1 {
+.box > h1 {
   color: rgb(255, 255, 255);
   text-align: center;
   margin-bottom: 30px;
   font-weight: 500;
 }
 
-
-
-.box>form>input {
+.box > form > input {
   color: #fff;
   width: 100%;
   padding-top: 25px;
@@ -220,19 +184,19 @@ h1,input{
   outline: none;
 }
 
-.box>form>label {
+.box > form > label {
   z-index: -7;
   position: relative;
   color: #ffffff;
   letter-spacing: 1px;
   font-size: 13px;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .box input[type="submit"] {
   border: none;
   outline: none;
-  background: #EEF1FF;
+  background: #eef1ff;
   color: black;
   padding: 8px 20px;
   border-radius: 10px;
@@ -243,25 +207,22 @@ h1,input{
 
 .box input[type="submit"]:hover {
   transform: scale(1.1);
-  transition: .3s;
+  transition: 0.3s;
   cursor: pointer;
 }
 
-
-
-.box>form>input input:focus~label,
-.box>form>input input:valid~label {
+.box > form > input input:focus ~ label,
+.box > form > input input:valid ~ label {
   top: -20px;
   left: 0;
   color: #ea15bc;
   font-size: 12px;
 }
 
-
-.box>form>div>button {
+.box > form > div > button {
   border: none;
   outline: none;
-  background: #D2DAFF;
+  background: #d2daff;
   color: black;
   padding: 8px 20px;
   border-radius: 10px;
@@ -270,20 +231,16 @@ h1,input{
   letter-spacing: 1px;
 }
 
-.box>form button:hover {
+.box > form button:hover {
   transform: scale(1.1);
-  transition: .3s;
+  transition: 0.3s;
   cursor: pointer;
 }
-
-
-
-
 
 navbar button {
   border: none;
   outline: none;
-  background: #D2DAFF;
+  background: #d2daff;
   color: black;
   font-size: 14px;
   font-weight: bold;
@@ -295,18 +252,15 @@ navbar button {
   display: block;
 }
 
-navbar>div>button {
+navbar > div > button {
   margin: 5px;
   border-radius: 10px;
 }
-
 
 navbar button:hover,
 navbar button:focus {
   color: white;
 }
-
-
 
 navbar div {
   display: flex;
@@ -314,7 +268,7 @@ navbar div {
   justify-content: center;
 }
 
-navbar>div>ul>button {
+navbar > div > ul > button {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -326,7 +280,6 @@ navbar>div>ul>button {
 .espace {
   margin: 0 10px;
 }
-
 
 .searchbar {
   font-size: 2.4rem;
@@ -343,9 +296,6 @@ navbar>div>ul>button {
 .searchbar::placeholder {
   opacity: 0.3;
 }
-
-
-
 
 .container {
   margin-top: 1rem;
@@ -366,7 +316,7 @@ navbar>div>ul>button {
 .container button {
   border: none;
   outline: none;
-  background: #AAC4FF;
+  background: #aac4ff;
   color: black;
   padding: 8px 20px;
   height: 50px;
@@ -377,25 +327,23 @@ navbar>div>ul>button {
   text-align: center;
 }
 
-
-
-input[type=search] {
+input[type="search"] {
   transition: width 0.4s ease-in-out;
 }
 
-input[type=search]:focus {
+input[type="search"]:focus {
   width: 80%;
   background-color: whitesmoke;
 }
 
-input[type=search] {
+input[type="search"] {
   width: 40%;
   box-sizing: border-box;
   border: 2px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   background-color: white;
-  background-image: url('../img/searchicon.png');
+  background-image: url("../img/searchicon.png");
   background-position: 4px 4px;
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
@@ -410,14 +358,14 @@ table {
 }
 
 th {
-  background-color: #D2DAFF;
+  background-color: #d2daff;
   color: black;
   border: 1px solid grey;
   padding: 10px;
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2
+  background-color: #f2f2f2;
 }
 
 tr {
@@ -429,7 +377,6 @@ td {
   border: 1px solid grey;
   padding: 10px;
 }
-
 
 .actifsearch {
   opacity: 0.5;
@@ -458,7 +405,7 @@ td {
   margin-top: 20px;
   border: none;
   outline: none;
-  background: #D2DAFF;
+  background: #d2daff;
   color: black;
   padding: 8px 20px;
   border-radius: 10px;
@@ -486,21 +433,21 @@ td {
   display: none;
 }
 
-body>div>div>#pokemonp1{
+body > div > div > #pokemonp1 {
   display: inline;
   float: right;
   text-align: left;
 }
 
-body>div>div>#pokemonp1{
+body > div > div > #pokemonp1 {
   display: inline;
   float: left;
-  text-align:right;
+  text-align: right;
 }
 
-progress{
+progress {
   width: 30%;
   height: 20px;
-  background-color: #D2DAFF;
-  border : 1px solid black;
+  background-color: #d2daff;
+  border: 1px solid black;
 }

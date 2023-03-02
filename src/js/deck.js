@@ -148,53 +148,7 @@ async function getpokemon() {
 
 };
 
-function createev(log) {
-    const table = document.createElement("table");
-    const tablediv = document.getElementById("pdivev");
-    tablediv.innerHTML = "";
-    table.setAttribute("id", "tableev");
-    table.setAttribute("class", "table");
-    const thead = document.createElement("thead");
-    const tr = document.createElement("tr");
 
-    var allname = ["id", "Vitesse", "Spécial Attaque", "Spécial Défense", "Défense", "Attaque", "P.V"];
-
-    for (let i = 0; i < allname.length; i++) {
-        tr.appendChild(createth(allname[i], "thev" + i));
-    }
-    thead.appendChild(tr);
-    table.appendChild(thead);
-
-
-    const tbody = document.createElement("tbody");
-    tbody.setAttribute("id", "tbody");
-    table.appendChild(tbody);
-
-    for (let i = 0; i < log.length; i++) {
-        const tr = document.createElement("tr");
-
-        tr.appendChild(createtd(log[i].id));
-        tr.appendChild(createtd(log[i].evvitesse));
-        tr.appendChild(createtd(log[i].evspeatt));
-        tr.appendChild(createtd(log[i].evspedef));
-        tr.appendChild(createtd(log[i].evdef));
-        tr.appendChild(createtd(log[i].evatt));
-        tr.appendChild(createtd(log[i].evpv));
-        //<button id="cev">Close</button>
-        tbody.appendChild(tr);
-    }
-
-    //Button close
-    const button = document.createElement("button");
-    button.setAttribute("id", "cev");
-    button.setAttribute("style", "width: 100%; height: 100%;");
-    button.innerText = "Close";
-    button.setAttribute("onclick", "closepopup();");
-
-    tablediv.appendChild(table);
-
-    tablediv.appendChild(button);
-}
 
 function creertable(log) {
     const table = document.createElement("table");
@@ -205,7 +159,7 @@ function creertable(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
-    var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Nom données","CheckBox"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -224,31 +178,7 @@ function creertable(log) {
         tr.appendChild(createtd(log[i].id));
         tr.appendChild(createtd(log[i].name));
         tr.appendChild(createtd(log[i].givenname));
-        tr.appendChild(createtd(log[i].username));
-        tr.appendChild(createtd(log[i].pv));
-        tr.appendChild(createtd(log[i].forcer));
-        tr.appendChild(createtd(log[i].def));
-        tr.appendChild(createtd(log[i].vitesse));
-        tr.appendChild(createtd(log[i].specialatt));
-        tr.appendChild(createtd(log[i].specialdef));
-        tr.appendChild(createtd(log[i].iv));
-        tr.appendChild(createtd(log[i].nature));
-
-        const td1 = document.createElement("td");
-        const button1 = document.createElement("button");
-        button1.setAttribute("class", "button");
-        button1.setAttribute("onclick", `openpopup(${log[i].id});`);
-        button1.innerText = "EV";
-        td1.appendChild(button1);
-        tr.appendChild(td1);
-
-        const td = document.createElement("td");
-        const button = document.createElement("button");
-        button.setAttribute("class", "button");
-        button.setAttribute("onclick", "deletepokemon(" + log[i].id + ")");
-        button.innerText = "Delete";
-        td.appendChild(button);
-        tr.appendChild(td);
+        tr.innerHTML += ` <input type="checkbox" id="check${log[i].id}" name="check">`
 
 
         tbody.appendChild(tr);
@@ -258,66 +188,45 @@ function creertable(log) {
 }
 
 
-async function deletepokemon(id) {
+async function envoiedeck(){
+
 
     let err = document.getElementById("err");
+
+    var data = [];
+
+    for(i = 0;i < 50; i++){
+        if(document.getElementById(`check${i}`) != null){
+            // console.log(document.getElementById(`check${i}`).checked)
+            if(document.getElementById(`check${i}`).checked == true){
+                data.push(document.getElementById(`check${i}`).previousElementSibling.previousElementSibling.previousElementSibling.innerText)
+                console.log(document.getElementById(`check${i}`).previousElementSibling.previousElementSibling.previousElementSibling.innerText)
+            }
+        }
+        
+    }
+
+    console.log(JSON.stringify(data))
+
     const settings = { // Paramètres de la requête
-        method: 'DELETE',
+        method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
+        body: JSON.stringify(data),
     };
 
-    const response = await fetch(`/delete/${id}/pokemon/`, settings); // Requête
+    const response = await fetch(`/create/deck`, settings); // Requête
+
     if (response.status >= 200 && response.status <= 299) {
-        const resjson = await response.json();
-        console.log(resjson)
-        if (resjson.delete == true) {
-            err.innerText = "Votre pokémon a bien était supprimé.";
-            err.style.color = "green";
-            setTimeout(function () {
-                getpokemon();
-            }, 1000);
+        const log = await response.json();
 
-        } else if (resjson.delete == false) {
-            err.innerText = "Ce pokemon ne vous appartient pas.";
-            err.style.color = "red";
-        } else if (resjson.delete == "doncconnect") {
-            err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
-            err.style.color = "red";
-        } else {
-            err.innerText = "Erreur lors de la supression";
-            err.style.color = "red";
-        }
-    }
-}
+        alert("Envoie du deck a la bdd")
 
-
-function openpopup(popev) {
-    console.log("OPe")
-    try {
-        var el = document.getElementById('popev');
-        el.style.display = 'block';
-        console.log(popev);
-
-        const tableev = document.getElementById("tableev");
-        (tableev.firstElementChild.firstChild.firstChild).setAttribute("class", "actifsearch")
-
-    } catch (e) {
-        console.log(e);
-    } finally {
-        searchname(popev, "ev") // Recherche le pokemon par son id et affiche les ev du pokemon grâce à la fonction searchname.
+    } else {
+        // Handle errors
+        console.log(response.status, response.statusText);
     }
 
-
-}
-
-function closepopup() {
-    var el = document.getElementById('popev');
-    el.style.display = 'none';
-}
-
-function createdeck(){
-    
 }

@@ -110,6 +110,52 @@ app.get("/pokemon", (req, res) => {
     }
 });
 
+app.get("/createdeck", (req, res) => {
+
+    if (!req.session.loggedin) {
+        res.render("login")
+    } else {
+        let usernames = req.session.username;
+
+        res.render("createdeck", {
+            username: usernames
+        });
+    }
+});
+
+app.post('/create/deck', function (req, res) {
+
+
+    console.log(req.body.length);
+
+for(i = 0;i < req.body.length;i++){
+
+    connection.query(`insert into deck (idacc,idpok) values (?,?)`, ["1",req.body[i]], function (error, results, fields) {
+        // If there is an issue with the query, output the error
+        if (error) {
+            console.log(error);
+            return res.send("Error")
+        }
+        if (results.protocol41 == true) {
+
+            console.log(results)
+            res.status(200)
+
+        } else {
+           
+        }
+        res.end();
+    });
+
+}
+
+
+
+
+})
+
+
+
 app.get("/pokemarker", (req, res) => {
     renderpage("createpokemon", req, res)
 });

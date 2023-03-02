@@ -1,4 +1,4 @@
-<%- include('./partials/head', {title:'pokemon',script:'pokemon'}) %>
+<%- include('./partials/head', {title:'CreateDeck',script:'deck'}) %>
 
   <body>
     <br><br><br><br>
@@ -17,17 +17,17 @@
         <br>
       </div>
 
-      <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher" class="searchbar" />
+      <button onclick="envoiedeck()">ENVOIE DECK</button>
+
+
       <br><br>
       <div id="container" class="container">
         <div id="tablediv">
 
         </div>
         <br>
-        <button id="getallevbtn">Get all Ev</button>
       </div>
 
-<a href="createdeck">Create a new deck</a>
 
   </body>
 
