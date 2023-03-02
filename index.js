@@ -406,8 +406,6 @@ io.on("connection", (socket) => {
         console.log(`nbchambre: ${nbroom}, id: ${id}`)
         await socket.join(`room${nbroom}`);
 
-
-
         io.to(`room${nbroom}`).emit(`connectpokenew`, id, nbroom);
 
     });
@@ -435,10 +433,11 @@ io.on("connection", (socket) => {
         io.to(`room${nbroom}`).emit(`qqalancer`, username,givenname,vitesse);
     });
 
-    socket.on("btncmbserv", async (nbroom,username,nompokemon) => {
-      
+    socket.on("btncmbserv", async (nbroom,username,nompokemon) => {  
         io.to(`room${nbroom}`).emit(`btncmb`, username,nompokemon);
     });
+
+
 
 
 });
