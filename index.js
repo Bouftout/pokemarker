@@ -128,26 +128,26 @@ app.post('/create/deck', function (req, res) {
 
     console.log(req.body.length);
 
-for(i = 0;i < req.body.length;i++){
+    for (i = 0; i < req.body.length; i++) {
 
-    connection.query(`insert into deck (idacc,idpok) values (?,?)`, ["1",req.body[i]], function (error, results, fields) {
-        // If there is an issue with the query, output the error
-        if (error) {
-            console.log(error);
-            return res.send("Error")
-        }
-        if (results.protocol41 == true) {
+        connection.query(`insert into deck (idacc,idpok) values (?,?)`, ["1", req.body[i]], function (error, results, fields) {
+            // If there is an issue with the query, output the error
+            if (error) {
+                console.log(error);
+                return res.send("Error")
+            }
+            if (results.protocol41 == true) {
 
-            console.log(results)
-            res.status(200)
+                console.log(results)
+                res.status(200)
 
-        } else {
-           
-        }
-        res.end();
-    });
+            } else {
 
-}
+            }
+            res.end();
+        });
+
+    }
 
 
 
@@ -270,7 +270,7 @@ app.post('/create/pokemon', function (req, res) {
         if (nom && nomdonner && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
             //INSERT INTO `pokemon`(`name`, `pv`, `forcer`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv,nom,pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
+            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);
@@ -390,6 +390,7 @@ app.post('/auth', function (req, res) {
 
 // Pokemon socket.io
 const io = require("socket.io")(server);
+var cp = 0;
 
 // server-side
 io.on("connection", (socket) => {
@@ -400,43 +401,19 @@ io.on("connection", (socket) => {
         console.log(upgradedTransport) // ws
     });
 
-
     //Serv court
-    socket.on("connectpoke", async (id, nbroom) => {
-        console.log(`nbchambre: ${nbroom}, id: ${id}`)
-        await socket.join(`room${nbroom}`);
-
-        io.to(`room${nbroom}`).emit(`connectpokenew`, id, nbroom);
-
+    socket.on("connectpoke", async () => {
+        cp++;
+        await socket.join(`pokeroom`);
+        console.log("Nbplayer: " + cp)
+        io.to(`pokeroom`).emit(`newplayer`, cp);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
+        cp--;
+        await socket.disconnect(`pokeroom`);
         console.log("disconnect")
     });
-
-    socket.on("discopoke", async (id, nbroom) => {
-        console.log(`Disco: nbchambre: ${nbroom}, id: ${id}`)
-        await io.to(`room${nbroom}`).emit(`discopokenew`, id, nbroom);
-        await socket.leave(`room${nbroom}`);
-    });
-
-    socket.on("retablirjoueursserv", async (nbroom, username) => {
-        io.to(`room${nbroom}`).emit(`retablirjoueursclient`, username);
-    });
-
-    socket.on("envoisi2player", async (nbroom, username,valpokemon) => {
-        io.to(`room${nbroom}`).emit(`envoiepokemon`, username,valpokemon);
-    });
-
-    socket.on("lauchcombat", async (nbroom,username, givenname,vitesse) => {
-        console.log("combat" + givenname)
-        io.to(`room${nbroom}`).emit(`qqalancer`, username,givenname,vitesse);
-    });
-
-    socket.on("btncmbserv", async (nbroom,username,nompokemon) => {  
-        io.to(`room${nbroom}`).emit(`btncmb`, username,nompokemon);
-    });
-
 
 
 
