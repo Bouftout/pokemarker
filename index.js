@@ -390,28 +390,48 @@ app.post('/auth', function (req, res) {
 
 // Pokemon socket.io
 const io = require("socket.io")(server);
-var cp = 0;
+
+var cp = []; // Array d'enregistrement du numéro de la chambre.
+
+var lastroom = 0;
 
 // server-side
 io.on("connection", (socket) => {
     // console.log("Connection:" + socket.id); // x8WIv7-mJelg7on_ALbx
 
+
+    //Des que tu est connecter il va executer ce qu'il a dedans :
     socket.conn.on("upgrade", () => {
         const upgradedTransport = socket.conn.transport.name;
         console.log(upgradedTransport) // ws
     });
 
-    //Serv court
-    socket.on("connectpoke", async () => {
-        cp++;
-        await socket.join(`pokeroom`);
-        console.log("Nbplayer: " + cp)
-        io.to(`pokeroom`).emit(`newplayer`, cp);
+    //Serv connectpoke
+    socket.on("connectpoke", async (nbroom) => {
+
+        try {
+            //nbroom est la variable sortie dans le socket.emit("connectpoke",input.value);
+            //S'éxéctute lorsque on veut se connecter a une certainne salle
+            lastroom = nbroom; // définie la dernière room
+
+            //cp[nbroom] = le nombre de joueurs
+            if (cp.at(nbroom) == undefined) { //Si l'input de l'utulisateur est undefined
+                cp[nbroom] = 1; //met a 1
+            } else {
+                cp[nbroom] = cp[nbroom] + 1; // Rajoute 1
+            }
+
+        } catch (e) {
+
+        } finally {
+            await socket.join(`pokeroom${nbroom}`); // Rejoindre le salon que l'utulisateur a choisie
+            io.to(`pokeroom${nbroom}`).emit(`newplayer`, Number(cp[nbroom]));
+        }
+
+
     });
 
     socket.on("disconnect", async () => {
-        cp--;
-        await socket.disconnect(`pokeroom`);
         console.log("disconnect")
     });
 

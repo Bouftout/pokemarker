@@ -3,18 +3,38 @@ window.onload = function () {
     const loc = location.origin; // Avoir l'adresse du site sans /
     var socket = io(`${loc}`); // Connexion au serveur
 
+    var roominput = document.getElementById('inputroom');
     var username = document.getElementById('usernames').innerText; // Get le span ou est situé ton username de base : grâce a l'ejs.
+    const err = document.getElementById("err");
+
     quelpokemonatu(username) // Start la fonction de quel pokemon tu dispose par rapport a ton username
 
     //Vitesse est une chose pour voir lequel commence son tour
     // (Force +evforce) - (Defense + evDefense) 
-    let nbjoueurs = document.getElementById("nbjoueurs");    
-    socket.emit('connectpoke')
+
 
     socket.on('newplayer', function (nbplayer) {
         console.log(nbplayer)
-        nbjoueurs.innerText = nbplayer;
+        document.getElementById("nbjoueurs").innerText = nbplayer;
 
+    });
+
+
+    document.getElementById("joinroom").addEventListener('click', function (e) {
+        e.preventDefault();
+        if (roominput.value.length > 0 && roominput.value) {
+            try {
+                socket.emit('connectpoke',roominput.value)
+            } catch (e) {
+                console.log(e);
+            } finally {
+                document.getElementById("choixpokemon").setAttribute("style", "display: none");
+                document.getElementById("divroom").setAttribute("style", "display: none");
+                
+                err.innerText = `Vous allez rejoindre la room ${roominput.value}`;
+            }
+
+        }
     });
 
 
@@ -53,7 +73,7 @@ async function quelpokemonatu(usernamefunc) {
 
             document.getElementById("choixpokemon").appendChild(select); //Ajout a la div "choixpokemon" le select qui dispose tout les pokemon du joueurs
 
-            //Crée pour confirmer le choix
+            //Crée pour confirmer le choix (MANQUANT)
 
 
         } else {
@@ -69,7 +89,7 @@ async function quelpokemonatu(usernamefunc) {
 }
 
 
-async function envoie(valsel) {
+async function envoiepokemon(valsel) {
     var username = document.getElementById('usernames').innerText;
     var select = document.getElementById('pokemon');
     var valsel = select.options[select.selectedIndex].value;
@@ -111,14 +131,7 @@ async function envoie(valsel) {
 
 
             if (log.username == username) {
-                let btn = document.getElementById("btncombat");
-                btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lacmbbtn("${log.givenname}")`);
-                document.getElementById("combat").setAttribute("class", "block");
-                document.getElementById("combat").appendChild(btn);
-                setTimeout(() => {
-                    lancercombat(log.givenname, log.vitesse);
-                }, 2000);
+                startfight()
             }
         } else {
             document.getElementById("p1name").innerText = "Vous n'avez pas de pokemon";
@@ -172,11 +185,7 @@ async function envoiepokemon2(valsel) {
 
             //Crée un button pour lancer le combat
             if (log.username == username) {
-                let btn = document.getElementById("btncombat");
-                btn.innerText = `Lancer le combat ( ${username} )`;
-                btn.setAttribute("onclick", `lacmbbtn("${log.givenname}")`);
-                document.getElementById("combat").setAttribute("class", "block");
-                document.getElementById("combat").appendChild(btn);
+                startfight()
             }
         } else {
             document.getElementById("p2name").innerText = "Vous n'avez pas de pokemon";
@@ -189,4 +198,7 @@ async function envoiepokemon2(valsel) {
         // Handle errors
         console.log(response.status, response.statusText);
     }
+}
+function startfight(){
+
 }
