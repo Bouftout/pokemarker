@@ -15,22 +15,59 @@ window.onload = function () {
 
     socket.on('newplayer', function (nbplayer) {
         console.log(nbplayer)
-        document.getElementById("nbjoueurs").innerText = nbplayer;
+        document.getElementById("nbjoueurs").innerText = Number(nbplayer);
+
+        if (Number(nbplayer) == 2) {
+            var select = document.getElementById('pokemon');
+            let pokename = select.options[select.selectedIndex].value
+            try {
+                //Afficher le pokémon du joueurs concerner en récuper ce que il a choisi dans le select de choix du pokémon(caché après que la room soit choisi)
+                console.log(`Nom pokémon: ${pokename}`)
+                envoiepokemon(pokename)
+            } catch (e) {
+                console.log(e)
+            } finally {
+                socket.emit("sendpoke", roominput.value, pokename) //Envoyer son pokémon au autre joueurs de la page pour que il soit afficher de leur côté;
+
+            }
+
+        }
 
     });
 
+    var lefairequeunefois = true;
+
+    socket.on('recevoirpoke', function (namepoke) {
+        console.log("Nom du pokémon de l'autre joueurs: " + namepoke)
+
+        if (namepoke != username && lefairequeunefois == true) {
+
+            envoiepokemon2(namepoke);
+            lefairequeunefois = false;
+
+            var select = document.getElementById('pokemon');
+            var valsel = select.options[select.selectedIndex].value;
+            socket.emit('envoisi2player', roominput.value, username);
+
+        }
+
+    })
+
+    socket.on('discouser', function (socketuser) {
+        alert(`L'utulisateur ${socketuser} à était déconnecter`)
+    })
 
     document.getElementById("joinroom").addEventListener('click', function (e) {
         e.preventDefault();
         if (roominput.value.length > 0 && roominput.value) {
             try {
-                socket.emit('connectpoke',roominput.value)
+                socket.emit('connectpoke', roominput.value)
             } catch (e) {
                 console.log(e);
             } finally {
                 document.getElementById("choixpokemon").setAttribute("style", "display: none");
                 document.getElementById("divroom").setAttribute("style", "display: none");
-                
+
                 err.innerText = `Vous allez rejoindre la room ${roominput.value}`;
             }
 
@@ -39,6 +76,9 @@ window.onload = function () {
 
 
 }
+
+
+
 
 
 
@@ -91,8 +131,8 @@ async function quelpokemonatu(usernamefunc) {
 
 async function envoiepokemon(valsel) {
     var username = document.getElementById('usernames').innerText;
-    var select = document.getElementById('pokemon');
-    var valsel = select.options[select.selectedIndex].value;
+    // var select = document.getElementById('pokemon');
+    // var valsel = select.options[select.selectedIndex].value;
     console.log("valse1: " + valsel)
 
     const loc = location.origin; // Avoir l'adresse du site sans /
@@ -199,6 +239,6 @@ async function envoiepokemon2(valsel) {
         console.log(response.status, response.statusText);
     }
 }
-function startfight(){
+function startfight() {
 
 }
