@@ -23,7 +23,7 @@ server = app.listen(port, ip, err => {
 });
 
 const connection = mysql.createConnection({ //connection bdd
-    host: 'mysql-casinosio.alwaysdata.net',
+    host: 'mysql-pokemarker.alwaysdata.net',
     user: '288618_pokemarke',
     password: 'totoni13',
     database: 'pokemarker_index'
@@ -75,11 +75,8 @@ function hash3(passwords) {
 
 // http://localhost:3000/
 app.get('/', function (req, res) {
-    if (!req.session.loggedin) {
-        res.render("index")
-    } else {
-        res.redirect('/login')
-    }
+    res.render("index")
+
 });
 
 
@@ -87,7 +84,7 @@ app.get("/login", (req, res) => {
     if (!req.session.loggedin) {
         res.render("login")
     } else {
-        res.redirect('/pokemon')
+        res.redirect('/')
     }
 });
 app.get("/create", (req, res) => {
@@ -255,8 +252,8 @@ app.post('/create/pokemon', function (req, res) {
             specialdef = validate(req.body.specialdef),
             iv = rand(0, 31),
             nature = validate(req.body.nature),
-            ide = req.session.userid,
-            evvitesse = rand(0, 31),
+            idutilisateur = validate(req.body.username);
+        evvitesse = rand(0, 31),
             evspeatt = rand(0, 31),
             evspedef = rand(0, 31),
             evdef = rand(0, 31),
@@ -266,11 +263,12 @@ app.post('/create/pokemon', function (req, res) {
 
 
         //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
+        //(SELECT id FROM accounts WHERE username = "toni")
 
         if (nom && nomdonner && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
-            //INSERT INTO `pokemon`(`name`, `pv`, `forcer`, `def`, `vitesse`, `special`, `iv`, `ev`, `nature`, `idaccounts`) VALUES ('testsql',50,50,50,50,50,50,2,'test',2)
-            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, ide, nomdonner], function (error, results, fields) {
+            //insert into pokemon values (getmaxidpoke(),1,'Vektor','15','15','15','15','5','15',2,27,23,26,8,11,4,'fortencss',(SELECT id FROM accounts WHERE username = "toni"),'vektor');
+            connection.query(`insert into pokemon values (getmaxidpoke(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT id FROM accounts WHERE username = ?),?)`, [nv, nom, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, nature, idutilisateur, nomdonner], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);
@@ -369,7 +367,7 @@ app.post('/auth', function (req, res) {
             if (results.length > 0) {
                 req.session.loggedin = true;
                 req.session.username = username;
-                req.session.userid = results[0].id;
+                req.session.userid = results[0].id; //enregistrement de l'id de l'utulisateur dans un session
                 // petit message pour prevenir que le compte a bien été login.
                 res.json({ "login": true })
                 return res.end();
@@ -424,15 +422,23 @@ io.on("connection", (socket) => {
         } catch (e) {
 
         } finally {
+            console.log(cp)
             await socket.join(`pokeroom${nbroom}`); // Rejoindre le salon que l'utulisateur a choisie
-            io.to(`pokeroom${nbroom}`).emit(`newplayer`, Number(cp[nbroom]));
+            io.to(`pokeroom${nbroom}`).emit(`newplayer`, Number(cp[nbroom])); //Envoyer a la salle le nombre de joueurs actuel (variable sur le serveur)
         }
 
 
     });
 
+    socket.on("sendpoke", async (nbroom, namepoke) => {
+        await io.to(`pokeroom${nbroom}`).emit(`recevoirpoke`, namepoke);
+        // await io.emit(`recevoirpoke`, namepoke);
+
+    })
+
     socket.on("disconnect", async () => {
-        console.log("disconnect")
+        cp = [];
+        io.disconnectSockets();
     });
 
 

@@ -7,7 +7,7 @@
         <div id="pdivev"></div>
       </div>
       <h1>Bienvenue <% if(locals.username){ %>
-          <%= username %>
+          <span id="username"><%= username %></span>
             <% } %>
       </h1>
 
@@ -16,18 +16,18 @@
         <p id="err"></p>
         <br>
       </div>
+      <div id="alldiv">
+        <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher" class="searchbar" />
+        <br><br>
+        <div id="container" class="container">
+          <div id="tablediv">
 
-      <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher" class="searchbar" />
-      <br><br>
-      <div id="container" class="container">
-        <div id="tablediv">
-
+          </div>
+          <br>
+          <button id="getallevbtn">Get all Ev</button>
         </div>
-        <br>
-        <button id="getallevbtn">Get all Ev</button>
-      </div>
-
-<a href="createdeck">Create a new deck</a>
+      <div>
+<!-- <a href="createdeck">Create a new deck</a> -->
 
   </body>
 

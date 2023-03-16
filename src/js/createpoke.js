@@ -15,7 +15,8 @@ async function formenvoie() {
 
     const formdata = new FormData(form);
     const data = Object.fromEntries(formdata.entries());
-    const datajson = JSON.stringify(data);
+    let datajson = JSON.stringify(data);
+    console.log(datajson)
     let err = document.getElementById("err");
 
     const settings = { // Paramètres de la requête
@@ -38,8 +39,11 @@ async function formenvoie() {
         } else if (log.create === false) {
             err.innerText = "Erreur lors de la création du pokemon(Champs manquant ou invalide)";
             err.style.color = "red";
-        } else {
-            err.innerText = "Erreur inconnue: " + log.create;
+        } else if(log.create == "dontconnect") {
+            err.innerText = "Veuillez vous connecter !";
+            err.style.color = "red";
+        }else {
+            err.innerText = "Erreur inconnue : " + log.create;
             err.style.color = "red";
             console.log("Erreur");
         }

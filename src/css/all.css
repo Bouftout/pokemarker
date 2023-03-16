@@ -67,10 +67,10 @@ input {
 }
 
 .boxN1 {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
-  top: -150%;
+  top: 50%;
   left: 82%;
   width: 400px;
   transform: translate(-50%, -50%);

@@ -33,7 +33,7 @@ window.onload = function () {
     getpokemon()
 
     setInterval(function () {
-      //  getpokemon()
+        //  getpokemon()
     }, 10000);
 
     document.getElementById("getallevbtn").addEventListener('click', function (e) {
@@ -78,12 +78,12 @@ function searchname(filter, autretable) {
                 if (td) {
                     txtValue = td.textContent || td.innerText;
                     console.log("txtvalue")
-                        if (txtValue == filter) {
-                            tr[i].style.display = "";
-                        } else {
-                            tr[i].style.display = "none";
-                        }
-                    
+                    if (txtValue == filter) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+
 
                 }
             }
@@ -131,12 +131,16 @@ async function getpokemon() {
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
         console.log(log)
-
+        let alldiv = document.getElementById("alldiv");
         if (log.length > 0) {
+            alldiv.style.display = "block";
+            err.style.fontSize = "20px"
             creertable(log)
             createev(log)
         } else {
-            err.innerText = "Auncun pokemon";
+            alldiv.style.display = "none";
+            err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !";
+            err.style.fontSize = "50px"
             err.style.color = "red";
         }
 
@@ -260,6 +264,8 @@ function creertable(log) {
 
 async function deletepokemon(id) {
 
+
+
     let err = document.getElementById("err");
     const settings = { // Paramètres de la requête
         method: 'DELETE',
@@ -290,6 +296,9 @@ async function deletepokemon(id) {
             err.innerText = "Erreur lors de la supression";
             err.style.color = "red";
         }
+    }else {
+        err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
+        err.style.color = "red";
     }
 }
 
@@ -318,6 +327,6 @@ function closepopup() {
     el.style.display = 'none';
 }
 
-function createdeck(){
-    
+function createdeck() {
+
 }
