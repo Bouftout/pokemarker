@@ -390,7 +390,6 @@ app.post('/auth', function (req, res) {
 const io = require("socket.io")(server);
 
 var cp = []; // Array d'enregistrement du numéro de la chambre.
-
 var lastroom = 0;
 
 // server-side

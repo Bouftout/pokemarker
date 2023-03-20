@@ -35,21 +35,17 @@ window.onload = function () {
 
     });
 
-    var lefairequeunefois = true;
 
     socket.on('recevoirpoke', function (namepoke) {
         console.log("Nom du pokémon de l'autre joueurs: " + namepoke)
+        var select = document.getElementById('pokemon');
+        var valsel = select.options[select.selectedIndex].value;
 
-        if (namepoke != username && lefairequeunefois == true) {
-
+        if (namepoke != valsel) {
             envoiepokemon2(namepoke);
-            lefairequeunefois = false;
-
-            var select = document.getElementById('pokemon');
-            var valsel = select.options[select.selectedIndex].value;
-            socket.emit('envoisi2player', roominput.value, username);
-
+            startfight()
         }
+
 
     })
 
@@ -239,6 +235,45 @@ async function envoiepokemon2(valsel) {
         console.log(response.status, response.statusText);
     }
 }
+
 function startfight() {
+
+    var p1vitesse = document.getElementById("p1vitesse");
+    var p2vitesse = document.getElementById("p2vitesse");
+
+    var p1hp = document.getElementById("p1hp");
+    var p2hp = document.getElementById("p2hp");
+
+    var p1atk = document.getElementById("p1atk");
+    var p2atk = document.getElementById("p2atk");
+
+    var p1def = document.getElementById("p1def");
+    var p2def = document.getElementById("p2def");
+
+    var ggqui = null;
+
+    if (p1vitesse < p2vitesse) {
+        ggqui = "p1"
+    } else if (p1vitesse > p2vitesse) {
+        ggqui = "p2"
+    } else {
+        alert("Un random va commencer pour savoir qui va commencer")
+
+        let rand = Math.floor(Math.random())
+
+        if(rand == 1){
+            ggqui = "p1"
+        }else {
+            ggqui = "p2"
+        }
+
+    }
+
+    if(ggqui == "p1"){
+        p2hp = Number(p1atk - p2def);
+    }else {
+        p1hp = Number(p2atk - p1def);
+    }
+
 
 }
