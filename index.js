@@ -389,9 +389,6 @@ app.post('/auth', function (req, res) {
 // Pokemon socket.io
 const io = require("socket.io")(server);
 
-var cp = []; // Array d'enregistrement du numéro de la chambre.
-var lastroom = 0;
-
 // server-side
 io.on("connection", (socket) => {
     // console.log("Connection:" + socket.id); // x8WIv7-mJelg7on_ALbx
@@ -403,42 +400,45 @@ io.on("connection", (socket) => {
         console.log(upgradedTransport) // ws
     });
 
-    //Serv connectpoke
-    socket.on("connectpoke", async (nbroom) => {
+
+    //Connection :
+    socket.on("connectpoke", async (room) => {
 
         try {
-            //nbroom est la variable sortie dans le socket.emit("connectpoke",input.value);
-            //S'éxéctute lorsque on veut se connecter a une certainne salle
-            lastroom = nbroom; // définie la dernière room
-
-            //cp[nbroom] = le nombre de joueurs
-            if (cp.at(nbroom) == undefined) { //Si l'input de l'utulisateur est undefined
-                cp[nbroom] = 1; //met a 1
-            } else {
-                cp[nbroom] = cp[nbroom] + 1; // Rajoute 1
-            }
-
+            const clients = io.sockets.adapter.rooms.get(`pokeroom${room}`);
+            const numClients = clients ? clients.size : 0;
+            console.log(numClients)
+            console.log('[socket]', 'join room :', `pokeroom${room}`)
+            socket.join(`pokeroom${room}`);
+            io.to(`pokeroom${room}`).emit('newplayer', `pokeroom${room}` , Number(numClients)+1);
+            
         } catch (e) {
-
-        } finally {
-            console.log(cp)
-            await socket.join(`pokeroom${nbroom}`); // Rejoindre le salon que l'utulisateur a choisie
-            io.to(`pokeroom${nbroom}`).emit(`newplayer`, Number(cp[nbroom])); //Envoyer a la salle le nombre de joueurs actuel (variable sur le serveur)
+            console.log('[error]', 'join room :', e);
+            socket.emit('error', 'couldnt perform requested action');
         }
-
 
     });
 
-    socket.on("sendpoke", async (nbroom, namepoke) => {
-        await io.to(`pokeroom${nbroom}`).emit(`recevoirpoke`, namepoke);
+
+    //Deconnection :
+    socket.on("disconnect", async () => {
+        console.log("Une personne s'est déconnecter")
+    });
+
+    socket.on('disconnecting', function () {
+        
+        //Deconnection
+        console.log('[socket]', 'leave room !', socket.rooms);
+        socket.rooms = null;
+    });
+
+
+    socket.on("sendpoke", async (room, namepoke) => {
+        console.log('[socket]', 'leave room :', room);
+        await socket.to(`pokeroom${room}`).emit(`recevoirpoke`, namepoke);
         // await io.emit(`recevoirpoke`, namepoke);
 
     })
-
-    socket.on("disconnect", async () => {
-        cp = [];
-        io.disconnectSockets();
-    });
 
 
 
