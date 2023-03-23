@@ -1,5 +1,6 @@
 window.onload = function () {
 
+    //Systeme de recherche
     document.addEventListener('click', function (e) {
 
         e = e || window.event;
@@ -30,17 +31,21 @@ window.onload = function () {
     }, false);
 
 
-    getpokemon()
+    getpokemon() // lancer la function pour alimenter le tableau depuis la bdd
 
-    setInterval(function () {
-        //  getpokemon()
+    setInterval(function () { // Toute les 10s je relancer la function pour alimenter le tableau
+        getpokemon()
     }, 10000);
 
+
+    //Pour afficher la popup de tout les ev(stat caché) des pokemon
     document.getElementById("getallevbtn").addEventListener('click', function (e) {
 
+        //el est la pop up on la rafiche donc
         var el = document.getElementById('popev');
         el.style.display = 'block';
 
+        // Dans la tablea ev supprimer ses classe
         const tableev = document.getElementById("tableev");
         (tableev.firstElementChild.firstChild.firstChild).setAttribute("class", "")
 
@@ -48,6 +53,7 @@ window.onload = function () {
 
 };
 
+//Searcger un nom avec comme arguement le filtre et la  table
 function searchname(filter, autretable) {
 
 
@@ -200,6 +206,7 @@ function createev(log) {
     tablediv.appendChild(button);
 }
 
+//Créer la tablea concerner avec l'argument pour le remplir !
 function creertable(log) {
     const table = document.createElement("table");
     const tablediv = document.getElementById("tablediv");
@@ -209,6 +216,7 @@ function creertable(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
+    //Tout les nom en haut du tableau(dans le head)
     var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
 
     for (let i = 0; i < allname.length; i++) {
@@ -218,10 +226,12 @@ function creertable(log) {
     table.appendChild(thead);
 
 
+    //Tout ce qui a dans le tbody
     const tbody = document.createElement("tbody");
     tbody.setAttribute("id", "tbody");
     table.appendChild(tbody);
 
+    //On fait une boucle de l'arguement pour remplir le tableau
     for (let i = 0; i < log.length; i++) {
         const tr = document.createElement("tr");
 
@@ -238,6 +248,7 @@ function creertable(log) {
         tr.appendChild(createtd(log[i].iv));
         tr.appendChild(createtd(log[i].nature));
 
+        //Création du bouton de ev
         const td1 = document.createElement("td");
         const button1 = document.createElement("button");
         button1.setAttribute("class", "button");
@@ -246,6 +257,7 @@ function creertable(log) {
         td1.appendChild(button1);
         tr.appendChild(td1);
 
+        // Création du bouton pour delete
         const td = document.createElement("td");
         const button = document.createElement("button");
         button.setAttribute("class", "button");
@@ -262,6 +274,7 @@ function creertable(log) {
 }
 
 
+//Fonction activée lors du click du bouton delete
 async function deletepokemon(id) {
 
 
@@ -280,16 +293,16 @@ async function deletepokemon(id) {
         const resjson = await response.json();
         console.log(resjson)
         if (resjson.delete == true) {
-            err.innerText = "Votre pokémon a bien était supprimé.";
+            err.innerText = "Votre pokémon a bien était supprimé."; //Confirmation de suppression
             err.style.color = "green";
             setTimeout(function () {
                 getpokemon();
             }, 1000);
 
         } else if (resjson.delete == false) {
-            err.innerText = "Ce pokemon ne vous appartient pas.";
+            err.innerText = "Ce pokemon ne vous appartient pas."; 
             err.style.color = "red";
-        } else if (resjson.delete == "doncconnect") {
+        } else if (resjson.delete == "doncconnect") { //Si le serveur retourner que tu n'es pas connecter
             err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
             err.style.color = "red";
         } else {
@@ -302,7 +315,7 @@ async function deletepokemon(id) {
     }
 }
 
-
+//Ouvrir la popup avec des argument qui corresponde
 function openpopup(popev) {
     console.log("OPe")
     try {
@@ -322,11 +335,8 @@ function openpopup(popev) {
 
 }
 
+//Fermer popup ev
 function closepopup() {
     var el = document.getElementById('popev');
     el.style.display = 'none';
-}
-
-function createdeck() {
-
 }
