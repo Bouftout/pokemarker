@@ -100,9 +100,11 @@ window.onload = function () {
                     clearInterval(nIntervId)
                     nIntervId = null;
                     if(p1hp.value > 0){
+                        socket.emit("winner", document.getElementById("p1username").innerText, document.getElementById("p2username").innerText, document.getElementById("p1hp").value,document.getElementById("p1username").innerText)
                         alert(`${document.getElementById("p1username").innerText} a gagnée`)
                     }
                     if(p2hp.value > 0){
+                        socket.emit("winner", document.getElementById("p1username").innerText, document.getElementById("p2username").innerText, document.getElementById("p2hp").value,document.getElementById("p2username").innerText)
                         alert(`${document.getElementById("p2username").innerText} a gagnée`)
                     }
                 }else {

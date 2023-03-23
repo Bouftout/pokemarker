@@ -1,0 +1,37 @@
+<%- include('./partials/head', {title:'pokemon',script:'historique'}) %>
+
+  <body>
+    <br><br><br><br>
+
+      <div id="popev" style="display: none">
+        <div id="pdivev"></div>
+      </div>
+      <h1>Bienvenue <% if(locals.username){ %>
+          <span id="username"><%= username %></span>
+            <% } %>
+      </h1>
+
+      <br>
+      <div>
+        <p id="err"></p>
+        <br>
+      </div>
+      <div id="alldiv">
+
+        <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher nom click" class="searchbar" />
+
+        <button onclick="searchname()">SEARCH</button>
+        <br><br>
+        <div id="container" class="container">
+          <div id="tablediv">
+
+          </div>
+          <br>
+
+        </div>
+      <div>
+<!-- <a href="createdeck">Create a new deck</a> -->
+
+  </body>
+
+  </html>

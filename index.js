@@ -161,6 +161,10 @@ app.get("/play", (req, res) => {
     renderpage("play", req, res)
 });
 
+app.get("/historique", (req, res) => {
+    res.render("historique")
+});
+
 app.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/login");
@@ -198,6 +202,7 @@ app.get("/get/pokemon", (req, res) => {
 
 });
 
+
 app.delete("/delete/:idpoke/pokemon", (req, res) => {
 
     if (req.session.loggedin) {
@@ -213,6 +218,25 @@ app.delete("/delete/:idpoke/pokemon", (req, res) => {
     } else {
         res.json({ "delete": "doncconnect" })
     }
+
+});
+
+
+app.get("/get/historique", (req, res) => {
+
+    connection.query('SELECT idacc1,idacc2,pv,vainqueur FROM historique', function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
+
+});
+
+app.get("/get/historique/pokemon/:id", (req, res) => {
+
+    connection.query('SELECT ',[req.params.id], function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
 
 });
 
@@ -437,6 +461,23 @@ io.on("connection", (socket) => {
         console.log('[socket]', 'leave room :', room);
         await socket.to(`pokeroom${room}`).emit(`recevoirpoke`, namepoke);
         // await io.emit(`recevoirpoke`, namepoke);
+
+    })
+
+    socket.on("winner", async (username1, username2,pvwinner,vainqueur) => {
+        console.log('[socket]', 'winner');
+        console.log(username1 + username2 + pvwinner + vainqueur)
+
+
+
+        connection.query(`INSERT INTO \`historique\` VALUES (test(),(SELECT id FROM accounts WHERE username = ?),(SELECT id FROM accounts WHERE username = ?),?,?)`, [username1, username2, pvwinner, vainqueur], function (err, results, fields) {
+            // If there is an issue with the query, output the error
+            if (err) {
+                return console.log(err);
+            }
+            
+        });
+
 
     })
 
