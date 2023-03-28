@@ -62,6 +62,9 @@ window.onload = function () {
             var p1atk = document.getElementById("p1atk").innerText;
             var p2atk = document.getElementById("p2atk").innerText;
 
+            var p1evatk = document.getElementById("p1evatk").innerText;
+            var p2evatk = document.getElementById("p2evatk").innerText;
+
             var p1def = document.getElementById("p1def").innerText;
             var p2def = document.getElementById("p2def").innerText;
 
@@ -89,8 +92,9 @@ window.onload = function () {
             // }
             let nIntervId;
             
-            nIntervId = setInterval(fighto, 500);
+            nIntervId = setInterval(fighto, 500); //Tout un certain temps je lance un function fighto
 
+            //Calcul automatique pour faire le combat(ça vérifie que il en a 1 des 2 qui est mort si c'est le cas ça dit a l'autre que il a gagnée) sinon ça vérifie la varible ggqui(calculer par rapport a la vitesse) 
             function fighto() {
                 let p1hp = document.getElementById("p1hp");
                 let p2hp = document.getElementById("p2hp");
@@ -111,12 +115,14 @@ window.onload = function () {
                     console.log("[Fight] " + username + " play !")
                     if (ggqui == "p1") {
                         // console.log("[Fight] " + (Number(p1hp.value) - (Number(p1atk) / Number(p2def))) + " attack !");
-                        p1hp.value = Number(p1hp.value) - (Number(p1atk) / Number(p2def));
+                        p2hp.value = Number(p2hp.value) - ((Number(p1atk) + Number(p1evatk)) / Number(p2def));
+
                         ggqui = "p2";
                         
                     } else {
                         // console.log("[Fight] " + (Number(p2hp.value) - (Number(p2atk) / Number(p1def))) + " attack !")
-                        p2hp.value = Number(p2hp.value) - (Number(p2atk) / Number(p1def));
+                        p1hp.value = Number(p1hp.value) - ((Number(p2atk) + Number(p2evatk)) / Number(p1def));
+                        
                         ggqui = "p1";
                     }
 
@@ -249,6 +255,7 @@ async function envoiepokemon(valsel) {
             hp.setAttribute("max", log.pv);
 
             document.getElementById("p1atk").innerText = log.forcer;
+            document.getElementById("p1evatk").innerText = log.evatt;
             document.getElementById("p1def").innerText = log.def;
             document.getElementById("p1vitesse").innerText = log.vitesse;
             document.getElementById("p1spdatk").innerText = log.specialatt;
@@ -298,6 +305,7 @@ async function envoiepokemon2(valsel) {
             hp.setAttribute("max", log.pv);
 
             document.getElementById("p2atk").innerText = log.forcer;
+            document.getElementById("p2evatk").innerText = log.evatt;
             document.getElementById("p2def").innerText = log.def;
             document.getElementById("p2vitesse").innerText = log.vitesse;
             document.getElementById("p2spdatk").innerText = log.specialatt;

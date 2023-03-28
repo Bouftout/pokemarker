@@ -154,7 +154,7 @@ async function getpokemon() {
 
 };
 
-async function getpokemonforbtn(numero) {
+async function getpokemonforbtn(numero,idacc) {
 
     let err = document.getElementById("err");
     const settings = { // Paramètres de la requête
@@ -165,7 +165,7 @@ async function getpokemonforbtn(numero) {
         },
     };
 
-    const response = await fetch(`/get/historique/pokemon/${numero}`, settings); // Requête
+    const response = await fetch(`/get/historique/pokemon/${numero}/${idacc}`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
         console.log(log)
@@ -278,7 +278,7 @@ function creertable(log) {
         const td1= document.createElement("td");
         const button1 = document.createElement("button");
         button1.setAttribute("class", "button");
-        button1.setAttribute("onclick", `openpopup(${log[i].idacc1});`);
+        button1.setAttribute("onclick", `openpopup(${log[i].idacc1},1);`);
         button1.innerText = `N°${log[i].idacc1}`;
         td1.appendChild(button1);
         tr.appendChild(td1);
@@ -286,7 +286,7 @@ function creertable(log) {
         const td = document.createElement("td");
         const button = document.createElement("button");
         button.setAttribute("class", "button");
-        button.setAttribute("onclick", `openpopup(${log[i].idacc2});`);
+        button.setAttribute("onclick", `openpopup(${log[i].idacc2},2);`);
         button.innerText = `N°${log[i].idacc2}`;
         td.appendChild(button);
         tr.appendChild(td);
@@ -344,7 +344,7 @@ async function deletepokemon(id) {
 }
 
 //Ouvrir la popup avec des argument qui corresponde
-function openpopup(numero) {
+function openpopup(numero,idacc) {
     console.log("[Info] Open PopUp")
     try {
         document.getElementById('popev').style.display = 'block';
@@ -353,7 +353,7 @@ function openpopup(numero) {
         console.log(e);
     } finally {
         
-        getpokemonforbtn(numero)
+        getpokemonforbtn(numero,idacc)
     }
 
 

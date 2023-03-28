@@ -21,25 +21,25 @@
                     <div class="sticky">
 
                        
-                            <ul>
+                        
                                 <button action="/">Accueil</button>
-                            </ul>
+                            
                            
                                 <div class="espace"></div>
 
                                 <button action="/pokemarker">Créer un pokemon</button>
                                 <button action="/play">Jouer</button>
                                 <button action="/pokemon">VoirLesPokemon</button>
-
+                                <button action="/historique">Historique</button>
 
                                 <div class="espace"></div>
-                                <ul>
+                               
                                     <% if(locals.username){ %>
                                         <button action="/logout">Se déconnecter</button>
                                         <% } else { %>
                                             <button action="/login">Login</button>
                                             <% } %>
-                                </ul>
+                             
 
                     </div>
                 </navbar>

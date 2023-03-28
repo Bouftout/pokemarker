@@ -121,6 +121,7 @@ function createtd(text) {
     return td;
 }
 
+var popupactive = false;
 
 async function getpokemon() {
 
@@ -142,7 +143,10 @@ async function getpokemon() {
             alldiv.style.display = "block";
             err.style.fontSize = "20px"
             creertable(log)
-            createev(log)
+            if(!popupactive){
+                createev(log)
+            }
+            
         } else {
             alldiv.style.display = "none";
             err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !";

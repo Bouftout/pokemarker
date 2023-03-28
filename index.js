@@ -58,11 +58,13 @@ function renderpage(names, req, res) {
     }
 }
 
+//si il a une entrée utulisateur et que on veut la vérifier utuliser cette function
 function validate(string) {
     return validator.escape(string);
 }
 
 
+//Function de hashage
 function hash3(passwords) {
 
     const salute = `U@1${passwords}ds-`;
@@ -72,14 +74,12 @@ function hash3(passwords) {
 
 }
 
-
-// http://localhost:3000/
+//Render la page accueil qui correspont donc a la page que l'utulisateur verra la 1ière fois qui viens sur le site
 app.get('/', function (req, res) {
     res.render("index")
-
 });
 
-
+//Affichage de la page login si on pas connecté sinon on redirige vers l'accueil.
 app.get("/login", (req, res) => {
     if (!req.session.loggedin) {
         res.render("login")
@@ -87,6 +87,8 @@ app.get("/login", (req, res) => {
         res.redirect('/')
     }
 });
+
+//Si il n'a pas de compte on affiche la page create.ejs sinon on redirige vers /pokémon
 app.get("/create", (req, res) => {
     if (!req.session.loggedin) {
         res.render("create")
@@ -94,6 +96,8 @@ app.get("/create", (req, res) => {
         res.redirect('/pokemon')
     }
 });
+
+//Render la page pokémon,si on est connecté donner aussi l'username de l'utulisateur enregistrer dans la session
 app.get("/pokemon", (req, res) => {
 
     if (!req.session.loggedin) {
@@ -107,6 +111,7 @@ app.get("/pokemon", (req, res) => {
     }
 });
 
+//Render un deck
 app.get("/createdeck", (req, res) => {
 
     if (!req.session.loggedin) {
@@ -120,6 +125,7 @@ app.get("/createdeck", (req, res) => {
     }
 });
 
+//Création d'un deck
 app.post('/create/deck', function (req, res) {
 
 
@@ -152,22 +158,30 @@ app.post('/create/deck', function (req, res) {
 })
 
 
-
+//render la page
 app.get("/pokemarker", (req, res) => {
     renderpage("createpokemon", req, res)
 });
 
+//Page pour faire combattre 2 pokémon entre eux
 app.get("/play", (req, res) => {
     renderpage("play", req, res)
 });
 
+//Page d'historique(affichage de tout les combat pokémon auparavant)
 app.get("/historique", (req, res) => {
     res.render("historique")
 });
 
+//Page de déconnexion
+app.get("/patchnote", (req, res) => {
+    res.render("patchnote");
+});
+
+//Page de déconnexion
 app.get("/logout", (req, res) => {
-    req.session.destroy();
-    res.redirect("/login");
+    req.session.destroy(); // détruire la session
+    res.redirect("/login"); // rediriger vers /login(page de connexion)
 });
 
 app.get("/get/:user/pokemon", (req, res) => {
@@ -184,6 +198,7 @@ app.get("/get/:user/pokemon", (req, res) => {
 
 });
 
+//Get des pokémon avec le nom de l'utulisateur par rapport au surnom(givenname)
 app.get("/get/pokemon/:givenname", (req, res) => {
 
     connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,forcer,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE pokemon.givenname = ?`, [req.params.givenname], function (error, results, fields) {
@@ -203,8 +218,10 @@ app.get("/get/pokemon", (req, res) => {
 });
 
 
+//Delete par rapport avec un id et un pokémon
 app.delete("/delete/:idpoke/pokemon", (req, res) => {
 
+    //req.session.userid est enregistrer si on se connecte ou crée sont compte et correspond a l'id de son compte dans ça basse de donnée.
     if (req.session.loggedin) {
         connection.query(`DELETE FROM \`pokemon\` WHERE pokemon.idaccounts = ? AND pokemon.id = ?`, [req.session.userid, req.params.idpoke], function (error, results, fields) {
             if (error) throw error;
@@ -222,6 +239,7 @@ app.delete("/delete/:idpoke/pokemon", (req, res) => {
 });
 
 
+//Get la table historique de sql
 app.get("/get/historique", (req, res) => {
 
     connection.query('SELECT idacc1,idacc2,pv,vainqueur FROM historique', function (error, results, fields) {
@@ -231,12 +249,25 @@ app.get("/get/historique", (req, res) => {
 
 });
 
-app.get("/get/historique/pokemon/:id", (req, res) => {
+app.get("/get/historique/pokemon/:id/:acc", (req, res) => {
 
-    connection.query('SELECT ',[req.params.id], function (error, results, fields) {
-        if (error) throw error;
-        res.json(results);
-    });
+    let acc = req.params.acc;
+    console.log("[Info] Get historique Pokémon acc :" + acc)
+    // Commande sql pour récupérer tout les pokémon
+    // SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? GROUP BY id',[req.params.id],
+    if (acc == 1) {
+        connection.query('SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? GROUP BY id', [req.params.id], function (error, results, fields) {
+            if (error) throw error;
+            res.json(results);
+        });
+    } else {
+        connection.query('SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc2 INNER JOIN accounts ON historique.idacc2 = accounts.id WHERE accounts.id = ? GROUP BY id', [req.params.id], function (error, results, fields) {
+            if (error) throw error;
+            res.json(results);
+        });
+    }
+
+
 
 });
 
@@ -434,8 +465,8 @@ io.on("connection", (socket) => {
             console.log(numClients)
             console.log('[socket]', 'join room :', `pokeroom${room}`)
             socket.join(`pokeroom${room}`);
-            io.to(`pokeroom${room}`).emit('newplayer', `pokeroom${room}` , Number(numClients)+1);
-            
+            io.to(`pokeroom${room}`).emit('newplayer', `pokeroom${room}`, Number(numClients) + 1);
+
         } catch (e) {
             console.log('[error]', 'join room :', e);
             socket.emit('error', 'couldnt perform requested action');
@@ -450,7 +481,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on('disconnecting', function () {
-        
+
         //Deconnection
         console.log('[socket]', 'leave room !', socket.rooms);
         socket.rooms = null;
@@ -464,7 +495,7 @@ io.on("connection", (socket) => {
 
     })
 
-    socket.on("winner", async (username1, username2,pvwinner,vainqueur) => {
+    socket.on("winner", async (username1, username2, pvwinner, vainqueur) => {
         console.log('[socket]', 'winner');
         console.log(username1 + username2 + pvwinner + vainqueur)
 
@@ -475,7 +506,7 @@ io.on("connection", (socket) => {
             if (err) {
                 return console.log(err);
             }
-            
+
         });
 
 
