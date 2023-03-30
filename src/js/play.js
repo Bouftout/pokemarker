@@ -91,38 +91,46 @@ window.onload = function () {
 
             // }
             let nIntervId;
-            
+
             nIntervId = setInterval(fighto, 500); //Tout un certain temps je lance un function fighto
 
             //Calcul automatique pour faire le combat(ça vérifie que il en a 1 des 2 qui est mort si c'est le cas ça dit a l'autre que il a gagnée) sinon ça vérifie la varible ggqui(calculer par rapport a la vitesse) 
             function fighto() {
                 let p1hp = document.getElementById("p1hp");
                 let p2hp = document.getElementById("p2hp");
-    
+
+                //Si un des 2 est mort :
                 if (p1hp.value <= 0 || p2hp.value <= 0) {
                     console.log("Clear interval")
                     clearInterval(nIntervId)
                     nIntervId = null;
-                    if(p1hp.value > 0){
-                        socket.emit("winner", document.getElementById("p1username").innerText, document.getElementById("p2username").innerText, document.getElementById("p1hp").value,document.getElementById("p1username").innerText)
-                        alert(`${document.getElementById("p1username").innerText} a gagnée`)
+                    let p1user = document.getElementById("p1username").innerText;
+                    let p2user = document.getElementById("p2username").innerText;
+                    let p1pokename = document.getElementById("p1name").innerText;
+                    let p2pokename = document.getElementById("p2name").innerText;
+
+                    if (p1hp.value > 0) {
+                        // P1 a gagnée car il est vivant:
+                        socket.emit("winner", p1user, p2user, document.getElementById("p1hp").value, p1user, p1pokename, p2pokename)
+                        alert(`${p1user} a gagnée`)
+                    } else if (p2hp.value > 0) {
+                        // P2 a gagnée car il est vivant:
+                        socket.emit("winner", p1user, p2user, document.getElementById("p2hp").value, p2user, p1pokename, p2pokename)
+                        alert(`${p2user} a gagnée`)
                     }
-                    if(p2hp.value > 0){
-                        socket.emit("winner", document.getElementById("p1username").innerText, document.getElementById("p2username").innerText, document.getElementById("p2hp").value,document.getElementById("p2username").innerText)
-                        alert(`${document.getElementById("p2username").innerText} a gagnée`)
-                    }
-                }else {
+                } else {
+                    //Sinon commencer le fight si il sont toujours vivant :
                     console.log("[Fight] " + username + " play !")
                     if (ggqui == "p1") {
                         // console.log("[Fight] " + (Number(p1hp.value) - (Number(p1atk) / Number(p2def))) + " attack !");
                         p2hp.value = Number(p2hp.value) - ((Number(p1atk) + Number(p1evatk)) / Number(p2def));
 
                         ggqui = "p2";
-                        
+
                     } else {
                         // console.log("[Fight] " + (Number(p2hp.value) - (Number(p2atk) / Number(p1def))) + " attack !")
                         p1hp.value = Number(p1hp.value) - ((Number(p2atk) + Number(p2evatk)) / Number(p1def));
-                        
+
                         ggqui = "p1";
                     }
 
@@ -192,6 +200,7 @@ async function quelpokemonatu(usernamefunc) {
 
         if (data) {
 
+            //Création d'un select pour pouvoir afficher dans un select tout les pokémon que le joueurs a :
             let select = document.createElement("select"); //Création d'un select
             select.setAttribute("id", "pokemon"); // Set id a "pokemon"
             select.setAttribute("name", "pokemon"); // Set name a "pokemon"
@@ -200,6 +209,7 @@ async function quelpokemonatu(usernamefunc) {
                 let option = document.createElement("option");
                 option.setAttribute("value", data[i].givenname);
                 option.innerText = data[i].givenname;
+
                 select.appendChild(option);
 
             }

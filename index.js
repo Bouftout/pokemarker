@@ -133,7 +133,9 @@ app.post('/create/deck', function (req, res) {
 
     for (i = 0; i < req.body.length; i++) {
 
-        connection.query(`insert into deck (idacc,idpok) values (?,?)`, ["1", req.body[i]], function (error, results, fields) {
+        //req.session.userid est enregistrer si on se connecte ou crée sont compte et correspond a l'id de son compte dans ça basse de donnée.
+        //on crée donc une ligne comprenant une id,l'id du compte,l'id du pokémon, et le numéro du deck(pour pouvoir gérer que un utulisateur puissent faire plusieur deck)
+        connection.query(`insert into deck (idacc,idpok,nbdeck) SELECT ?,?,(SELECT MAX(nbdeck)+1 FROM deck)`, [req.session.userid, req.body[i]], function (error, results, fields) {
             // If there is an issue with the query, output the error
             if (error) {
                 console.log(error);
@@ -252,16 +254,22 @@ app.get("/get/historique", (req, res) => {
 app.get("/get/historique/pokemon/:id/:acc", (req, res) => {
 
     let acc = req.params.acc;
+    let id = req.params.id;
     console.log("[Info] Get historique Pokémon acc :" + acc)
     // Commande sql pour récupérer tout les pokémon
     // SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? GROUP BY id',[req.params.id],
+
     if (acc == 1) {
-        connection.query('SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? GROUP BY id', [req.params.id], function (error, results, fields) {
+        //Si compte 1 gagne :
+        // Commande sql qui recupere le nom du compte,et les stats du pokémon (pour le compte 1):
+        connection.query('SELECT accounts.username,pokemon.* FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? AND pokemon.givenname = (SELECT poke1 FROM historique WHERE idacc1 = ?) GROUP BY id', [id, id], function (error, results, fields) {
             if (error) throw error;
             res.json(results);
         });
     } else {
-        connection.query('SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc2 INNER JOIN accounts ON historique.idacc2 = accounts.id WHERE accounts.id = ? GROUP BY id', [req.params.id], function (error, results, fields) {
+        //Sinon si c'est pas le compte 1
+        // Commande sql qui recupere le nom du compte,et les stats du pokémon (pour le compte 2):
+        connection.query('SELECT accounts.username,pokemon.* FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc2 INNER JOIN accounts ON historique.idacc2 = accounts.id WHERE accounts.id = ? AND pokemon.givenname = (SELECT poke2 FROM historique WHERE idacc2 = ?) GROUP BY id', [id, id], function (error, results, fields) {
             if (error) throw error;
             res.json(results);
         });
@@ -272,7 +280,7 @@ app.get("/get/historique/pokemon/:id/:acc", (req, res) => {
 });
 
 
-
+//Page de Déconnexion de son compte
 app.get('/disco', function (req, res) {
 
     if (req.session.loggedin) {
@@ -284,6 +292,7 @@ app.get('/disco', function (req, res) {
 
 })
 
+//Function de random
 function rand(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -297,6 +306,7 @@ app.post('/create/pokemon', function (req, res) {
         console.log("create pokemon")
         console.log(req.body);
 
+        //Verification(anti-mysql) + ev et iv random entre 0 et 31
         let nom = validate(req.body.name);
         nomdonner = validate(req.body.nomdonner),
             pv = validate(req.body.pv),
@@ -343,6 +353,7 @@ app.post('/create/pokemon', function (req, res) {
         } else {
             res.json({ "create": false })
         }
+
     } else {
         res.json({ "create": "dontconnect" })
     }
@@ -495,13 +506,13 @@ io.on("connection", (socket) => {
 
     })
 
-    socket.on("winner", async (username1, username2, pvwinner, vainqueur) => {
-        console.log('[socket]', 'winner');
-        console.log(username1 + username2 + pvwinner + vainqueur)
+    socket.on("winner", async (username1, username2, pvwinner, vainqueur, p1pokename, p2pokename) => {
+        console.log('[socket]', 'winner :');
+        console.log(username1 + username2 + pvwinner + vainqueur + "\n")
 
 
 
-        connection.query(`INSERT INTO \`historique\` VALUES (test(),(SELECT id FROM accounts WHERE username = ?),(SELECT id FROM accounts WHERE username = ?),?,?)`, [username1, username2, pvwinner, vainqueur], function (err, results, fields) {
+        connection.query(`INSERT INTO \`historique\` VALUES (test(),(SELECT id FROM accounts WHERE username = ?),(SELECT id FROM accounts WHERE username = ?),?,?,?,?)`, [username1, username2, pvwinner, vainqueur, p1pokename, p2pokename], function (err, results, fields) {
             // If there is an issue with the query, output the error
             if (err) {
                 return console.log(err);
