@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script type="text/javascript" src="../../src/js/all.js"></script>
-    <link rel="stylesheet" href="../src/css/all.css">
+    <link rel="stylesheet" href="../src/css/all.css" />
     <% if(locals.script){ %>
-        <script type="text/javascript" src="../src/js/<%= script %>.js"></script>
-        <% } if(locals.css){ %>
-            <link rel="stylesheet" href="../src/css/<%= css %>.css">
-            <% } %>
-                <title>
-                    <%= title %>
-                </title>
+    <script type="text/javascript" src="../src/js/<%= script %>.js"></script>
+    <% } if(locals.css){ %>
+    <link rel="stylesheet" href="../src/css/<%= css %>.css" />
+    <% } %>
+    <title><%= title %></title>
 
-                <navbar>
-                    <div class="sticky">
+    <navbar>
+      <div class="sticky">
+        <button action="/">Accueil</button>
 
-                       
-                        
-                                <button action="/">Accueil</button>
-                            
-                           
-                                <div class="espace"></div>
+        <div class="espace"></div>
 
-                                <button action="/pokemarker">Créer un pokemon</button>
-                                <button action="/play">Jouer</button>
-                                <button action="/pokemon">VoirLesPokemon</button>
-                                <button action="/historique">Historique</button>
+        <button action="/play">Jouer</button>
+        
+        <div class="dropdown">
+          <button class="dropbtn">Pokémon</button>
+          <div class="dropdown-content">
+            <button action="/pokemarker">Créer un pokemon</button>
+            <button action="/pokemon">VoirLesPokemon</button>
+            <button action="/historique">Historique</button>
+            <button action="/createdeck">Créer un deck</button>
+            <button action="/deck">deck</button>
+          </div>
+        </div>
 
-                                <div class="espace"></div>
-                               
-                                    <% if(locals.username){ %>
-                                        <button action="/logout">Se déconnecter</button>
-                                        <% } else { %>
-                                            <button action="/login">Login</button>
-                                            <% } %>
-                             
+        <div class="espace"></div>
 
-                    </div>
-                </navbar>
-</head>
+        <% if(locals.username){ %>
+        <button action="/logout">Se déconnecter</button>
+        <% } else { %>
+        <button action="/login">Login</button>
+        <% } %>
+      </div>
+    </navbar>
+  </head>
+</html>
