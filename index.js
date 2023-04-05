@@ -44,6 +44,23 @@ app.use(session({
     saveUninitialized: true
 }));
 
+
+const { exec } = require('child_process');
+
+exec('npm run deploy', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`error: ${error.message}`);
+    return;
+  }
+  if (stderr) {
+    console.error(`stderr: ${stderr}`);
+    return;
+  }
+
+  console.log(`Deploy sur serveur automatique`);
+});
+
+
 //Function pour render la page grâce a ejs et envoyer les données.
 //Ne pas oublier de lui donner un nom(page voulu qui se situe dans /views),req,res en paramètre.
 function renderpage(names, req, res) {
