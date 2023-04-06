@@ -123,13 +123,13 @@ window.onload = function () {
                     console.log("[Fight] " + username + " play !")
                     if (ggqui == "p1") {
                         // console.log("[Fight] " + (Number(p1hp.value) - (Number(p1atk) / Number(p2def))) + " attack !");
-                        p2hp.value = Number(p2hp.value) - ((Number(p1atk) + Number(p1evatk)) / Number(p2def));
+                        p2hp.value = Number(p2hp.value) - ((Number(p1atk) + Number(p1evatk) + Number(bonusatkp1)) / Number(p2def));
 
                         ggqui = "p2";
 
                     } else {
                         // console.log("[Fight] " + (Number(p2hp.value) - (Number(p2atk) / Number(p1def))) + " attack !")
-                        p1hp.value = Number(p1hp.value) - ((Number(p2atk) + Number(p2evatk)) / Number(p1def));
+                        p1hp.value = Number(p1hp.value) - ((Number(p2atk) + Number(p2evatk) + Number(bonusatkp2)) / Number(p1def));
 
                         ggqui = "p1";
                     }
@@ -176,6 +176,33 @@ window.onload = function () {
     });
 
 
+    var bonusatkp1 = 0;
+    var bonusatkp2 = 0;
+
+    socket.on('foisdeux', function (atk) {
+     
+        console.log("RECOIS MULTIPLIER ATK")
+
+
+        bonusatkp2 = atk;
+        document.getElementById("p2atk").innerText = atk;
+
+    })
+
+}
+
+
+
+async function atkplus() {
+
+    console.log("MULTIPLIER ATK")
+
+    bonusatkp1 = 30;
+    document.getElementById("p1atk").innerText = bonusatkp1;
+
+    socket.emit("foisdeuxserv",roominput.value,bonusatkp1);
+
+
 }
 
 
@@ -184,6 +211,7 @@ window.onload = function () {
 
 
 async function quelpokemonatu(usernamefunc) {
+
 
     const loc = location.origin; // Avoir l'adresse du site sans /
     const settings = { // Paramètres de la requête
@@ -232,7 +260,14 @@ async function quelpokemonatu(usernamefunc) {
 }
 
 
+
+
 async function envoiepokemon(valsel) {
+
+
+    document.getElementById("combat").style.display = "block";
+
+
     // var select = document.getElementById('pokemon');
     // var valsel = select.options[select.selectedIndex].value;
     console.log("valse1: " + valsel)

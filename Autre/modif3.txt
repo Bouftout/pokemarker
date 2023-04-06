@@ -1,0 +1,7 @@
+Rajouter le perdant dans la page historique
+Historique de la personne connecter(autre page)
+afficher juste le nom du pokémon.
+
+afficher le nombre de victoire
+rajouter un boutton un combat qui permet d'abord une fois par partie de booster(3 tour)
++ fois 2 stats

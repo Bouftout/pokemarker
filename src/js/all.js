@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async event => {
-    console.log("all")
+    console.log("DOMContentLoaded :\n")
     document.querySelectorAll("button").forEach(function (element) {
-        console.log("click")
+        // console.log("click")
         const action = element.getAttribute("action");
         if (action != "" && action != null && action != undefined) {
             element.addEventListener('click', function (e) {

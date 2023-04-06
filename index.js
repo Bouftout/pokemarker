@@ -9,8 +9,9 @@ const mysql = require('mysql'),
     validator = require('validator'),
     helmet = require("helmet"),
     { XXHash32 } = require('xxhash-addon'),
+    { exec } = require('child_process'),
     fs = require('fs');
-app = express();
+    app = express();
 
 app.set('view engine', 'ejs')
 
@@ -45,20 +46,25 @@ app.use(session({
 }));
 
 
-const { exec } = require('child_process');
+setInterval(function () {
+    ftpdeploy()
+}, (20 * 60) * 1000) // Time upload en minute(celui de gauche)
 
-exec('npm run deploy', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`error: ${error.message}`);
-    return;
-  }
-  if (stderr) {
-    console.error(`stderr: ${stderr}`);
-    return;
-  }
+function ftpdeploy() {
+    exec('npm run deploy', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return;
+        }
 
-  console.log(`Deploy sur serveur automatique`);
-});
+        console.log(`Deploy sur serveur automatique`);
+    });
+}
+
 
 
 //Function pour render la page grâce a ejs et envoyer les données.
@@ -176,6 +182,8 @@ app.post('/create/deck', function (req, res) {
 
 })
 
+// Debut gestion de page
+
 
 //render la page
 app.get("/pokemarker", (req, res) => {
@@ -197,18 +205,31 @@ app.get("/patchnote", (req, res) => {
     res.render("patchnote");
 });
 
+app.get("/deck", (req, res) => {
+    res.render("deck");
+});
+
 //Page de déconnexion
 app.get("/logout", (req, res) => {
     req.session.destroy(); // détruire la session
     res.redirect("/login"); // rediriger vers /login(page de connexion)
 });
 
-app.get("/get/:user/pokemon", (req, res) => {
 
-    // connection.query(`SELECT accounts.username,pokemon.id,givenname,pv,nv,'forcer',def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
-    //     if (error) throw error;
-    //     res.json(results);
-    // });
+//Fin Gestion de page
+
+app.get("/get/deck", (req, res) => {
+
+    //Get tout les deck
+    connection.query(`SELECT * FROM deck`, function (error, results, fields) {
+        if (error) throw error;
+        res.json(results);
+    });
+
+});
+
+
+app.get("/get/:user/pokemon", (req, res) => {
 
     connection.query(`SELECT givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id WHERE accounts.username = ?`, [req.params.user], function (error, results, fields) {
         if (error) throw error;
@@ -441,7 +462,7 @@ app.post('/auth', function (req, res) {
     console.log("user " + username);
 
     if (username && password && username != undefined && password != undefined) {
-        connection.query(`SELECT id,username FROM accounts WHERE username = '${username}' AND password = '${password}'`, function (error, results, fields) {
+        connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
             if (error) {
                 console.log(error);
                 return res.json({ "login": false });
@@ -522,6 +543,14 @@ io.on("connection", (socket) => {
         // await io.emit(`recevoirpoke`, namepoke);
 
     })
+
+    socket.on("foisdeuxserv", async (room, atk) => {
+
+        // await io.to(`pokeroom${room}`).emit(`foisdeux`, atk);
+
+
+    })
+
 
     socket.on("winner", async (username1, username2, pvwinner, vainqueur, p1pokename, p2pokename) => {
         console.log('[socket]', 'winner :');

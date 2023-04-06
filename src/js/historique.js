@@ -141,7 +141,7 @@ async function getpokemon() {
             // createev(log)
         } else {
             alldiv.style.display = "none";
-            err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !";
+            err.innerText = "Il n'y a aucun historique de combat disponible";
             err.style.fontSize = "50px"
             err.style.color = "red";
         }
@@ -256,7 +256,7 @@ function creertable(log) {
     const tr = document.createElement("tr");
 
     //Tout les nom en haut du tableau(dans le head)
-    var allname = ["Pokémon 1","Pokémon 2","pvwinner","vainqueur"];
+    var allname = ["Pokémon 1","Pokémon 2","pvwinner","vainqueur","perdant"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -294,7 +294,7 @@ function creertable(log) {
         tr.appendChild(createtd(log[i].pv));
         tr.appendChild(createtd(log[i].vainqueur));
 
-
+        tr.appendChild(createtd(log[i].perdant));
 
 
         tbody.appendChild(tr);
