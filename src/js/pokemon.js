@@ -221,7 +221,7 @@ function creertable(log) {
     const tr = document.createElement("tr");
 
     //Tout les nom en haut du tableau(dans le head)
-    var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -239,18 +239,13 @@ function creertable(log) {
     for (let i = 0; i < log.length; i++) {
         const tr = document.createElement("tr");
 
+        console.log(log[i])
+
         tr.appendChild(createtd(log[i].id));
         tr.appendChild(createtd(log[i].name));
-        tr.appendChild(createtd(log[i].givenname));
-        tr.appendChild(createtd(log[i].username));
-        tr.appendChild(createtd(log[i].pv));
-        tr.appendChild(createtd(log[i].forcer));
-        tr.appendChild(createtd(log[i].def));
-        tr.appendChild(createtd(log[i].vitesse));
-        tr.appendChild(createtd(log[i].specialatt));
-        tr.appendChild(createtd(log[i].specialdef));
-        tr.appendChild(createtd(log[i].iv));
-        tr.appendChild(createtd(log[i].nature));
+        tr.appendChild(createtd(log[i].nv));
+        tr.appendChild(createtd(log[i].surnom));
+
 
         //Création du bouton de ev
         const td1 = document.createElement("td");

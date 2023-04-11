@@ -67,19 +67,14 @@ function ftpdeploy() {
 
 
 
-//Function pour render la page grâce a ejs et envoyer les données.
-//Ne pas oublier de lui donner un nom(page voulu qui se situe dans /views),req,res en paramètre.
-function renderpage(names, req, res) {
-    if (req.session.loggedin == true) {
-        let usernames = req.session.username;
-
-        res.render(names, {
-            username: usernames
-        });
+//Function pour check si il est connecter ou pas
+function checkAuth(req, res, next) {
+    if (!req.session.loggedin) {
+      res.redirect("/login");
     } else {
-        res.redirect("/login");
+      next();
     }
-}
+  }
 
 //si il a une entrée utulisateur et que on veut la vérifier utuliser cette function
 function validate(string) {
@@ -134,18 +129,15 @@ app.get("/pokemon", (req, res) => {
     }
 });
 
-//Render un deck
-app.get("/createdeck", (req, res) => {
+//Render  la création de deck
+app.get("/createdeck",checkAuth, (req, res) => {
 
-    if (!req.session.loggedin) {
-        res.render("login")
-    } else {
         let usernames = req.session.username;
 
         res.render("createdeck", {
             username: usernames
         });
-    }
+    
 });
 
 //Création d'un deck
@@ -186,13 +178,22 @@ app.post('/create/deck', function (req, res) {
 
 
 //render la page
-app.get("/pokemarker", (req, res) => {
-    renderpage("createpokemon", req, res)
+app.get("/pokemarker",checkAuth, (req, res) => {
+    try {
+        let usernames = req.session.username;
+
+        res.render("createpokemon", {
+            username: usernames
+        });
+    } catch(e){
+        res.send(e)
+    }
+
 });
 
 //Page pour faire combattre 2 pokémon entre eux
-app.get("/play", (req, res) => {
-    renderpage("play", req, res)
+app.get("/play",checkAuth, (req, res) => {
+    res.render("play");
 });
 
 //Page d'historique(affichage de tout les combat pokémon auparavant)
@@ -250,7 +251,7 @@ app.get("/get/pokemon/:givenname", (req, res) => {
 
 app.get("/get/pokemon", (req, res) => {
 
-    connection.query('SELECT accounts.username,pokemon.id,name,pv,`forcer`,def,vitesse,specialatt,specialdef,evvitesse,evspeatt,evspedef,evdef,evatt,evpv,iv,nature,givenname FROM pokemon INNER JOIN accounts ON pokemon.idaccounts = accounts.id', function (error, results, fields) {
+    connection.query("SELECT accounts.username,pokemon.id,nv,name,surnom,original,'date',description FROM pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id;", function (error, results, fields) {
         if (error) throw error;
         res.json(results);
     });
