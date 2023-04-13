@@ -2,15 +2,15 @@ const FtpDeploy = require("ftp-deploy");
 const ftpDeploy = new FtpDeploy();
 
 const config = {
-    user: "pokemarker",
+    user: config.ftp.user,
     // Password optional, prompted if none given
-    password: "totoni13",
-    host: "ftp-pokemarker.alwaysdata.net",
-    port: 21,
+    password: config.ftp.password,
+    host: config.ftp.host,
+    port: config.ftp.port,
     localRoot: __dirname + "/",
     remoteRoot: "/www/",
     // include: ["*", "**/*"],      // this would upload everything except dot files
-    include: ["*.js", "views/*", "src/*", ".*","views/partials/*","src/*/*","index.js","package*"],
+    include: ["*.js", "views/*", "src/*", ".*", "views/partials/*", "src/*/*", "index.js", "package*"],
     // e.g. exclude sourcemaps, and ALL files in node_modules (including dot files)
     exclude: [
         "dist/**/*.map",
