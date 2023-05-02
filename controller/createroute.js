@@ -3,7 +3,85 @@
 
 const express = require("express"),
     control = express.Router(),
+    validator = require('validator'),
     connection = require('../connectdb.js').db;
+
+//Function pour valider(anti-sql)
+function validate(string) {
+    return validator.escape(string);
+}
+function numvalidate(number) {
+    return Number(validator.escape(number));
+}
+
+//Function de random
+function rand(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+
+//Création d'un pokemon dans la bdd.
+app.post('/create/pokemon', function (req, res) {
+
+    if (req.session.loggedin) {
+        console.log("create pokemon")
+        console.log(req.body);
+
+        //Verification(anti-mysql) + ev et iv random entre 0 et 31
+        let nom = validate(req.body.name);
+        surnom = validate(req.body.nomdonner),
+            pv = numvalidate(req.body.pv),
+            forcer = numvalidate(req.body.forcer),
+            defense = numvalidate(req.body.defense),
+            vitesse = numvalidate(req.body.vitesse),
+            specialatt = numvalidate(req.body.specialatt),
+            specialdef = numvalidate(req.body.specialdef),
+            iv = rand(0, 31),
+            nature = rand(0, 24),
+            username = validate(req.body.username),
+            userid = req.session.userid,
+            evvitesse = rand(0, 31),
+            evspeatt = rand(0, 31),
+            evspedef = rand(0, 31),
+            evdef = rand(0, 31),
+            evatt = rand(0, 31),
+            evpv = rand(0, 31),
+            nv = 1;
+
+        //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
+        //(SELECT id FROM accounts WHERE username = "toni")
+
+        if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
+
+            //IL a 16 statistique
+            //Exemple : CALL createpokemon(1,'Pickachu','Gabou',10,10,10,10,10,10,16,2,5,17,17,1,1)
+            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv], function (error, results, fields) {
+                // If there is an issue with the query, output the error
+                if (error) {
+                    console.log(error);
+                    return res.json({ "create": `${error}` })
+                }
+                if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
+
+                    console.log("crée")
+                    // petit message pour prevenir que le compte a bien été créer.
+                    res.json({ "create": true })
+                } else {
+                    res.json({ "create": false })
+                }
+                res.end();
+            });
+
+        } else {
+            res.json({ "create": false })
+        }
+
+    } else {
+        res.json({ "create": "dontconnect" })
+    }
+})
 
 
 //Création d'un deck

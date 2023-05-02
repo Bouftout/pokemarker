@@ -17,18 +17,6 @@ CREATE TABLE accounts(
 
 
 #------------------------------------------------------------
-# Table: statistique
-#------------------------------------------------------------
-
-CREATE TABLE statistique(
-        id       Int  Auto_increment  NOT NULL ,
-        namestat Varchar (50) NOT NULL ,
-        stat     Varchar (50) NOT NULL
-	,CONSTRAINT statistique_PK PRIMARY KEY (id)
-)ENGINE=InnoDB;
-
-
-#------------------------------------------------------------
 # Table: nature
 #------------------------------------------------------------
 
@@ -59,34 +47,36 @@ CREATE TABLE equipe(
 #------------------------------------------------------------
 
 CREATE TABLE pokemon(
-        id             Int  Auto_increment  NOT NULL ,
-        idaccounts     Int NOT NULL ,
-        nv             Int NOT NULL ,
-        name           Varchar (50) NOT NULL ,
-        surnom         Varchar (50) NOT NULL ,
-        original       Bool NOT NULL ,
-        date           Date NOT NULL ,
-        description    Varchar (50) NOT NULL ,
-        id_accounts    Int NOT NULL ,
-        id_statistique Int NOT NULL ,
-        id_nature      Int NOT NULL ,
-        id_equipe      Int NOT NULL
+        id          Int  Auto_increment  NOT NULL ,
+        idaccounts  Int NOT NULL ,
+        nv          Int NOT NULL ,
+        name        Varchar (50) NOT NULL ,
+        surnom      Varchar (50) NOT NULL ,
+        original    Bool NOT NULL ,
+        description Varchar (50) NOT NULL ,
+        id_accounts Int NOT NULL ,
+        id_nature   Int NOT NULL ,
+        id_equipe   Int NOT NULL
 	,CONSTRAINT pokemon_PK PRIMARY KEY (id)
 
 	,CONSTRAINT pokemon_accounts_FK FOREIGN KEY (id_accounts) REFERENCES accounts(id)
-	,CONSTRAINT pokemon_statistique0_FK FOREIGN KEY (id_statistique) REFERENCES statistique(id)
-	,CONSTRAINT pokemon_nature1_FK FOREIGN KEY (id_nature) REFERENCES nature(id)
-	,CONSTRAINT pokemon_equipe2_FK FOREIGN KEY (id_equipe) REFERENCES equipe(id)
+	,CONSTRAINT pokemon_nature0_FK FOREIGN KEY (id_nature) REFERENCES nature(id)
+	,CONSTRAINT pokemon_equipe1_FK FOREIGN KEY (id_equipe) REFERENCES equipe(id)
 )ENGINE=InnoDB;
 
 
 #------------------------------------------------------------
-# Table: date
+# Table: statistique
 #------------------------------------------------------------
 
-CREATE TABLE date(
-        date Int  Auto_increment  NOT NULL
-	,CONSTRAINT date_PK PRIMARY KEY (date)
+CREATE TABLE statistique(
+        id         Int  Auto_increment  NOT NULL ,
+        namestat   Varchar (50) NOT NULL ,
+        stat       Varchar (50) NOT NULL ,
+        id_pokemon Int NOT NULL
+	,CONSTRAINT statistique_PK PRIMARY KEY (id)
+
+	,CONSTRAINT statistique_pokemon_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
 )ENGINE=InnoDB;
 
 
@@ -97,7 +87,7 @@ CREATE TABLE date(
 CREATE TABLE combat(
         id_pokemon        Int NOT NULL ,
         id_pokemon_combat Int NOT NULL ,
-        date              Int NOT NULL ,
+        date              Date NOT NULL ,
         id                Int NOT NULL ,
         idpok1            Int NOT NULL ,
         idpok2            Int NOT NULL ,
@@ -107,6 +97,6 @@ CREATE TABLE combat(
 
 	,CONSTRAINT combat_pokemon_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
 	,CONSTRAINT combat_pokemon0_FK FOREIGN KEY (id_pokemon_combat) REFERENCES pokemon(id)
-	,CONSTRAINT combat_date1_FK FOREIGN KEY (date) REFERENCES date(date)
+
 )ENGINE=InnoDB;
 

@@ -5,3 +5,31 @@ afficher juste le nom du pokémon.
 afficher le nombre de victoire
 rajouter un boutton un combat qui permet d'abord une fois par partie de booster(3 tour)
 + fois 2 stats
+
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`288618_pokemarke`@`%` PROCEDURE `createpokemon` (IN `pnv` INT(50), IN `pname` VARCHAR(50), IN `psurnom` VARCHAR(50), IN `puserid` INT, IN `ppv` INT(50), IN `pforcer` INT(50), IN `pdefense` INT(50), IN `pvitesse` INT(50), IN `pspecialatt` INT(50), IN `pspecialdef` INT(50), IN `pevvitesse` INT(50), IN `pevspeatt` INT(50), IN `pevspedef` INT(50), IN `pevdef` INT(50), IN `pevatt` INT(50), IN `pevpv` INT(50), IN `piv` INT(50))   BEGIN
+DECLARE iter INTEGER DEFAULT 0; 
+
+insert into pokemon (nv,name,surnom,original,description,id_accounts) values (pnv,pname,psurnom,'0','Pas de description',puserid);
+
+insert into statistique (namestat,stat) VALUES ("pv",ppv);
+insert into statistique (namestat,stat) VALUES ("force",pforcer);
+insert into statistique (namestat,stat) VALUES ("defense",pdefense);
+insert into statistique (namestat,stat) VALUES ("vitesse",pvitesse);
+insert into statistique (namestat,stat) VALUES ("specialatt",pspecialatt);
+insert into statistique (namestat,stat) VALUES ("specialdef",pspecialdef);
+insert into statistique (namestat,stat) VALUES ("evvitesse",pevvitesse);
+insert into statistique (namestat,stat) VALUES ("evspeatt",pevspeatt);
+insert into statistique (namestat,stat) VALUES ("evspedef",pevspedef);
+insert into statistique (namestat,stat) VALUES ("evdef",pevdef);
+insert into statistique (namestat,stat) VALUES ("evatt",pevatt);
+insert into statistique (namestat,stat) VALUES ("evpv",pevpv);
+insert into statistique (namestat,stat) VALUES ("iv",piv);
+
+END$$
+
+DELIMITER ;

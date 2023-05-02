@@ -121,7 +121,7 @@ control.post('/auth', function (req, res) {
 
         connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
             if (error) {
-                console.error("\x1b[31m","[Error] checkauthroute.js\n Print du result :\n", error);
+                console.error("\x1b[31m","[Error] checkauthroute.js\n Print du result : " + results + "\nErreur : ", error);
                 return res.json({ "login": false });
             }
             if (results.length > 0) {

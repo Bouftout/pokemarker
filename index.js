@@ -9,6 +9,7 @@ const express = require('express'),
     { exec } = require('child_process'),
     fs = require('fs'),
     db = require('./connectdb.js');
+
 app = express();
 
 app.set('view engine', 'ejs')
@@ -158,72 +159,7 @@ app.get('/disco', function (req, res) {
 
 })
 
-//Function de random
-function rand(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-}
 
-//Création d'un pokemon dans la bdd.
-app.post('/create/pokemon', function (req, res) {
-
-    if (req.session.loggedin) {
-        console.log("create pokemon")
-        console.log(req.body);
-
-        //Verification(anti-mysql) + ev et iv random entre 0 et 31
-        let nom = validate(req.body.name);
-        surnom = validate(req.body.nomdonner),
-            pv = validate(req.body.pv),
-            forcer = validate(req.body.forcer),
-            defense = validate(req.body.defense),
-            vitesse = validate(req.body.vitesse),
-            specialatt = validate(req.body.specialatt),
-            specialdef = validate(req.body.specialdef),
-            iv = rand(0, 31),
-            nature = validate(req.body.nature),
-            idutilisateur = validate(req.body.username);
-        evvitesse = rand(0, 31),
-            evspeatt = rand(0, 31),
-            evspedef = rand(0, 31),
-            evdef = rand(0, 31),
-            evatt = rand(0, 31),
-            nv = 1,
-            evpv = rand(0, 31);
-
-
-        //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
-        //(SELECT id FROM accounts WHERE username = "toni")
-
-        if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
-
-            //insert into pokemon values (getmaxidpoke(),1,'Vektor','15','15','15','15','5','15',2,27,23,26,8,11,4,'fortencss',(SELECT id FROM accounts WHERE username = "toni"),'vektor');
-            connection.query(`insert into pokemon (nv,name,surnom,original,description) values (?,?,?,'0')`, [nv, nom, surnom], function (error, results, fields) {
-                // If there is an issue with the query, output the error
-                if (error) {
-                    console.log(error);
-                    return res.json({ "create": `${error}` })
-                }
-                if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
-
-                    console.log("crée")
-                    // petit message pour prevenir que le compte a bien été créer.
-                    res.json({ "create": true })
-                } else {
-                    res.json({ "create": false })
-                }
-                res.end();
-            });
-
-        } else {
-            res.json({ "create": false })
-        }
-
-    } else {
-        res.json({ "create": "dontconnect" })
-    }
-})
 
 
 

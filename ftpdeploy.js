@@ -1,7 +1,8 @@
-const FtpDeploy = require("ftp-deploy");
-const ftpDeploy = new FtpDeploy();
+const FtpDeploy = require("ftp-deploy"),
+    config = require("./config/config.json"),
+    ftpDeploy = new FtpDeploy();
 
-const config = {
+const configs = {
     user: config.ftp.user,
     // Password optional, prompted if none given
     password: config.ftp.password,
@@ -10,7 +11,7 @@ const config = {
     localRoot: __dirname + "/",
     remoteRoot: "/www/",
     // include: ["*", "**/*"],      // this would upload everything except dot files
-    include: ["*.js", "views/*", "src/*", ".*", "views/partials/*", "src/*/*", "index.js", "package*"],
+    include: ["*.js", "views/*", "src/*", ".*", "views/partials/*", "src/*/*", "index.js", "package*","*.json"],
     // e.g. exclude sourcemaps, and ALL files in node_modules (including dot files)
     exclude: [
         "dist/**/*.map",
@@ -28,6 +29,6 @@ const config = {
 };
 
 ftpDeploy
-    .deploy(config)
+    .deploy(configs)
     .then((res) => console.log("finished:", res))
     .catch((err) => console.log(err));
