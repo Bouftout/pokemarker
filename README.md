@@ -1,5 +1,4 @@
 ![UpOrDown](https://img.shields.io/website-up-down-green-red/http/pokemarker.alwaysdata.net/)
-![Watcher](https://img.shields.io/github/watchers/Bouftout/pokemarker?style=social)
 <h1 align="center">Pokemarker</h1>
 
 <p align="center">Project to create pokemon and fight other pokemon in a room</p>
