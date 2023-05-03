@@ -8,7 +8,7 @@ const express = require('express'),
     helmet = require("helmet"),
     { exec } = require('child_process'),
     fs = require('fs'),
-    db = require('./connectdb.js');
+    connection = require('./connectdb').db;
 
 app = express();
 
@@ -42,7 +42,7 @@ app.use(session({
 
 setInterval(function () {
     ftpdeploy()
-}, (20 * 60) * 1000) // Time upload en minute(celui de gauche)
+}, ((10 * 60) * 1000)) // Time upload en minute(celui de gauche) ((20 * 60) * 1000)
 
 function ftpdeploy() {
     exec('npm run deploy', (error, stdout, stderr) => {
