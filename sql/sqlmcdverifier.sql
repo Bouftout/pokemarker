@@ -17,6 +17,18 @@ CREATE TABLE accounts(
 
 
 #------------------------------------------------------------
+# Table: statistique
+#------------------------------------------------------------
+
+CREATE TABLE statistique(
+        id       Int  Auto_increment  NOT NULL ,
+        namestat Varchar (50) NOT NULL ,
+        stat     Varchar (50) NOT NULL
+	,CONSTRAINT statistique_PK PRIMARY KEY (id)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
 # Table: nature
 #------------------------------------------------------------
 
@@ -48,7 +60,6 @@ CREATE TABLE equipe(
 
 CREATE TABLE pokemon(
         id          Int  Auto_increment  NOT NULL ,
-        idaccounts  Int NOT NULL ,
         nv          Int NOT NULL ,
         name        Varchar (50) NOT NULL ,
         surnom      Varchar (50) NOT NULL ,
@@ -66,17 +77,26 @@ CREATE TABLE pokemon(
 
 
 #------------------------------------------------------------
-# Table: statistique
+# Table: date
 #------------------------------------------------------------
 
-CREATE TABLE statistique(
-        id         Int  Auto_increment  NOT NULL ,
-        namestat   Varchar (50) NOT NULL ,
-        stat       Varchar (50) NOT NULL ,
-        id_pokemon Int NOT NULL
-	,CONSTRAINT statistique_PK PRIMARY KEY (id)
+CREATE TABLE date(
+        date Date NOT NULL
+	,CONSTRAINT date_PK PRIMARY KEY (date)
+)ENGINE=InnoDB;
 
-	,CONSTRAINT statistique_pokemon_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
+
+#------------------------------------------------------------
+# Table: possede
+#------------------------------------------------------------
+
+CREATE TABLE possede(
+        id         Int NOT NULL ,
+        id_pokemon Int NOT NULL
+	,CONSTRAINT possede_PK PRIMARY KEY (id,id_pokemon)
+
+	,CONSTRAINT possede_statistique_FK FOREIGN KEY (id) REFERENCES statistique(id)
+	,CONSTRAINT possede_pokemon0_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
 )ENGINE=InnoDB;
 
 
@@ -97,6 +117,6 @@ CREATE TABLE combat(
 
 	,CONSTRAINT combat_pokemon_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
 	,CONSTRAINT combat_pokemon0_FK FOREIGN KEY (id_pokemon_combat) REFERENCES pokemon(id)
-
+	,CONSTRAINT combat_date1_FK FOREIGN KEY (date) REFERENCES date(date)
 )ENGINE=InnoDB;
 

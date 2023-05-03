@@ -55,7 +55,7 @@ function ftpdeploy() {
             return;
         }
 
-        console.log(`Deploy sur serveur automatique`);
+        console.log("\x1b[33m",`Deploy sur serveur automatique`);
     });
 }
 

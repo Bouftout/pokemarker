@@ -39,7 +39,7 @@ app.post('/create/pokemon', function (req, res) {
             specialatt = numvalidate(req.body.specialatt),
             specialdef = numvalidate(req.body.specialdef),
             iv = rand(0, 31),
-            nature = rand(0, 24),
+            nature = rand(1, 24),
             username = validate(req.body.username),
             userid = req.session.userid,
             evvitesse = rand(0, 31),
@@ -85,7 +85,7 @@ app.post('/create/pokemon', function (req, res) {
 
 
 //Création d'un deck
-control.post('/create/equipe', function (req, res) {
+control.post('/deck', function (req, res) {
 
 
     console.log(req.body.length);

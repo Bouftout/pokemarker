@@ -156,6 +156,10 @@ async function getpokemon() {
 
 
     } else {
+        if(response.status == 503) {
+            alert("Pokémon en maintenance !")
+            window.history.go(-1)
+        }
         // Handle errors
         console.log(response.status, response.statusText);
     }

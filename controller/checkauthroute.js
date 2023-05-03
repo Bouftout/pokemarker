@@ -88,8 +88,8 @@ control.post('/create', function (req, res) {
                 return res.json({ "create": `${err}` })
             }
             if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
-
-                req.session.userid = results[0].id;
+                console.log("[checkauth] create accounts",results)
+                req.session.userid = results.insertId;
                 req.session.loggedin = true;
                 req.session.username = username;
 
