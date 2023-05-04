@@ -22,6 +22,7 @@
     "ftp-deploy": "^2.4.3",
     "helmet": "^6.0.0",
     "i": "^0.3.7",
+    "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "notiflix": "^3.2.5",
     "npm": "^9.1.2",

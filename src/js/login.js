@@ -24,23 +24,21 @@ async function formenvoie() {
     };
     const response = await fetch(`${loc}/auth`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
-        const log = await response.json();
-        if (log.login === true) {
-         
-                window.location.href = `${loc}/pokemon`;
-            
-        } else if (log.login === false) {
-            err.innerText = "Mauvais identifiant ou mot de passe";
-            err.style.color = "red";
-        } else {
-            err.innerText = "Erreur inconnue";
-            err.style.color = "red";
-            console.log("Erreur");
-        }
 
- 
+        window.location.href = `${loc}/pokemon`;
 
-    } else {
+
+    } else if (response.status == 503) {
+        err.innerText = "Erreur de la requête sql";
+        err.style.color = "red";
+    } else if (response.status == 404) {
+        err.innerText = "Erreur d'auth";
+        err.style.color = "red";
+    } else if (response.status == 500) {
+        err.innerText = "Erreur interne,token invalide";
+        err.style.color = "red";
+    }
+    else {
         // Handle errors
         console.log(response.status, response.statusText);
     }

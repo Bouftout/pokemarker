@@ -4,16 +4,46 @@ const express = require("express"),
     control = express.Router(),
     { XXHash32 } = require('xxhash-addon'),
     validator = require('validator'),
+    config = require('../config/config.json'),
+    jwt = require('jsonwebtoken'),
     connection = require('../connectdb').db; //Ficher de connection bdd
 
 //Function pour check si il est connecter ou pas
 function checkAuth(req, res, next) {
-    if (!req.session.loggedin) {
-        res.redirect("/login");
-    } else {
-        next();
+
+    try {
+
+        const token = (req.signedCookies.token).split(";");
+
+        console.log(`[CheckAuth] Token: ${token[0]} ; ${token[1]}`)
+
+        const verified = jwt.verify(token[0], config.jwt);
+        if (verified) {
+
+            // petit message pour prevenir que le compte a bien été login.
+            res.status(200).json({ "login": true })
+
+            return next();
+        } else {
+            // Access Denied
+            // res.status(500).send(error);
+            return res.redirect("/login");
+        }
+
+    } catch (error) {
+        // Access Denied
+        // res.status(404).send(error);
+        return res.redirect("/login");
     }
+
 }
+
+//Render  la création de deck
+control.get("/co", checkAuth, (req, res) => {
+
+res.send("Bien connecter !")
+
+});
 
 //Render  la création de deck
 control.get("/createdeck", checkAuth, (req, res) => {
@@ -63,6 +93,12 @@ function hash3(passwords) {
 
 }
 
+const optionscook = {
+    maxAge: 30 * 86400000, // would expire after 30 day
+    signed: true // Indicates if the cookie should be signed
+}
+
+
 // Création de compte :
 control.post('/create', function (req, res) {
     console.log(req.body)
@@ -73,6 +109,8 @@ control.post('/create', function (req, res) {
     let email = validate(req.body.email);
     let username = validate(req.body.username);
     let password = hash3(req.body.password); //hashage du mot de passe
+
+
 
 
     // Vérification de l'existence du compte
@@ -88,10 +126,17 @@ control.post('/create', function (req, res) {
                 return res.json({ "create": `${err}` })
             }
             if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
-                console.log("[checkauth] create accounts",results)
-                req.session.userid = results.insertId;
-                req.session.loggedin = true;
-                req.session.username = username;
+                console.log("[checkauth] create accounts", results)
+
+                //Token gestion :
+                let passjwt = jwt.sign({ data: password }, config.jwt, { expiresIn: '30d' });
+
+                passjwt += `;${results.insertId};${username}`;
+
+                // Set cookie
+                res.cookie('token', passjwt, optionscook);
+                console.log("PASSJWT: " + passjwt);
+
 
 
                 // petit message pour prevenir que le compte a bien été créer.
@@ -103,7 +148,6 @@ control.post('/create', function (req, res) {
         });
 
 
-
     } else {
         res.json({ "create": false })
     }
@@ -112,37 +156,53 @@ control.post('/create', function (req, res) {
 
 control.post('/auth', function (req, res) {
 
-    let password = hash3(req.body.password);
-    let username = validate(req.body.username);
+    // let password = hash3(req.body.password);
+    // let username = validate(req.body.username);
 
-    console.log("\x1b[90m", `L'utulisateur ${username} avec le mt ${password}`);
+    // console.log("\x1b[90m" + `L'utulisateur ${username} avec le mt ${password}`);
 
-    if (username && password && username != undefined && password != undefined) {
+    // if (username && password && username != undefined && password != undefined) {
 
-        connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
-            if (error) {
-                console.error("\x1b[31m","[Error] checkauthroute.js\n Print du result : " + results + "\nErreur : ", error);
-                return res.json({ "login": false });
-            }
-            if (results.length > 0) {
-                req.session.loggedin = true;
-                req.session.username = username;
-                req.session.userid = results[0].id; //enregistrement de l'id de l'utulisateur dans un session
+    //     connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
+    //         if (error) {
+    //             console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result : " + results + "\nErreur : ", error);
+    //             return res.json({ "login": false });
+    //         }
+    //         if (results.length > 0) {
 
-                // petit message pour prevenir que le compte a bien été login.
-                res.json({ "login": true })
+    try {
 
-                return res.end();
-            } else {
-                console.error("\x1b[31m","[Error] checkauthroute.js\n Print du result :\n", results);
-                return res.json({ "login": false });
-            }
+        const token = (req.signedCookies.token).split(";");
 
-        });
-    } else {
-        res.json({ "login": false })
-        res.end();
+        console.log(`[Auth] Token: ${token[0]} ; ${token[1]}`)
+
+        const verified = jwt.verify(token[0], config.jwt);
+        if (verified) {
+
+            // petit message pour prevenir que le compte a bien été login.
+            res.status(200).json({ "login": true })
+
+            return res.end();
+        } else {
+            // Access Denied
+            return res.status(500).send(error);
+        }
+
+    } catch (error) {
+        // Access Denied
+        return res.status(404).send(error);
     }
+
+    //         } else {
+    //             console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result :\n", results);
+    //             return res.status(503).send(results);
+    //         }
+
+    //     });
+    // } else {
+    //     res.json({ "login": false })
+    //     res.end();
+    // }
 
 
 

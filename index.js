@@ -7,8 +7,8 @@ const express = require('express'),
     ip = (process.env.IP || process.env.ALWAYSDATA_HTTPD_IP),
     helmet = require("helmet"),
     { exec } = require('child_process'),
-    fs = require('fs'),
-    connection = require('./connectdb').db;
+    config = require("./config/config.json")
+    fs = require('fs');
 
 app = express();
 
@@ -20,18 +20,19 @@ server = app.listen(port, ip, err => {
     err ?
         console.log("Error in server setup") :
         console.log(`Worker ${process.pid} started\nServeur lancer sur: http://localhost:${port}`);
+
 });
 
 
 
-app.use(cookieParser()); //Pour pouvoir utiliser les cookie.
+app.use(cookieParser(config.cookiesecret)); //Pour pouvoir utiliser les cookie.
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true }));
 app.disable('x-powered-by'); //Désactive le header x-powered-by
 app.use(session({
     cookieName: 'session',
     secret: 'eg[isfd-8yF9-7wwzd2315df{}+Ijsli;;to8',
-    expires: new Date(Date.now() + (30 * 86400 * 1000)),
+    expires: 30 * 86400000,
     httpOnly: true,
     secure: true,
     ephemeral: true,
