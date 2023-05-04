@@ -10,38 +10,16 @@ const express = require("express"),
 
 //Function pour check si il est connecter ou pas
 function checkAuth(req, res, next) {
-
-    try {
-
-        const token = (req.signedCookies.token).split(";");
-
-        console.log(`[CheckAuth] Token: ${token[0]} ; ${token[1]}`)
-
-        const verified = jwt.verify(token[0], config.jwt);
-        if (verified) {
-
-            // petit message pour prevenir que le compte a bien été login.
-            res.status(200).json({ "login": true })
-
-            return next();
-        } else {
-            // Access Denied
-            // res.status(500).send(error);
-            return res.redirect("/login");
-        }
-
-    } catch (error) {
-        // Access Denied
-        // res.status(404).send(error);
-        return res.redirect("/login");
+    if (!req.session.loggedin) {
+        res.redirect("/login");
+    } else {
+        next();
     }
-
 }
 
-//Render  la création de deck
 control.get("/co", checkAuth, (req, res) => {
 
-res.send("Bien connecter !")
+res.send("Bien connecté !")
 
 });
 
@@ -93,12 +71,6 @@ function hash3(passwords) {
 
 }
 
-const optionscook = {
-    maxAge: 30 * 86400000, // would expire after 30 day
-    signed: true // Indicates if the cookie should be signed
-}
-
-
 // Création de compte :
 control.post('/create', function (req, res) {
     console.log(req.body)
@@ -129,15 +101,20 @@ control.post('/create', function (req, res) {
                 console.log("[checkauth] create accounts", results)
 
                 //Token gestion :
-                let passjwt = jwt.sign({ data: password }, config.jwt, { expiresIn: '30d' });
+                const passjwt = jwt.sign({ data: password }, config.jwt, { expiresIn: '30d' });
 
-                passjwt += `;${results.insertId};${username}`;
-
+                let options = {
+                    maxAge: 30 * 86400000, // would expire after 30 day
+                }
+            
                 // Set cookie
-                res.cookie('token', passjwt, optionscook);
-                console.log("PASSJWT: " + passjwt);
+                res.cookie('token', passjwt, options);
+                console.log("PASSJWT: "+passjwt);
 
-
+                //Dans la session on enregistre l'id de l'utulisateur,son username et si il est log.
+                req.session.userid = results.insertId;
+                req.session.loggedin = true;
+                req.session.username = username;
 
                 // petit message pour prevenir que le compte a bien été créer.
                 res.json({ "create": true })
@@ -170,28 +147,31 @@ control.post('/auth', function (req, res) {
     //         }
     //         if (results.length > 0) {
 
-    try {
+                try {
 
-        const token = (req.signedCookies.token).split(";");
+                    const token = req.cookies.token;
 
-        console.log(`[Auth] Token: ${token[0]} ; ${token[1]}`)
+                    console.log(`[Auth] Token: ${token}`)
+              
+                    const verified = jwt.verify(token, config.jwt);
+                    if(verified){
+                        req.session.loggedin = true;
+                        req.session.username = username;
+                        req.session.userid = results[0].id; //enregistrement de l'id de l'utulisateur dans un session
+        
+                        // petit message pour prevenir que le compte a bien été login.
+                        res.status(200).json({ "login": true })
+        
+                        return res.end();
+                    }else{
+                        // Access Denied
+                        return res.status(500).send(error);
+                    }
 
-        const verified = jwt.verify(token[0], config.jwt);
-        if (verified) {
-
-            // petit message pour prevenir que le compte a bien été login.
-            res.status(200).json({ "login": true })
-
-            return res.end();
-        } else {
-            // Access Denied
-            return res.status(500).send(error);
-        }
-
-    } catch (error) {
-        // Access Denied
-        return res.status(404).send(error);
-    }
+                } catch (error) {
+                    // Access Denied
+                    return res.status(404).send(error);
+                }
 
     //         } else {
     //             console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result :\n", results);
