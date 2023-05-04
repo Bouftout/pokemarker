@@ -24,7 +24,6 @@ async function formenvoie() {
     };
     const response = await fetch(`${loc}/auth`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
-
         window.location.href = `${loc}/pokemon`;
 
 
@@ -32,7 +31,7 @@ async function formenvoie() {
         err.innerText = "Erreur de la requête sql";
         err.style.color = "red";
     } else if (response.status == 404) {
-        err.innerText = "Erreur d'auth";
+        err.innerText = "Erreur d'auth" ;
         err.style.color = "red";
     } else if (response.status == 500) {
         err.innerText = "Erreur interne,token invalide";

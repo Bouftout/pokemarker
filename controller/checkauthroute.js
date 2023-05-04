@@ -10,7 +10,12 @@ const express = require("express"),
 
 //Function pour check si il est connecter ou pas
 function checkAuth(req, res, next) {
-    if (!req.session.loggedin) {
+    const token = req.cookies.token;
+
+    console.log(`[Auth] Token: ${token}`)
+
+    const verified = jwt.verify(token, config.jwt);
+    if(!verified){
         res.redirect("/login");
     } else {
         next();
@@ -133,19 +138,19 @@ control.post('/create', function (req, res) {
 
 control.post('/auth', function (req, res) {
 
-    // let password = hash3(req.body.password);
-    // let username = validate(req.body.username);
+    let password = hash3(req.body.password);
+    let username = validate(req.body.username);
 
-    // console.log("\x1b[90m" + `L'utulisateur ${username} avec le mt ${password}`);
+    console.log("\x1b[90m" + `L'utulisateur ${username} avec le mt ${password}`);
 
-    // if (username && password && username != undefined && password != undefined) {
+    if (username && password && username != undefined && password != undefined) {
 
-    //     connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
-    //         if (error) {
-    //             console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result : " + results + "\nErreur : ", error);
-    //             return res.json({ "login": false });
-    //         }
-    //         if (results.length > 0) {
+        connection.query(`SELECT id,username FROM accounts WHERE username = ? AND password = ?`, [username, password], function (error, results, fields) {
+            if (error) {
+                console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result : " + results + "\nErreur : ", error);
+                return res.json({ "login": false });
+            }
+            if (results.length > 0) {
 
                 try {
 
@@ -155,7 +160,6 @@ control.post('/auth', function (req, res) {
               
                     const verified = jwt.verify(token, config.jwt);
                     if(verified){
-                        req.session.loggedin = true;
                         req.session.username = username;
                         req.session.userid = results[0].id; //enregistrement de l'id de l'utulisateur dans un session
         
@@ -169,20 +173,21 @@ control.post('/auth', function (req, res) {
                     }
 
                 } catch (error) {
+                    console.log(error)
                     // Access Denied
                     return res.status(404).send(error);
                 }
 
-    //         } else {
-    //             console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result :\n", results);
-    //             return res.status(503).send(results);
-    //         }
+            } else {
+                console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result :\n", results);
+                return res.status(503).send(results);
+            }
 
-    //     });
-    // } else {
-    //     res.json({ "login": false })
-    //     res.end();
-    // }
+        });
+    } else {
+        res.json({ "login": false })
+        res.end();
+    }
 
 
 
