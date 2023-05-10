@@ -10,12 +10,8 @@ const express = require("express"),
 
 //Function pour check si il est connecter ou pas
 function checkAuth(req, res, next) {
-    const token = req.cookies.token;
 
-    console.log(`[Auth] Token: ${token}`)
-
-    const verified = jwt.verify(token, config.jwt);
-    if(!verified){
+    if (!verifjwt(req)) {
         res.redirect("/login");
     } else {
         next();
@@ -24,7 +20,7 @@ function checkAuth(req, res, next) {
 
 control.get("/co", checkAuth, (req, res) => {
 
-res.send("Bien connecté !")
+    res.send("Bien connecté !")
 
 });
 
@@ -41,7 +37,11 @@ control.get("/createdeck", checkAuth, (req, res) => {
 
 //Page pour faire combattre 2 pokémon entre eux
 control.get("/play", checkAuth, (req, res) => {
-    res.render("play");
+
+    res.render("play", {
+        username: req.session.username
+    });
+
 });
 
 //render la page de création de pokémon
@@ -57,6 +57,8 @@ control.get("/pokemarker", checkAuth, (req, res) => {
     }
 
 });
+
+
 
 // Le Login et l'inscription :
 
@@ -75,6 +77,54 @@ function hash3(passwords) {
     return validate(newpassword);
 
 }
+
+// La function a besoin du req et res de express + de l'username et de l'id qui s'occupera de les mettre en session
+function createjwt(req, res, username, userid) {
+
+
+    //Token gestion :
+    const passjwt = jwt.sign({ username: username, id: userid }, config.jwt, { expiresIn: '30d' });
+
+    let options = {
+        maxAge: 30 * 86400000, // expire après 30 jour
+    }
+
+    // Set cookie
+    res.cookie('token', passjwt, options);
+
+    console.log("[Jwt] create jwt : " + passjwt);
+
+    req.session.loggedin = true;
+    req.session.userid = userid;
+    req.session.username = username;
+}
+
+function verifjwt(req) {
+    let verify;
+    try {
+        const token = req.cookies.token;
+
+        if (!token) {
+            console.warn(`[Auth] Token *vide*: ${token}`)
+            verify = false;
+        } else {
+            console.log(`[Auth] Token: ${token}`)
+            verify = jwt.verify(token, config.jwt);
+            req.session.loggedin = true;
+            console.log("data verify", verify)
+            req.session.userid = verify.id;
+            req.session.username = verify.username;
+            console.log("[session]", req.session)
+        }
+    } catch (e) {
+        console.warn(e);
+        verify = false
+    }
+
+    return verify;
+}
+
+
 
 // Création de compte :
 control.post('/create', function (req, res) {
@@ -105,16 +155,7 @@ control.post('/create', function (req, res) {
             if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
                 console.log("[checkauth] create accounts", results)
 
-                //Token gestion :
-                const passjwt = jwt.sign({ data: password }, config.jwt, { expiresIn: '30d' });
-
-                let options = {
-                    maxAge: 30 * 86400000, // would expire after 30 day
-                }
-            
-                // Set cookie
-                res.cookie('token', passjwt, options);
-                console.log("PASSJWT: "+passjwt);
+                createjwt();
 
                 //Dans la session on enregistre l'id de l'utulisateur,son username et si il est log.
                 req.session.userid = results.insertId;
@@ -136,6 +177,50 @@ control.post('/create', function (req, res) {
 });
 
 
+//Automatic login
+control.post('/jwt', function (req, res) {
+
+    let password = hash3(req.body.password);
+    let username = validate(req.body.username);
+    console.log("\x1b[90m" + `L'utulisateur ${username} avec le mt ${password}`);
+
+    if (username && password && username != undefined && password != undefined) {
+
+        try {
+            const verify = verifjwt(req);
+            if (verify) {
+
+                req.session.userid = results.insertId;
+                req.session.loggedin = true;
+                req.session.username = username;
+
+                // petit message pour prevenir que le compte a bien été login.
+                res.status(200).json({ "login": true })
+
+                return res.end();
+            } else {
+                // Access Denied
+                return res.status(500).send(error);
+            }
+
+        } catch (error) {
+            console.log(error)
+            // Access Denied
+            return res.status(404).send(error);
+        }
+
+    } else {
+
+        res.json({ "login": false })
+        res.end();
+
+    }
+
+})
+
+
+
+
 control.post('/auth', function (req, res) {
 
     let password = hash3(req.body.password);
@@ -152,31 +237,10 @@ control.post('/auth', function (req, res) {
             }
             if (results.length > 0) {
 
-                try {
+                createjwt(req, res, username, results[0].id); // Création du jwt
 
-                    const token = req.cookies.token;
+                res.redirect("/pokemon"); // Redirection vers /pokemon
 
-                    console.log(`[Auth] Token: ${token}`)
-              
-                    const verified = jwt.verify(token, config.jwt);
-                    if(verified){
-                        req.session.username = username;
-                        req.session.userid = results[0].id; //enregistrement de l'id de l'utulisateur dans un session
-        
-                        // petit message pour prevenir que le compte a bien été login.
-                        res.status(200).json({ "login": true })
-        
-                        return res.end();
-                    }else{
-                        // Access Denied
-                        return res.status(500).send(error);
-                    }
-
-                } catch (error) {
-                    console.log(error)
-                    // Access Denied
-                    return res.status(404).send(error);
-                }
 
             } else {
                 console.error("\x1b[31m", "[Error] checkauthroute.js\n Print du result :\n", results);

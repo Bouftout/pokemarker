@@ -1,4 +1,5 @@
 // route.js - route module.
+// Ici il a des /get/ a tout les control !
 
 const express = require("express"),
     connection = require('../connectdb').db,
@@ -36,15 +37,17 @@ control.get("/pokemon/:givenname", (req, res) => {
 
 });
 
+// /get
 control.get("/pokemon", (req, res) => {
 
-    console.log("[getroute] Get pokemon route");
+    console.log("[SQL] Get pokemon route");
 
-    connection.query("SELECT accounts.username,pokemon.id,surnom,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id GROUP by pokemon.id;", function (error, results, fields) {
+    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id GROUP by pokemon.id;", function (error, results, fields) {
         
         var jsonres = results;
+
         if (error){
-            console.warn(error)
+            console.warn(error);
             res.status(503).send(error);
         } 
 

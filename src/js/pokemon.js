@@ -35,7 +35,7 @@ window.onload = function () {
 
     setInterval(function () { // Toute les 10s je relancer la function pour alimenter le tableau
         getpokemon()
-    }, 10000);
+    }, 30000);
 
 
     //Pour afficher la popup de tout les ev(stat caché) des pokemon
@@ -188,16 +188,18 @@ function createev(log) {
     tbody.setAttribute("id", "tbody");
     table.appendChild(tbody);
 
-    for (let i = 0; i < log.length; i++) {
+    for (let i = 0; i < log.length / 2; i++) {
         const tr = document.createElement("tr");
 
+        console.log("createev", log[i+1])
+
         tr.appendChild(createtd(log[i].id));
-        tr.appendChild(createtd(log[i].evvitesse));
-        tr.appendChild(createtd(log[i].evspeatt));
-        tr.appendChild(createtd(log[i].evspedef));
-        tr.appendChild(createtd(log[i].evdef));
-        tr.appendChild(createtd(log[i].evatt));
-        tr.appendChild(createtd(log[i].evpv));
+        tr.appendChild(createtd(log[i+1][5].valeur));
+        tr.appendChild(createtd(log[i+1][6].valeur));
+        tr.appendChild(createtd(log[i+1][7].valeur));
+        tr.appendChild(createtd(log[i+1][8].valeur));
+        tr.appendChild(createtd(log[i+1][9].valeur));
+        tr.appendChild(createtd(log[i+1][10].valeur));
         //<button id="cev">Close</button>
         tbody.appendChild(tr);
     }
@@ -240,16 +242,24 @@ function creertable(log) {
     table.appendChild(tbody);
 
     //On fait une boucle de l'arguement pour remplir le tableau
-    for (let i = 0; i < log.length; i++) {
+    for (let i = 0; i < log.length / 2; i++) {
         const tr = document.createElement("tr");
 
-        console.log(log[i])
 
         tr.appendChild(createtd(log[i].id));
         tr.appendChild(createtd(log[i].name));
         tr.appendChild(createtd(log[i].nv));
         tr.appendChild(createtd(log[i].surnom));
+        tr.appendChild(createtd(log[i].name));
 
+        tr.appendChild(createtd(log[i+1][12].valeur));
+        tr.appendChild(createtd(log[i+1][0].valeur));
+        tr.appendChild(createtd(log[i+1][1].valeur));
+        tr.appendChild(createtd(log[i+1][2].valeur));
+        tr.appendChild(createtd(log[i+1][3].valeur));
+        tr.appendChild(createtd(log[i+1][4].valeur));
+        tr.appendChild(createtd(log[i+1][11].valeur));
+        tr.appendChild(createtd(log[i].natur));
 
         //Création du bouton de ev
         const td1 = document.createElement("td");
