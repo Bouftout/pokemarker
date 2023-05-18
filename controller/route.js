@@ -28,7 +28,7 @@ control.get("/create", (req, res) => {
 
 //Render la page pokémon,si on est connecté donner aussi l'username de l'utulisateur enregistrer dans la session
 control.get("/pokemon", (req, res) => {
-  console.log("[Pokemon] Session : ",req.session)
+  console.log("[Pokemon] Session : ", req.session)
   if (!req.session.loggedin) {
     res.render("pokemon")
   } else {
@@ -60,9 +60,18 @@ app.get("/deck", (req, res) => {
 
 //Page de déconnexion
 app.get("/logout", (req, res) => {
-  req.cookies.token = undefined;
-  req.session.destroy(); // détruire la session
-  res.redirect("/login"); // rediriger vers /login(page de connexion)
+
+  if (req.session.loggedin) {
+    req.cookies.token = undefined; // Détruire le token
+    req.session.destroy(); // Détruire la session
+
+    res.redirect("/login"); // rediriger vers /login(page de connexion)
+  } else {
+    res.redirect("/")
+  }
+
+
+
 });
 
 module.exports = control;

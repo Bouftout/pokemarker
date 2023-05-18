@@ -148,23 +148,6 @@ app.get("/get/historique/pokemon/:id/:acc", (req, res) => {
 });
 
 
-//Page de Déconnexion de son compte
-app.get('/disco', function (req, res) {
-
-    if (req.session.loggedin) {
-        req.session.destroy();
-        res.redirect("/")
-    } else {
-        res.redirect("/")
-    }
-
-})
-
-
-
-
-
-
 // Pokemon socket.io
 const io = require("socket.io")(server);
 
