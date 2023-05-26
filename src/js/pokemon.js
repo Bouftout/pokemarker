@@ -82,13 +82,18 @@ function searchname(filter, autretable) {
             for (i = 0; i < tr.length; i++) {
                 td = tr[i].getElementsByTagName("td")[idelement];
                 if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    console.log("txtvalue")
-                    if (txtValue == filter) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
+            
+
+                        txtValue = td.textContent || td.innerText;
+                        console.log("txtvalue")
+                        if (txtValue === filter) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+    
+
+                    
 
 
                 }
@@ -143,10 +148,10 @@ async function getpokemon() {
             alldiv.style.display = "block";
             err.style.fontSize = "20px"
             creertable(log)
-            if(!popupactive){
+            if (!popupactive) {
                 createev(log)
             }
-            
+
         } else {
             alldiv.style.display = "none";
             err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !";
@@ -156,7 +161,7 @@ async function getpokemon() {
 
 
     } else {
-        if(response.status == 503) {
+        if (response.status == 503) {
             alert("Pokémon en maintenance !")
             window.history.go(-1)
         }
@@ -191,17 +196,22 @@ function createev(log) {
     for (let i = 0; i < log.length / 2; i++) {
         const tr = document.createElement("tr");
 
-        console.log("createev", log[i+1])
+        console.log("createev", log[i + 1])
 
-        tr.appendChild(createtd(log[i].id));
-        tr.appendChild(createtd(log[i+1][5].valeur));
-        tr.appendChild(createtd(log[i+1][6].valeur));
-        tr.appendChild(createtd(log[i+1][7].valeur));
-        tr.appendChild(createtd(log[i+1][8].valeur));
-        tr.appendChild(createtd(log[i+1][9].valeur));
-        tr.appendChild(createtd(log[i+1][10].valeur));
-        //<button id="cev">Close</button>
-        tbody.appendChild(tr);
+        try {
+            tr.appendChild(createtd(log[i].id));
+            tr.appendChild(createtd(log[i + 1][5].valeur));
+            tr.appendChild(createtd(log[i + 1][6].valeur));
+            tr.appendChild(createtd(log[i + 1][7].valeur));
+            tr.appendChild(createtd(log[i + 1][8].valeur));
+            tr.appendChild(createtd(log[i + 1][9].valeur));
+            tr.appendChild(createtd(log[i + 1][10].valeur));
+            //<button id="cev">Close</button>
+            tbody.appendChild(tr);
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 
     //Button close
@@ -227,7 +237,7 @@ function creertable(log) {
     const tr = document.createElement("tr");
 
     //Tout les nom en haut du tableau(dans le head)
-    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Description" ,"Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -246,20 +256,28 @@ function creertable(log) {
         const tr = document.createElement("tr");
 
 
-        tr.appendChild(createtd(log[i].id));
-        tr.appendChild(createtd(log[i].name));
-        tr.appendChild(createtd(log[i].nv));
-        tr.appendChild(createtd(log[i].surnom));
-        tr.appendChild(createtd(log[i].name));
 
-        tr.appendChild(createtd(log[i+1][12].valeur));
-        tr.appendChild(createtd(log[i+1][0].valeur));
-        tr.appendChild(createtd(log[i+1][1].valeur));
-        tr.appendChild(createtd(log[i+1][2].valeur));
-        tr.appendChild(createtd(log[i+1][3].valeur));
-        tr.appendChild(createtd(log[i+1][4].valeur));
-        tr.appendChild(createtd(log[i+1][11].valeur));
-        tr.appendChild(createtd(log[i].natur));
+
+        try {
+            tr.appendChild(createtd(log[i].id));
+            tr.appendChild(createtd(log[i].name));
+            tr.appendChild(createtd(log[i].nv));
+            tr.appendChild(createtd(log[i].surnom));
+            tr.appendChild(createtd(log[i].decription));
+            tr.appendChild(createtd(log[i].username));
+
+            tr.appendChild(createtd(log[i + 1][12].valeur));
+            tr.appendChild(createtd(log[i + 1][0].valeur));
+            tr.appendChild(createtd(log[i + 1][1].valeur));
+            tr.appendChild(createtd(log[i + 1][2].valeur));
+            tr.appendChild(createtd(log[i + 1][3].valeur));
+            tr.appendChild(createtd(log[i + 1][4].valeur));
+            tr.appendChild(createtd(log[i + 1][11].valeur));
+            tr.appendChild(createtd(log[i].natur));
+
+        } catch (e) {
+            console.log(e)
+        }
 
         //Création du bouton de ev
         const td1 = document.createElement("td");
@@ -313,7 +331,7 @@ async function deletepokemon(id) {
             }, 1000);
 
         } else if (resjson.delete == false) {
-            err.innerText = "Ce pokemon ne vous appartient pas."; 
+            err.innerText = "Ce pokemon ne vous appartient pas.";
             err.style.color = "red";
         } else if (resjson.delete == "doncconnect") { //Si le serveur retourner que tu n'es pas connecter
             err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
@@ -322,7 +340,7 @@ async function deletepokemon(id) {
             err.innerText = "Erreur lors de la supression";
             err.style.color = "red";
         }
-    }else {
+    } else {
         err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
         err.style.color = "red";
     }

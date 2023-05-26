@@ -25,19 +25,16 @@ async function formenvoie() {
     const response = await fetch(`${loc}/auth`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         window.location.href = `${loc}/pokemon`;
-
-
     } else if (response.status == 503) {
-        err.innerText = "Erreur de la requête sql";
+        err.innerText = "Mot de passe incorrect !";
         err.style.color = "red";
     } else if (response.status == 404) {
-        err.innerText = "Erreur d'auth" ;
+        err.innerText = "Serveur d'authenfication non fonctionnel !" ;
         err.style.color = "red";
     } else if (response.status == 500) {
         err.innerText = "Erreur interne,token invalide";
         err.style.color = "red";
-    }
-    else {
+    } else {
         // Handle errors
         console.log(response.status, response.statusText);
     }

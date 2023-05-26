@@ -16,10 +16,13 @@
             <input style="display: none;" type="text" name="username" value=<%= username %>></input>
 
             <label>Nom</label>
-            <input type="text" name="name"></input>
+            <input type="text" value="<%= pokemon %>" name="name" readonly></input>
 
-            <label>Nom données</label>
+            <label>Surnom</label>
             <input type="text" name="nomdonner"></input>
+
+            <label>Description du pokémon</label>
+            <input type="text" name="description"></input>
 
             <label>Pv</label>
             <input type="number" name="pv"></input>
@@ -39,8 +42,37 @@
             <label>Spéciale Defense</label>
             <input type="number" name="specialdef"></input>
 
-            <label>Nature</label>
-            <input type="text" name="nature"></input>
+            <label for="nature-select">Nature</label>
+
+            <select name="nature" id="nature-select">
+                <option value="1">Assuré</option>
+                <option value="2">Bizzare</option>
+                <option value="3">Brave</option>
+                <option value="4">Calme</option>
+                <option value="5">Docile</option>
+                <option value="6">Doux</option>
+                <option value="7">Foufou</option>
+                <option value="8">Gentil</option>
+                <option value="9">Hardi</option>
+                <option value="10">Jovial</option>
+                <option value="11">Lâche</option>
+                <option value="12">Malin</option>
+                <option value="13">Malpoli</option>
+                <option value="14">Mauvais</option>
+                <option value="15">Modeste</option>
+                <option value="16">Naïf</option>
+                <option value="17">Pressé</option>
+                <option value="18">Prudent</option>
+                <option value="19">Pudique</option>
+                <option value="20">Relax</option>
+                <option value="21">Rigide</option>
+                <option value="22">Sérieux</option>
+                <option value="23">Solo</option>
+                <option value="24">Timide</option>
+
+            </select>
+
+            <input style="display: none" value="<%= sprite %>" name="sprite"></input>
 
             <input type="submit"></input>
         </form>

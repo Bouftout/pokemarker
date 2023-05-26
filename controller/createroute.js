@@ -39,7 +39,7 @@ app.post('/create/pokemon', function (req, res) {
             specialatt = numvalidate(req.body.specialatt),
             specialdef = numvalidate(req.body.specialdef),
             iv = rand(0, 31),
-            nature = rand(1, 24),
+            nature = numvalidate(req.body.nature), // Récupe le chiffre de la valeur dans le select(chiffre qui correspond a l'id dans la bdd de la table nature)
             username = validate(req.body.username),
             userid = req.session.userid,
             evvitesse = rand(0, 31),
@@ -48,16 +48,17 @@ app.post('/create/pokemon', function (req, res) {
             evdef = rand(0, 31),
             evatt = rand(0, 31),
             evpv = rand(0, 31),
+            sprite = req.body.sprite,
+            description = req.body.description
             nv = 1;
 
-        //,evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
+        // evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
         //(SELECT id FROM accounts WHERE username = "toni")
 
         if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
 
             //IL a 16 statistique
-            //Exemple : CALL createpokemon(1,'Pickachu','Gabou',10,10,10,10,10,10,16,2,5,17,17,1,1)
-            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv], function (error, results, fields) {
+            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, sprite, description], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);
@@ -65,7 +66,7 @@ app.post('/create/pokemon', function (req, res) {
                 }
                 if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
 
-                    console.log("crée")
+                    console.log("crée");
                     // petit message pour prevenir que le compte a bien été créer.
                     res.json({ "create": true })
                 } else {

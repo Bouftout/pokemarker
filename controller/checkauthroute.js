@@ -6,6 +6,7 @@ const express = require("express"),
     validator = require('validator'),
     config = require('../config/config.json'),
     jwt = require('jsonwebtoken'),
+    fetch = require("node-fetch"),
     connection = require('../connectdb').db; //Ficher de connection bdd
 
 //Function pour check si il est connecter ou pas
@@ -16,6 +17,7 @@ function checkAuth(req, res, next) {
     } else {
         next();
     }
+
 }
 
 control.get("/co", checkAuth, (req, res) => {
@@ -44,14 +46,46 @@ control.get("/play", checkAuth, (req, res) => {
 
 });
 
+//Function de random
+function rand(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+
+var poke = null;
+const fetchpoke = async () => {
+    const settings = { // Paramètres de la requête
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    const res = await fetch(`https://api-pokemon-fr.vercel.app/api/v1/pokemon`, settings); // Requête
+    if (res.ok) {
+         poke = await res.json();
+    }
+};
+
+fetchpoke();
+
+
+
 //render la page de création de pokémon
 control.get("/pokemarker", checkAuth, (req, res) => {
+
+
     try {
+        let nb = rand(0,poke.length);
+        console.log(poke[nb])
         let usernames = req.session.username;
 
         res.render("createpokemon", {
-            username: usernames
+            username: usernames,pokemon: poke[nb].name.fr,sprite: poke[nb].sprites.regular
         });
+
     } catch (e) {
         res.send(e)
     }

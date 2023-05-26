@@ -1,9 +1,10 @@
 window.onload = function () {
-    const form = document.getElementById("form");
 
-    form.addEventListener("submit", function (e) {
+    var name = document.getElementById("name");
+
+    document.getElementById("form").addEventListener("submit", function (e) {
         e.preventDefault();
-        formenvoie();
+        formenvoie(name);
 
     });
 
@@ -11,50 +12,62 @@ window.onload = function () {
     document.getElementById("maxstat").innerText = max;
 }
 
-async function formenvoie() {
+//Formulaire d'envoie
+async function formenvoie(pokename) {
 
-    const formdata = new FormData(form);
-    const data = Object.fromEntries(formdata.entries());
-    let datajson = JSON.stringify(data);
-    console.log(datajson)
-    let err = document.getElementById("err");
+    var newpokename = document.getElementById("name");
 
-    const settings = { // Paramètres de la requête
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: datajson,
-    };
+    if (pokename != newpokename) {
 
-    const response = await fetch(`/create/pokemon`, settings); // Requête
+        alert("Vous avez changer le nom du pokémon");
+        newpokename.value = pokename;
+        
+    } else {
 
-    if (response.status >= 200 && response.status <= 299) {
-        const log = await response.json();
-        if (log.create === true) {
+        const formdata = new FormData(form);
+        const data = Object.fromEntries(formdata.entries());
+        let datajson = JSON.stringify(data);
+        console.log("[JsonData]", datajson);
+        let err = document.getElementById("err");
 
-            window.location.href = `/pokemon`;
+        const settings = { // Paramètres de la requête
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: datajson, //Envoie tout le formulaire
+        };
 
-        } else if (log.create === false) {
-            err.innerText = "Erreur lors de la création du pokemon(Champs manquant ou invalide)";
-            err.style.color = "red";
-        } else if(log.create == "dontconnect") {
-            err.innerText = "Veuillez vous connecter !";
-            err.style.color = "red";
-        }else {
-            err.innerText = "Erreur inconnue : " + log.create;
-            err.style.color = "red";
-            console.log("Erreur");
+        const response = await fetch(`/create/pokemon`, settings); // Requête
+
+        if (response.status >= 200 && response.status <= 299) {
+            const log = await response.json();
+            if (log.create === true) {
+
+                window.location.href = `/pokemon`;
+
+            } else if (log.create === false) {
+                err.innerText = "Erreur lors de la création du pokemon(Champs manquant ou invalide)";
+                err.style.color = "red";
+            } else if (log.create == "dontconnect") {
+                err.innerText = "Veuillez vous connecter !";
+                err.style.color = "red";
+            } else {
+                err.innerText = "Erreur inconnue : " + log.create;
+                err.style.color = "red";
+                console.log("Erreur");
+            }
+
+
+
+        } else {
+            // Handle errors
+            console.log(response.status, response.statusText);
+            err.innerText = `Erreur ${response.status}`;
         }
 
-
-
-    } else {
-        // Handle errors
-        console.log(response.status, response.statusText);
     }
-
 
 }
 

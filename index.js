@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.disable('x-powered-by'); //Désactive le header x-powered-by
 app.use(session({
     cookieName: 'session',
-    secret: 'eg[isfd-8yF9-7wwzd2315df{}+Ijsli;;to8',
+    secret: config.secret_session,
     expires: 30 * 86400000,
     httpOnly: true,
     secure: true,
