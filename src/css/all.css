@@ -495,3 +495,10 @@ progress {
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
 }
+
+#p1stats>p {
+  display: inline;
+}
+#p2stats>p {
+  display: inline;
+}

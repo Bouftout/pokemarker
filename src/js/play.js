@@ -111,11 +111,11 @@ window.onload = function () {
 
                     if (p1hp.value > 0) {
                         // P1 a gagnée car il est vivant:
-                        socket.emit("winner", p1user, p2user, document.getElementById("p1hp").value, p1user, p1pokename, p2pokename)
+                        socket.emit("winner", document.getElementById("p1hp").value, p1user, p2user, p1pokename, p2pokename)
                         alert(`${p1user} a gagnée`)
                     } else if (p2hp.value > 0) {
                         // P2 a gagnée car il est vivant:
-                        socket.emit("winner", p1user, p2user, document.getElementById("p2hp").value, p2user, p1pokename, p2pokename)
+                        socket.emit("winner", document.getElementById("p2hp").value, p2user, p1user, p1pokename, p2pokename)
                         alert(`${p2user} a gagnée`)
                     }
                 } else {
@@ -180,7 +180,7 @@ window.onload = function () {
     var bonusatkp2 = 0;
 
     socket.on('foisdeux', function (atk) {
-     
+
         console.log("RECOIS MULTIPLIER ATK")
 
 
@@ -200,7 +200,7 @@ async function atkplus() {
     bonusatkp1 = 30;
     document.getElementById("p1atk").innerText = bonusatkp1;
 
-    socket.emit("foisdeuxserv",roominput.value,bonusatkp1);
+    socket.emit("foisdeuxserv", roominput.value, bonusatkp1);
 
 
 }
@@ -213,7 +213,6 @@ async function atkplus() {
 async function quelpokemonatu(usernamefunc) {
 
 
-    const loc = location.origin; // Avoir l'adresse du site sans /
     const settings = { // Paramètres de la requête
         method: 'GET',
         headers: {
@@ -221,7 +220,7 @@ async function quelpokemonatu(usernamefunc) {
             'Content-Type': 'application/json',
         }
     };
-    const response = await fetch(`${loc}/get/${usernamefunc}/pokemon`, settings); // Requête qui donne par rapport a un nom tout les pokemon a ça disposition
+    const response = await fetch(`/get/idsession/pokemon`, settings); // Requête qui donne par rapport a un nom tout les pokemon a ça disposition
     if (response.status >= 200 && response.status <= 299) { // Si la requete il n'y a pas d'erreur
 
         let data = await response.json(); //Le retour json de la requete
@@ -232,11 +231,11 @@ async function quelpokemonatu(usernamefunc) {
             let select = document.createElement("select"); //Création d'un select
             select.setAttribute("id", "pokemon"); // Set id a "pokemon"
             select.setAttribute("name", "pokemon"); // Set name a "pokemon"
-            for (let i = 0; i < data.length; i++) { // Boucle qui se fait par le nombre de pokemon a disposition dans le "data"
+            for (let i = 0; i < data.length / 2; i++) { // Boucle qui se fait par le nombre de pokemon a disposition dans le "data"
 
                 let option = document.createElement("option");
-                option.setAttribute("value", data[i].givenname);
-                option.innerText = data[i].givenname;
+                option.setAttribute("value", data[i].surnom);
+                option.innerText = data[i].surnom;
 
                 select.appendChild(option);
 
@@ -272,7 +271,6 @@ async function envoiepokemon(valsel) {
     // var valsel = select.options[select.selectedIndex].value;
     console.log("valse1: " + valsel)
 
-    const loc = location.origin; // Avoir l'adresse du site sans /
     const settings = { // Paramètres de la requête
         method: 'GET',
         headers: {
@@ -280,31 +278,33 @@ async function envoiepokemon(valsel) {
             'Content-Type': 'application/json',
         }
     };
-    const response = await fetch(`${loc}/get/pokemon/${valsel}`, settings); // Requête
+    const response = await fetch(`/get/player1/pokemon/${valsel}`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         let log = await response.json();
-        console.log(log)
+        let stats = log[1];
         log = log[0];
-        console.log(log)
+
+        // console.log("Log(nom,etc...):",log)
+        // console.log("Stats",stats)
         if (log) {
             document.getElementById("pokemonp1").style.display = "block";
 
             document.getElementById("p1username").innerText = log.username;
 
-            document.getElementById("p1name").innerText = log.givenname;
+            document.getElementById("p1name").innerText = log.surnom;
             document.getElementById("p1name").style.color = "green";
 
             document.getElementById("p1nv").innerText = log.nv;
             const hp = document.getElementById("p1hp")
-            hp.setAttribute("value", log.pv);
-            hp.setAttribute("max", log.pv);
+            hp.setAttribute("value", stats[0].valeur);
+            hp.setAttribute("max", stats[0].valeur);
 
-            document.getElementById("p1atk").innerText = log.forcer;
-            document.getElementById("p1evatk").innerText = log.evatt;
-            document.getElementById("p1def").innerText = log.def;
-            document.getElementById("p1vitesse").innerText = log.vitesse;
-            document.getElementById("p1spdatk").innerText = log.specialatt;
-            document.getElementById("p1spddef").innerText = log.specialdef;
+            document.getElementById("p1atk").innerText = stats[1].valeur;
+            document.getElementById("p1evatk").innerText = stats[11].valeur;
+            document.getElementById("p1def").innerText = stats[2].valeur;
+            document.getElementById("p1vitesse").innerText = stats[3].valeur;
+            document.getElementById("p1spdatk").innerText = stats[4].valeur;
+            document.getElementById("p1spddef").innerText = stats[5].valeur;
             //document.getElementById("type").innerText = log.type;
 
         } else {
@@ -322,6 +322,16 @@ async function envoiepokemon(valsel) {
 async function envoiepokemon2(valsel) {
     console.log(`[Get] Demande de ${valsel}`)
 
+
+    const firstsetting = { // Paramètres de la requête
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    const getidfetch = await fetch(`/get/pokemon/${valsel}`, firstsetting); // Requête
+    let getid = await getidfetch.json();
     const loc = location.origin; // Avoir l'adresse du site sans /
     const settings = { // Paramètres de la requête
         method: 'GET',
@@ -330,31 +340,35 @@ async function envoiepokemon2(valsel) {
             'Content-Type': 'application/json',
         }
     };
-    const response = await fetch(`${loc}/get/pokemon/${valsel}`, settings); // Requête
+    const response = await fetch(`${loc}/get/player2/pokemon/${getid[0].id}`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         let log = await response.json();
+        let stats = log[1];
         log = log[0];
-        console.log("-----------------------")
-        console.log(log)
-        if (log) {
+        log = log[0]
+
+        console.log("---------------------------------------")
+        console.log("Log(nom,etc...):", log)
+        console.log("Stats", stats)
+        if (log && stats) {
             document.getElementById("pokemonp2").setAttribute("class", "block")
 
             document.getElementById("p2username").innerText = log.username;
 
-            document.getElementById("p2name").innerText = log.givenname;
+            document.getElementById("p2name").innerText = log.surnom;
             document.getElementById("p2name").style.color = "green";
 
             document.getElementById("p2nv").innerText = log.nv;
             const hp = document.getElementById("p2hp")
-            hp.setAttribute("value", log.pv);
-            hp.setAttribute("max", log.pv);
+            hp.setAttribute("value", stats[0].valeur);
+            hp.setAttribute("max", stats[0].valeur);
 
-            document.getElementById("p2atk").innerText = log.forcer;
-            document.getElementById("p2evatk").innerText = log.evatt;
-            document.getElementById("p2def").innerText = log.def;
-            document.getElementById("p2vitesse").innerText = log.vitesse;
-            document.getElementById("p2spdatk").innerText = log.specialatt;
-            document.getElementById("p2spddef").innerText = log.specialdef;
+            document.getElementById("p2atk").innerText = stats[1].valeur;
+            document.getElementById("p2evatk").innerText = stats[11].valeur;
+            document.getElementById("p2def").innerText = stats[2].valeur;
+            document.getElementById("p2vitesse").innerText = stats[3].valeur;
+            document.getElementById("p2spdatk").innerText = stats[4].valeur;
+            document.getElementById("p2spddef").innerText = stats[5].valeur;
             //document.getElementById("type").innerText = log.type;
 
         } else {

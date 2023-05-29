@@ -1,35 +1,5 @@
 window.onload = function () {
 
-    //Systeme de recherche
-    document.addEventListener('click', function (e) {
-
-        e = e || window.event;
-        if (e.target || e.target.id == 'th') {
-            var target = e.target || e.srcElement,
-                text = target.textContent || target.innerText;
-
-            var scope = target.getAttribute('scope');
-            if (scope == "col" && scope != null && scope != undefined && text != "Supression") {
-                try {
-                    document.querySelectorAll("th").forEach(function (element) {
-                        console.log("click")
-                        element.setAttribute("class", "")
-                    });
-
-                    target.setAttribute("class", "actifsearch")
-                } catch (e) {
-                    console.log(e)
-                } finally {
-                    // searchname();
-
-                }
-
-
-            }
-        }
-
-    }, false);
-
 
     getpokemon() // lancer la function pour alimenter le tableau depuis la bdd
 
@@ -53,56 +23,40 @@ window.onload = function () {
 
 };
 
-//Searcger un nom avec comme arguement le filtre et la  table
-function searchname(filter, autretable) {
 
+function dquery(selector) {
+    // Renvoie un tableau des éléments correspondant au sélecteur
+    return Array.prototype.slice.call(document.querySelectorAll(selector));
+}
 
-    document.querySelectorAll("th").forEach(function (element) {
+//Search dans le tableau designé par la classe
+function searchname() {
+    const tableev = dquery("tbody")[0]
+    const poketable = dquery("tbody")[1]
 
-        const classe = element.getAttribute("class");
-        var idelement = element.getAttribute("id");
+    var tdtag = (poketable.firstElementChild).getElementsByTagName('td');
+    //Parcours toute la liste des td du tableau de pokemon
+    for (var i = 0; i < tdtag.length; i++) {
 
-        if (classe != "" && classe != null && classe != undefined && classe == "actifsearch") {
-            // Declare variables
-            var input, table, tr, td, i, txtValue;
-            input = document.getElementById("input");
-            if (filter == null || filter == undefined || filter == "") {
-                filter = input.value;
-            }
-            if (autretable == "ev") {
-                table = document.getElementById("tableev");
-                idelement = 0;
-            } else if (autretable == "evall") {
-                table = document.getElementById("tableev");
+        let txt = tdtag[i].textContent || tdtag[i].innerText;
+        let input = document.getElementById("input").value;
+        // console.log(`Le texte du tableau : ${txt}\nLe texte de l'intput ${document.getElementById("input").value}`)
+
+        if (input === "" || input === undefined) {
+            tdtag[i].style.fontWeight = "normal";
+        } else {
+
+            if (txt.search(input)) {
+                //Lorsque une partie du mot n'est pas présente
+                tdtag[i].style.fontWeight = "normal";
             } else {
-                table = document.getElementById("table");
-            }
-            tr = table.getElementsByTagName("tr");
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[idelement];
-                if (td) {
-            
-
-                        txtValue = td.textContent || td.innerText;
-                        console.log("txtvalue")
-                        if (txtValue === filter) {
-                            tr[i].style.display = "";
-                        } else {
-                            tr[i].style.display = "none";
-                        }
-    
-
-                    
-
-
-                }
+                //Lorsque une partie du mot est bien présente
+                tdtag[i].style.fontWeight = "900";
             }
 
         }
 
-    });
-
+    }
 
 }
 
@@ -143,6 +97,7 @@ async function getpokemon() {
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
         console.log(log)
+
         let alldiv = document.getElementById("alldiv");
         if (log.length > 0) {
             alldiv.style.display = "block";
@@ -162,8 +117,12 @@ async function getpokemon() {
 
     } else {
         if (response.status == 503) {
-            alert("Pokémon en maintenance !")
-            window.history.go(-1)
+            alldiv.style.display = "none";
+            err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !\nVeuillez en rajouter pour voir un tableau !";
+            err.style.fontSize = "50px"
+            err.style.color = "red";
+            // alert("Pokémon en maintenance !")
+            // window.history.go(-1)
         }
         // Handle errors
         console.log(response.status, response.statusText);
@@ -193,19 +152,30 @@ function createev(log) {
     tbody.setAttribute("id", "tbody");
     table.appendChild(tbody);
 
-    for (let i = 0; i < log.length / 2; i++) {
+    for (let i = 0; i < log[0].length; i++) {
         const tr = document.createElement("tr");
 
-        console.log("createev", log[i + 1])
+        console.log("createev", log[1])
 
         try {
-            tr.appendChild(createtd(log[i].id));
-            tr.appendChild(createtd(log[i + 1][5].valeur));
-            tr.appendChild(createtd(log[i + 1][6].valeur));
-            tr.appendChild(createtd(log[i + 1][7].valeur));
-            tr.appendChild(createtd(log[i + 1][8].valeur));
-            tr.appendChild(createtd(log[i + 1][9].valeur));
-            tr.appendChild(createtd(log[i + 1][10].valeur));
+            tr.appendChild(createtd(log[0][i].id));
+            for (let b = 7; b < (log[1].length); b++) {
+
+                if (log[0][i].id == log[1][b].id_pokemon) {
+
+                    tr.appendChild(createtd(log[1][b].valeur))
+
+
+                }
+            }
+
+
+            // tr.appendChild(createtd(log[1][i].valeur));
+            // tr.appendChild(createtd(log[1][i].valeur));
+            // tr.appendChild(createtd(log[1][i].valeur));
+            // tr.appendChild(createtd(log[1][i].valeur));
+            // tr.appendChild(createtd(log[1][i].valeur));
+            // tr.appendChild(createtd(log[1][i].valeur));
             //<button id="cev">Close</button>
             tbody.appendChild(tr);
         } catch (e) {
@@ -237,7 +207,7 @@ function creertable(log) {
     const tr = document.createElement("tr");
 
     //Tout les nom en haut du tableau(dans le head)
-    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Description" ,"Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Description", "Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -252,28 +222,29 @@ function creertable(log) {
     table.appendChild(tbody);
 
     //On fait une boucle de l'arguement pour remplir le tableau
-    for (let i = 0; i < log.length / 2; i++) {
+    for (let i = 0; i < log[0].length; i++) {
         const tr = document.createElement("tr");
 
-
-
-
         try {
-            tr.appendChild(createtd(log[i].id));
-            tr.appendChild(createtd(log[i].name));
-            tr.appendChild(createtd(log[i].nv));
-            tr.appendChild(createtd(log[i].surnom));
-            tr.appendChild(createtd(log[i].decription));
-            tr.appendChild(createtd(log[i].username));
+            tr.appendChild(createtd(log[0][i].id));
+            tr.appendChild(createtd(log[0][i].name));
+            tr.appendChild(createtd(log[0][i].nv));
+            tr.appendChild(createtd(log[0][i].surnom));
+            tr.appendChild(createtd(log[0][i].description));
+            tr.appendChild(createtd(log[0][i].username));
 
-            tr.appendChild(createtd(log[i + 1][12].valeur));
-            tr.appendChild(createtd(log[i + 1][0].valeur));
-            tr.appendChild(createtd(log[i + 1][1].valeur));
-            tr.appendChild(createtd(log[i + 1][2].valeur));
-            tr.appendChild(createtd(log[i + 1][3].valeur));
-            tr.appendChild(createtd(log[i + 1][4].valeur));
-            tr.appendChild(createtd(log[i + 1][11].valeur));
-            tr.appendChild(createtd(log[i].natur));
+            for (let b = 0; b < (log[1].length); b++) {
+
+                if (log[0][i].id == log[1][b].id_pokemon && log[1][b].namestat != 'evvitesse' && log[1][b].namestat != 'evspeatt' && log[1][b].namestat != 'evspedef' && log[1][b].namestat != 'evdef' && log[1][b].namestat != 'evatt' && log[1][b].namestat != 'evpv') {
+
+                    tr.appendChild(createtd(log[1][b].valeur))
+
+
+                }
+            }
+
+
+            tr.appendChild(createtd(log[0][i].natur));
 
         } catch (e) {
             console.log(e)
@@ -348,7 +319,7 @@ async function deletepokemon(id) {
 
 //Ouvrir la popup avec des argument qui corresponde
 function openpopup(popev) {
-    console.log("OPe")
+    console.log("Ouverte de la popup")
     try {
         var el = document.getElementById('popev');
         el.style.display = 'block';
@@ -359,10 +330,7 @@ function openpopup(popev) {
 
     } catch (e) {
         console.log(e);
-    } finally {
-        searchname(popev, "ev") // Recherche le pokemon par son id et affiche les ev du pokemon grâce à la fonction searchname.
     }
-
 
 }
 

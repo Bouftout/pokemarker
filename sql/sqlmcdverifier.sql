@@ -105,18 +105,18 @@ CREATE TABLE possede(
 #------------------------------------------------------------
 
 CREATE TABLE combat(
-        id_pokemon        Int NOT NULL ,
-        id_pokemon_combat Int NOT NULL ,
-        date              Date NOT NULL ,
-        id                Int NOT NULL ,
-        idpok1            Int NOT NULL ,
-        idpok2            Int NOT NULL ,
-        pvrestant         Varchar (50) NOT NULL ,
-        vainqueur         Varchar (50) NOT NULL
-	,CONSTRAINT combat_PK PRIMARY KEY (id_pokemon,id_pokemon_combat,date)
+        id                Int NOT NULL AUTO_INCREMENT,
+        id_pokemon_p1_combat INT,
+        id_pokemon_p2_combat Int,
+        date              Date DEFAULT current_timestamp() ,
+        pvrestant         Varchar (50) NOT NULL,
+        id_vainqueur         INT,
+        id_perdant           INT NOT NULL,
+        FOREIGN KEY (id_pokemon_p1_combat) REFERENCES pokemon(id),
+        FOREIGN KEY (id_pokemon_p2_combat) REFERENCES pokemon(id),
+        FOREIGN KEY (id_vainqueur) REFERENCES accounts(id),
+        FOREIGN KEY (id_perdant) REFERENCES accounts(id),
+        PRIMARY KEY (id)
 
-	,CONSTRAINT combat_pokemon_FK FOREIGN KEY (id_pokemon) REFERENCES pokemon(id)
-	,CONSTRAINT combat_pokemon0_FK FOREIGN KEY (id_pokemon_combat) REFERENCES pokemon(id)
-	,CONSTRAINT combat_date1_FK FOREIGN KEY (date) REFERENCES date(date)
 )ENGINE=InnoDB;
 

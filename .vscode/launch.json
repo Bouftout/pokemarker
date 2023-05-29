@@ -15,12 +15,13 @@
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "name": "Start index.js with nodemon",
-        "program": "${workspaceFolder}/app.js",
+        "program": "${workspaceFolder}/index.js",
         "request": "launch",
         "restart": true,
         "runtimeExecutable": "nodemon",
         "skipFiles": [
-            "<node_internals>/**"
+            "<node_internals>/**",
+            "./src/**"
         ],
         "type": "node"
     }

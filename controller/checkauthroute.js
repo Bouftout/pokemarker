@@ -46,6 +46,16 @@ control.get("/play", checkAuth, (req, res) => {
 
 });
 
+
+// Page d'affichage de deck
+app.get("/deck", checkAuth, (req, res) => {
+    
+    res.render("deck");
+
+});
+
+
+
 //Function de random
 function rand(min, max) {
     min = Math.ceil(min);
@@ -65,7 +75,7 @@ const fetchpoke = async () => {
     };
     const res = await fetch(`https://api-pokemon-fr.vercel.app/api/v1/pokemon`, settings); // Requête
     if (res.ok) {
-         poke = await res.json();
+        poke = await res.json();
     }
 };
 
@@ -78,12 +88,12 @@ control.get("/pokemarker", checkAuth, (req, res) => {
 
 
     try {
-        let nb = rand(0,poke.length);
+        let nb = rand(0, poke.length);
         console.log(poke[nb])
         let usernames = req.session.username;
 
         res.render("createpokemon", {
-            username: usernames,pokemon: poke[nb].name.fr,sprite: poke[nb].sprites.regular
+            username: usernames, pokemon: poke[nb].name.fr, sprite: poke[nb].sprites.regular
         });
 
     } catch (e) {
@@ -148,7 +158,7 @@ function verifjwt(req) {
             console.log("data verify", verify)
             req.session.userid = verify.id;
             req.session.username = verify.username;
-            console.log("[session]", req.session)
+           // console.log("[session]", req.session)
         }
     } catch (e) {
         console.warn(e);
@@ -290,6 +300,9 @@ control.post('/auth', function (req, res) {
 
 
 });
+
+
+
 
 
 

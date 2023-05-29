@@ -26,7 +26,7 @@ function rand(min, max) {
 app.post('/create/pokemon', function (req, res) {
 
     if (req.session.loggedin) {
-        console.log("create pokemon")
+        console.log("create pokemon");
         console.log(req.body);
 
         //Verification(anti-mysql) + ev et iv random entre 0 et 31
@@ -84,6 +84,7 @@ app.post('/create/pokemon', function (req, res) {
     }
 })
 
+/* FUNCTION A REFAIRE :
 
 //Création d'un deck
 control.post('/deck', function (req, res) {
@@ -95,7 +96,7 @@ control.post('/deck', function (req, res) {
 
         //req.session.userid est enregistrer si on se connecte ou crée sont compte et correspond a l'id de son compte dans ça basse de donnée.
         //on crée donc une ligne comprenant une id,l'id du compte,l'id du pokémon, et le numéro du deck(pour pouvoir gérer que un utulisateur puissent faire plusieur deck)
-        connection.query(`insert into deck (idacc,idpok,nbdeck) SELECT ?,?,(SELECT MAX(nbdeck)+1 FROM deck)`, [req.session.userid, req.body[i]], function (error, results, fields) {
+        connection.query(``, [req.session.userid, req.body[i]], function (error, results, fields) {
             // If there is an issue with the query, output the error
             if (error) {
                 console.log(error);
@@ -114,10 +115,7 @@ control.post('/deck', function (req, res) {
 
     }
 
-
-
-
 })
-
+*/
 
 module.exports = control;

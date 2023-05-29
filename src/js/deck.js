@@ -1,89 +1,14 @@
 window.onload = function () {
 
-    //Systeme de recherche
-    document.addEventListener('click', function (e) {
 
-        e = e || window.event;
-        if (e.target || e.target.id == 'th') {
-            var target = e.target || e.srcElement,
-                text = target.textContent || target.innerText;
+    getpokemon()
 
-            var scope = target.getAttribute('scope');
-            if (scope == "col" && scope != null && scope != undefined && text != "Supression") {
-                try {
-                    document.querySelectorAll("th").forEach(function (element) {
-                        console.log("click")
-                        element.setAttribute("class", "")
-                    });
-
-                    target.setAttribute("class", "actifsearch")
-                } catch (e) {
-                    console.log(e)
-                } finally {
-                    // searchname();
-
-                }
-
-
-            }
-        }
-
-    }, false);
-
-
-    getpokemon() // lancer la function pour alimenter le tableau depuis la bdd
-
+    setInterval(function () {
+        //  getpokemon()
+    }, 10000);
 
 };
 
-//Searcger un nom avec comme arguement le filtre et la  table
-function searchname(filter, autretable) {
-
-
-    document.querySelectorAll("th").forEach(function (element) {
-
-        const classe = element.getAttribute("class");
-        var idelement = element.getAttribute("id");
-
-        if (classe != "" && classe != null && classe != undefined && classe == "actifsearch") {
-            // Declare variables
-            var input, table, tr, td, i, txtValue;
-            input = document.getElementById("input");
-            if (filter == null || filter == undefined || filter == "") {
-                filter = input.value;
-            }
-            if (autretable == "ev") {
-                table = document.getElementById("tableev");
-                idelement = 0;
-            } else if (autretable == "evall") {
-                table = document.getElementById("tableev");
-            } else {
-                table = document.getElementById("table");
-            }
-            tr = table.getElementsByTagName("tr");
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[idelement];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    console.log("txtvalue")
-                    if (txtValue == filter) {
-                        tr[i].style.display = "";
-                    } else {
-
-                        tr[i].style.display = "none";
-                    }
-
-
-                }
-            }
-
-        }
-
-    });
-
-
-}
 
 
 
@@ -117,20 +42,15 @@ async function getpokemon() {
         },
     };
 
-    const response = await fetch(`/get/deck`, settings); // Requête
+    const response = await fetch(`/get/user/pokemon`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
         console.log(log)
-        let alldiv = document.getElementById("alldiv");
+
         if (log.length > 0) {
-            alldiv.style.display = "block";
-            err.style.fontSize = "20px"
             creertable(log)
-            // createev(log)
         } else {
-            alldiv.style.display = "none";
-            err.innerText = "Il n'y a aucun deck disponible";
-            err.style.fontSize = "50px"
+            err.innerText = "Auncun pokemon";
             err.style.color = "red";
         }
 
@@ -143,7 +63,7 @@ async function getpokemon() {
 };
 
 
-//Créer la tablea concerner avec l'argument pour le remplir !
+
 function creertable(log) {
     const table = document.createElement("table");
     const tablediv = document.getElementById("tablediv");
@@ -153,8 +73,7 @@ function creertable(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
-    //Tout les nom en haut du tableau(dans le head)
-    var allname = ["ID", "idacc", "idpok", "nbdeck","Création"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Surnom", "CheckBox"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -163,21 +82,26 @@ function creertable(log) {
     table.appendChild(thead);
 
 
-    //Tout ce qui a dans le tbody
     const tbody = document.createElement("tbody");
     tbody.setAttribute("id", "tbody");
     table.appendChild(tbody);
 
-    //On fait une boucle de l'arguement pour remplir le tableau
     for (let i = 0; i < log.length; i++) {
         const tr = document.createElement("tr");
 
         tr.appendChild(createtd(log[i].id));
-        tr.appendChild(createtd(log[i].idacc));
-        tr.appendChild(createtd(log[i].idpok));
-        tr.appendChild(createtd(log[i].nbdeck));
-        tr.appendChild(createtd(log[i].dates));
-
+        tr.appendChild(createtd(log[i].name));
+        tr.appendChild(createtd(log[i].surnom));
+        let checkbox = document.createElement("input")
+        checkbox.type = "checkbox";
+        checkbox.id = `check${log[i].id}`
+        checkbox.name = "check";
+        if (log[i].id_equipe == log[i].id) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+        tr.appendChild(checkbox)
 
 
 
@@ -188,62 +112,60 @@ function creertable(log) {
 }
 
 
-//Fonction activée lors du click du bouton delete
-async function deletepokemon(id) {
+async function envoiedeck() {
+
 
     let err = document.getElementById("err");
-    const settings = { // Paramètres de la requête
-        method: 'DELETE',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-    };
+    let nbofcheckok = 0;
+    var data = [];
 
-    const response = await fetch(`/delete/${id}/historique/`, settings); // Requête
-    if (response.status >= 200 && response.status <= 299) {
-        const resjson = await response.json();
-        console.log(resjson)
-        if (resjson.delete == true) {
-            err.innerText = "Votre pokémon a bien était supprimé."; //Confirmation de suppression
-            err.style.color = "green";
-            setTimeout(function () {
-                getpokemon();
-            }, 1000);
+    let tr = document.getElementsByTagName("tr"); // recupere tout les ligne
 
-        } else if (resjson.delete == false) {
-            err.innerText = "Ce pokemon ne vous appartient pas.";
-            err.style.color = "red";
-        } else if (resjson.delete == "doncconnect") { //Si le serveur retourner que tu n'es pas connecter
-            err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
-            err.style.color = "red";
-        } else {
-            err.innerText = "Erreur lors de la supression";
-            err.style.color = "red";
+    for (i = 1; i <= Number(tr.length - 1); i++) {
+
+        let checkbox = (tr[i].querySelectorAll('input[type=checkbox]')[0].checked)
+
+
+        if(checkbox != null){
+            console.log(checkbox)
+            if(checkbox){
+
+                data.push(tr[i].getElementsByTagName("td")[0].innerText)
+                // console.log("deckconsole",document.getElementById(`check${i}`).previousElementSibling.previousElementSibling.previousElementSibling.innerText)
+                nbofcheckok++;
+            }
         }
+
+    }
+    if (nbofcheckok <= 6) {
+
+        console.log("JsonData", JSON.stringify(data))
+
+        const settings = { // Paramètres de la requête
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        };
+
+        const response = await fetch(`/create/deck`, settings); // Requête
+
+        if (response.status >= 200 && response.status <= 299) {
+            // const log = await response.json();
+
+            alert("Envoie du deck a la bdd")
+
+        } else {
+            // Handle errors
+            console.log(response.status, response.statusText);
+        }
+
     } else {
-        err.innerText = "Vous devez être connecté pour supprimer un pokemon.";
-        err.style.color = "red";
-    }
-}
-
-//Ouvrir la popup avec des argument qui corresponde
-function openpopup(numero, idacc) {
-    console.log("[Info] Open PopUp")
-    try {
-        document.getElementById('popev').style.display = 'block';
-
-    } catch (e) {
-        console.log(e);
-    } finally {
-
+        alert("Vous devez choisir 6 pokemon ou moins pour la rajouter dans votre equipe.")
     }
 
 
-}
 
-//Fermer popup ev
-function closepopup() {
-    var el = document.getElementById('popev');
-    el.style.display = 'none';
 }

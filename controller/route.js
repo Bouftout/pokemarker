@@ -52,10 +52,6 @@ app.get("/patchnote", (req, res) => {
   res.render("patchnote");
 });
 
-// Page d'affichage de deck
-app.get("/deck", (req, res) => {
-  res.render("deck");
-});
 
 
 //Page de déconnexion

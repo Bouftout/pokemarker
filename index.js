@@ -12,9 +12,9 @@ const express = require('express'),
 
 app = express();
 
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
-app.use('/src', express.static(path.join(__dirname, 'src')))
+app.use('/src', express.static(path.join(__dirname, 'src')));
 
 server = app.listen(port, ip, err => {
     err ?
@@ -56,7 +56,7 @@ function ftpdeploy() {
             return;
         }
 
-        console.log("\x1b[33m",`Deploy sur serveur automatique`);
+        console.log("\x1b[33m", `Deploy sur serveur automatique`);
     });
 }
 
@@ -74,6 +74,10 @@ dbsql.init(function (error) {
     const checkauthroute = require("./controller/checkauthroute.js");
     app.use("/", checkauthroute);
 
+    // Socket.js
+    const socketjs = require("./controller/socket.js");
+    app.use("/", socketjs);
+
     // Mes route (GetRoute)
     const getroute = require("./controller/getroute.js");
     app.use("/get/", getroute);
@@ -83,32 +87,18 @@ dbsql.init(function (error) {
     const createroute = require("./controller/createroute.js");
     app.use("/create/", createroute);
 
-});
-
-
-
-
-//Delete par rapport avec un id et un pokémon
-app.delete("/delete/:idpoke/pokemon", (req, res) => {
-
-    //req.session.userid est enregistrer si on se connecte ou crée sont compte et correspond a l'id de son compte dans ça basse de donnée.
-    if (req.session.loggedin) {
-        connection.query(`DELETE FROM \`pokemon\` WHERE pokemon.idaccounts = ? AND pokemon.id = ?`, [req.session.userid, req.params.idpoke], function (error, results, fields) {
-            if (error) throw error;
-            console.log(results.affectedRows);
-            if (results.affectedRows > 0) {
-                res.json({ "delete": true })
-            } else {
-                res.json({ "delete": false })
-            }
-        });
-    } else {
-        res.json({ "delete": "doncconnect" })
-    }
+    // Mes route (deleteroute)
+    const delroute = require("./controller/deleteroute.js");
+    app.use("/delete/", delroute);
 
 });
 
 
+
+
+
+
+/* FUNCTION A REFAIRE
 //Get la table historique de sql
 app.get("/get/historique", (req, res) => {
 
@@ -146,87 +136,6 @@ app.get("/get/historique/pokemon/:id/:acc", (req, res) => {
 
 
 });
+*/
 
 
-// Pokemon socket.io
-const io = require("socket.io")(server);
-
-// server-side
-io.on("connection", (socket) => {
-    // console.log("Connection:" + socket.id); // x8WIv7-mJelg7on_ALbx
-
-
-    //Des que tu est connecter il va executer ce qu'il a dedans :
-    socket.conn.on("upgrade", () => {
-        const upgradedTransport = socket.conn.transport.name;
-        console.log(upgradedTransport) // ws
-    });
-
-
-    //Connection :
-    socket.on("connectpoke", async (room) => {
-
-        try {
-            const clients = io.sockets.adapter.rooms.get(`pokeroom${room}`);
-            const numClients = clients ? clients.size : 0;
-            console.log(numClients)
-            console.log('[socket]', 'join room :', `pokeroom${room}`)
-            socket.join(`pokeroom${room}`);
-            io.to(`pokeroom${room}`).emit('newplayer', `pokeroom${room}`, Number(numClients) + 1);
-
-        } catch (e) {
-            console.log('[error]', 'join room :', e);
-            socket.emit('error', 'couldnt perform requested action');
-        }
-
-    });
-
-
-    //Deconnection :
-    socket.on("disconnect", async () => {
-        console.log("Une personne s'est déconnecter")
-    });
-
-    socket.on('disconnecting', function () {
-
-        //Deconnection
-        console.log('[socket]', 'leave room !', socket.rooms);
-        socket.rooms = null;
-    });
-
-
-    socket.on("sendpoke", async (room, namepoke) => {
-        console.log('[socket]', 'leave room :', room);
-        await socket.to(`pokeroom${room}`).emit(`recevoirpoke`, namepoke);
-        // await io.emit(`recevoirpoke`, namepoke);
-
-    })
-
-    socket.on("foisdeuxserv", async (room, atk) => {
-
-        // await io.to(`pokeroom${room}`).emit(`foisdeux`, atk);
-
-
-    })
-
-
-    socket.on("winner", async (username1, username2, pvwinner, vainqueur, p1pokename, p2pokename) => {
-        console.log('[socket]', 'winner :');
-        console.log(username1 + username2 + pvwinner + vainqueur + "\n")
-
-
-
-        connection.query(`INSERT INTO \`historique\` VALUES (test(),(SELECT id FROM accounts WHERE username = ?),(SELECT id FROM accounts WHERE username = ?),?,?,?,?)`, [username1, username2, pvwinner, vainqueur, p1pokename, p2pokename], function (err, results, fields) {
-            // If there is an issue with the query, output the error
-            if (err) {
-                return console.log(err);
-            }
-
-        });
-
-
-    })
-
-
-
-});
