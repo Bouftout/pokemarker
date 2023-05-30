@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
 
        
             console.log('[socket]', 'winner :');
-            console.log(pvwinner + vainqueur + perdant + p1pokename + p2pokename + "\n")
+            console.log(pvwinner + vainqueur + perdant + p1pokename + p2pokename + "\n");
 
             connection.query(`INSERT INTO \`combat\` (id_pokemon_p1_combat,id_pokemon_p2_combat,pvrestant,id_vainqueur,id_perdant) VALUES ((SELECT id FROM pokemon where surnom = ?),(SELECT id FROM pokemon where surnom = ?),?,(SELECT id FROM accounts WHERE username = ?),(SELECT id FROM accounts WHERE username = ?))`, [p1pokename, p2pokename, pvwinner, vainqueur, perdant], function (err, results, fields) {
                 // If there is an issue with the query, output the error

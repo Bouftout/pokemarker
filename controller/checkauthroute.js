@@ -6,7 +6,6 @@ const express = require("express"),
     validator = require('validator'),
     config = require('../config/config.json'),
     jwt = require('jsonwebtoken'),
-    fetch = require("node-fetch"),
     connection = require('../connectdb').db; //Ficher de connection bdd
 
 //Function pour check si il est connecter ou pas
