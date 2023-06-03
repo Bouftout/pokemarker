@@ -47,6 +47,14 @@ window.onload = function () {
         }
     });
 
+
+    var oksocketemit = true;
+    socket.on('pasdenvoiedeuxfois', function () {
+
+        oksocketemit = false;
+
+    })
+
     socket.on('recevoirpoke', async function (namepoke) {
 
         try {
@@ -78,18 +86,19 @@ window.onload = function () {
             } else if (p1vitesse < p2vitesse) {
                 ggqui = "p2"
             }
-            // else {
-            //     alert("Un random va commencer pour savoir qui va commencer")
+            else if (p1vitesse == p2vitesse) {
+                alert("Un random va commencer pour savoir qui va commencer")
 
-            //     let rand = Math.floor(Math.random())
+                let rand = Math.floor(Math.random())
 
-            //     if (rand == 1) {
-            //         ggqui = "p1"
-            //     } else {
-            //         ggqui = "p2"
-            //     }
+                if (rand == 1) {
+                    ggqui = "p1"
+                } else {
+                    ggqui = "p2"
+                }
 
-            // }
+            }
+            
             let nIntervId;
 
             nIntervId = setInterval(fighto, 500); //Tout un certain temps je lance un function fighto
@@ -111,11 +120,21 @@ window.onload = function () {
 
                     if (p1hp.value > 0) {
                         // P1 a gagnée car il est vivant:
-                        socket.emit("winner", document.getElementById("p1hp").value, p1user, p2user, p1pokename, p2pokename)
+                        if (oksocketemit == true) {
+                            socket.emit("servpasdenvoiedeuxfois", roominput.value)
+                            socket.emit("winner", document.getElementById("p1hp").value, p1user, p2user, p1pokename, p2pokename)
+                        }
+
                         alert(`${p1user} a gagnée`)
                     } else if (p2hp.value > 0) {
                         // P2 a gagnée car il est vivant:
-                        socket.emit("winner", document.getElementById("p2hp").value, p2user, p1user, p1pokename, p2pokename)
+                        if (oksocketemit == true) {
+                            socket.emit("servpasdenvoiedeuxfois", roominput.value)
+                            socket.emit("winner", document.getElementById("p2hp").value, p2user, p1user, p1pokename, p2pokename)
+                        }
+
+
+
                         alert(`${p2user} a gagnée`)
                     }
                 } else {

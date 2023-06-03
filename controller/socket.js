@@ -67,6 +67,12 @@ io.on("connection", (socket) => {
 
     })
 
+    socket.on("servpasdenvoiedeuxfois", async (room) => {
+        console.log('[socket]', 'Non pas de doublon', room);
+        await socket.to(`pokeroom${room}`).emit(`pasdenvoiedeuxfois`);
+        // await io.emit(`recevoirpoke`, namepoke);
+
+    })
 
     socket.on("winner", async (pvwinner, vainqueur, perdant, p1pokename, p2pokename) => {
 
