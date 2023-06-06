@@ -138,5 +138,41 @@ control.get("/pokemon", (req, res) => {
 
 });
 
+control.get("/historique", (req, res) => {
+
+    console.log("[SQL] Get historique");
+
+    connection.query("SELECT id_pokemon_p1_combat,id_pokemon_p2_combat,date,pvrestant,id_vainqueur,id_perdant FROM combat", function (error, results, fields) {
+        if (error) throw error;
+
+
+        console.log(results)
+
+        res.json(results)
+
+
+    });
+
+});
+
+
+control.get("/classement", (req, res) => {
+
+    console.log("[SQL] Get classement");
+
+    connection.query(`SELECT accounts.username,count(id_vainqueur) AS "nbvictoire" FROM combat INNER JOIN accounts ON combat.id_vainqueur = accounts.id GROUP BY id_vainqueur`, function (error, results, fields) {
+        if (error) throw error;
+
+
+        console.log(results)
+
+        res.json(results)
+
+
+    });
+
+});
+
+
 
 module.exports = control;

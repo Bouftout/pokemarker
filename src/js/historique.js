@@ -1,35 +1,5 @@
 window.onload = function () {
 
-    //Systeme de recherche
-    document.addEventListener('click', function (e) {
-
-        e = e || window.event;
-        if (e.target || e.target.id == 'th') {
-            var target = e.target || e.srcElement,
-                text = target.textContent || target.innerText;
-
-            var scope = target.getAttribute('scope');
-            if (scope == "col" && scope != null && scope != undefined && text != "Supression") {
-                try {
-                    document.querySelectorAll("th").forEach(function (element) {
-                        console.log("click")
-                        element.setAttribute("class", "")
-                    });
-
-                    target.setAttribute("class", "actifsearch")
-                } catch (e) {
-                    console.log(e)
-                } finally {
-                    // searchname();
-
-                }
-
-
-            }
-        }
-
-    }, false);
-
 
     getpokemon() // lancer la function pour alimenter le tableau depuis la bdd
 

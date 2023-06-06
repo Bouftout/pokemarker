@@ -254,7 +254,7 @@ function creertable(log) {
         const td1 = document.createElement("td");
         const button1 = document.createElement("button");
         button1.setAttribute("class", "button");
-        button1.setAttribute("onclick", `openpopup(${log[i].id});`);
+        button1.setAttribute("onclick", `openpopup(${log[0][i].id});`);
         button1.innerText = "EV";
         td1.appendChild(button1);
         tr.appendChild(td1);
@@ -263,7 +263,7 @@ function creertable(log) {
         const td = document.createElement("td");
         const button = document.createElement("button");
         button.setAttribute("class", "button");
-        button.setAttribute("onclick", "deletepokemon(" + log[i].id + ")");
+        button.setAttribute("onclick", "deletepokemon(" + log[0][i].id + ")");
         button.innerText = "Delete";
         td.appendChild(button);
         tr.appendChild(td);

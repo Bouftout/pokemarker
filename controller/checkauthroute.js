@@ -47,9 +47,11 @@ control.get("/play", checkAuth, (req, res) => {
 
 
 // Page d'affichage de deck
-app.get("/deck", checkAuth, (req, res) => {
+app.get("/equipe", checkAuth, (req, res) => {
     
-    res.render("deck");
+    res.render("equipe", {
+        username: req.session.username
+    });
 
 });
 

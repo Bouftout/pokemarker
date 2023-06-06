@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
 
     socket.on("foisdeuxserv", async (room, atk) => {
 
-        // await io.to(`pokeroom${room}`).emit(`foisdeux`, atk);
+        await io.to(`pokeroom${room}`).emit(`foisdeux`, atk);
 
 
     })

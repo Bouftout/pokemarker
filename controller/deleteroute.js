@@ -12,8 +12,8 @@ control.delete("/:idpoke/pokemon" ,(req, res) => {
     if (req.session.loggedin) {
         connection.query(`CALL delpoke(?,?)`, [req.session.userid, req.params.idpoke], function (error, results, fields) {
             if (error) throw error;
-            console.log(results.affectedRows);
-            if (results.affectedRows > 0) {
+            console.log(results);
+            if (results.affectedRows > 1) {
                 res.json({ "delete": true })
             } else {
                 res.json({ "delete": false })
