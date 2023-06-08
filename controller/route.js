@@ -44,7 +44,11 @@ control.get("/pokemon", (req, res) => {
 
 //Page d'historique(affichage de tout les combat pokémon auparavant)
 app.get("/historique", (req, res) => {
-  res.render("historique")
+
+  res.render("historique", {
+    username: req.session.username
+  });
+  
 });
 
 //Page de déconnexion
@@ -52,6 +56,14 @@ app.get("/patchnote", (req, res) => {
   res.render("patchnote");
 });
 
+
+app.get("/classement", (req, res) => {
+
+  res.render("classement", {
+    username: req.session.username
+  });;
+
+});
 
 
 //Page de déconnexion

@@ -86,7 +86,7 @@ control.get("/pokemon/:surnom", (req, res) => {
 
     console.log("[SQL] Get id pokemon grace au surnom");
 
-    connection.query("SELECT pokemon.id FROM pokemon where pokemon.surnom = ?",[req.params.surnom], function (error, results, fields) {
+    connection.query("SELECT pokemon.id FROM pokemon where pokemon.surnom = ?", [req.params.surnom], function (error, results, fields) {
         if (error) throw error;
 
 
@@ -105,7 +105,7 @@ control.get("/player2/pokemon/:id", (req, res) => {
 
     console.log("[SQL] Get player2 pokemon with surnom");
 
-    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id WHERE possede.id_pokemon = ?;",[req.params.id,req.params.id], function (error, results, fields) {
+    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id WHERE possede.id_pokemon = ?;", [req.params.id, req.params.id], function (error, results, fields) {
         if (error) throw error;
 
 
@@ -142,7 +142,7 @@ control.get("/historique", (req, res) => {
 
     console.log("[SQL] Get historique");
 
-    connection.query("SELECT id_pokemon_p1_combat,id_pokemon_p2_combat,date,pvrestant,id_vainqueur,id_perdant FROM combat", function (error, results, fields) {
+    connection.query(`SELECT accounts.username AS "uservainqueur",id_pokemon_p1_combat AS "idpok1",id_pokemon_p2_combat AS "idpok2",date,pvrestant,id_vainqueur,id_perdant FROM combat INNER JOIN accounts ON combat.id_vainqueur GROUP by combat.id`, function (error, results, fields) {
         if (error) throw error;
 
 
@@ -155,12 +155,43 @@ control.get("/historique", (req, res) => {
 
 });
 
+control.get("/histo/pokemon/:id/:acc", (req, res) => {
+
+    let acc = req.params.acc,
+        id = req.params.id;
+    console.log("[Info] Get historique Pokémon acc :" + acc)
+    // Commande sql pour récupérer tout les pokémon
+    // SELECT pokemon.*,accounts.username FROM historique INNER JOIN pokemon on pokemon.idaccounts = historique.idacc1 INNER JOIN accounts ON historique.idacc1 = accounts.id WHERE accounts.id = ? GROUP BY id',[req.params.id],
+
+    if (acc == 1) {
+
+        //Si compte 1 gagne :
+        // Commande sql qui recupere le nom du compte,et les stats du pokémon (pour le compte 1) :
+        connection.query('SELECT accounts.username,pokemon.* FROM combat INNER JOIN pokemon ON combat.id_pokemon_p1_combat = pokemon.id INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id', [id], function (error, results, fields) {
+            if (error) throw error;
+            res.json(results);
+        });
+
+    } else {
+        //Sinon si c'est pas le compte 1
+        // Commande sql qui recupere le nom du compte,et les stats du pokémon (pour le compte 2) :
+        connection.query('SELECT accounts.username,pokemon.* FROM combat INNER JOIN pokemon ON combat.id_pokemon_p2_combat = pokemon.id INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id', [id], function (error, results, fields) {
+            if (error) throw error;
+            res.json(results);
+        });
+    }
+
+
+
+});
+
+
 
 control.get("/classement", (req, res) => {
 
     console.log("[SQL] Get classement");
 
-    connection.query(`SELECT accounts.username,count(id_vainqueur) AS "nbvictoire" FROM combat INNER JOIN accounts ON combat.id_vainqueur = accounts.id GROUP BY id_vainqueur`, function (error, results, fields) {
+    connection.query(`SELECT accounts.username AS "username",count(id_vainqueur) AS "nbvictoire" FROM combat INNER JOIN accounts ON combat.id_vainqueur = accounts.id GROUP BY id_vainqueur ORDER BY count(id_vainqueur) DESC`, function (error, results, fields) {
         if (error) throw error;
 
 

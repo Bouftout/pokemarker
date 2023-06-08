@@ -1,34 +1,30 @@
-<%- include('./partials/head', {title:'historique',script:'historique'}) %>
+<%- include('./partials/head', {title:'Création',script:'classement'}) %>
 
-  <body>
+<body>
     <br><br><br><br>
 
-      <div id="popev" style="display: none">
-        <div id="pdivev"></div>
-      </div>
       <div class="container">
-      <h1>Bienvenue <% if(locals.username){ %>
+      <h1>Bienvenue 
+        <% if(locals.username){ %>
           <span id="username"><%= username %></span>
             <% } %>
       </h1>
-      <h3>Historique de tout les combat sur le site !</h3>
+      <h2>Vous voici sur la page qui affiche par ordre croissant le gagnant !</h2>
     </div>
+
       <br>
       <div>
         <p id="err"></p>
         <br>
       </div>
       <div id="alldiv">
-
-        <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher nom click" class="searchbar" />
-
+        <input id="input" onkeyup="searchname()" type="search" placeholder="Rechercher" class="searchbar" />
         <br><br>
         <div id="container" class="container">
           <div id="tablediv">
 
           </div>
           <br>
-
         </div>
       <div>
 <!-- <a href="createdeck">Create a new deck</a> -->

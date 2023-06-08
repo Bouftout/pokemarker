@@ -66,10 +66,6 @@ function createth(text, nb) {
     const th = document.createElement("th");
     th.setAttribute("scope", "col");
     th.setAttribute("id", nb);
-    if (nb == 1) {
-        th.setAttribute("class", "actifsearch");
-    }
-
     th.innerText = text;
     return th;
 }

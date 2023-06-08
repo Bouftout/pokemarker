@@ -6,11 +6,13 @@
       <div id="popev" style="display: none">
         <div id="pdivev"></div>
       </div>
+      <div class="container">
       <h1>Bienvenue <% if(locals.username){ %>
           <%= username %>
             <% } %>
       </h1>
-
+      <h3>Ici vous pouvez voir votre équipe de pokémon, et par conséquence voir tout les pokémon que vous possédez.</h3>
+    </div>
       <br>
       <div>
         <p id="err"></p>
@@ -18,7 +20,7 @@
       </div>
 
       <div class="container">
-        <button onclick="envoiedeck()">ENVOIE equipe</button>
+        <button onclick="envoiedeck()">Envoyer son equipe</button>
 
       </div>
 

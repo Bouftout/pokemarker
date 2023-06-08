@@ -3,79 +3,14 @@ window.onload = function () {
 
     getpokemon() // lancer la function pour alimenter le tableau depuis la bdd
 
-    //Pour afficher la popup de tout les ev(stat caché) des pokemon
-    document.getElementById("getallevbtn").addEventListener('click', function (e) {
-
-        //el est la pop up on la rafiche donc
-        var el = document.getElementById('popev');
-        el.style.display = 'block';
-
-        // Dans la tablea ev supprimer ses classe
-        const tableev = document.getElementById("tableev");
-        (tableev.firstElementChild.firstChild.firstChild).setAttribute("class", "")
-
-    })
-
 };
-
-//Searcger un nom avec comme arguement le filtre et la  table
-function searchname(filter, autretable) {
-
-
-    document.querySelectorAll("th").forEach(function (element) {
-
-        const classe = element.getAttribute("class");
-        var idelement = element.getAttribute("id");
-
-        if (classe != "" && classe != null && classe != undefined && classe == "actifsearch") {
-            // Declare variables
-            var input, table, tr, td, i, txtValue;
-            input = document.getElementById("input");
-            if (filter == null || filter == undefined || filter == "") {
-                filter = input.value;
-            }
-            if (autretable == "ev") {
-                table = document.getElementById("tableev");
-                idelement = 0;
-            } else if (autretable == "evall") {
-                table = document.getElementById("tableev");
-            } else {
-                table = document.getElementById("table");
-            }
-            tr = table.getElementsByTagName("tr");
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[idelement];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    console.log("txtvalue")
-                    if (txtValue == filter) {
-                        tr[i].style.display = "";
-                    } else {
-                        
-                        tr[i].style.display = "none";
-                    }
-
-
-                }
-            }
-
-        }
-
-    });
-
-
-}
-
 
 
 function createth(text, nb) {
     const th = document.createElement("th");
     th.setAttribute("scope", "col");
     th.setAttribute("id", nb);
-    if (nb == 1) {
-        th.setAttribute("class", "actifsearch");
-    }
+
 
     th.innerText = text;
     return th;
@@ -135,7 +70,7 @@ async function getpokemonforbtn(numero,idacc) {
         },
     };
 
-    const response = await fetch(`/get/historique/pokemon/${numero}/${idacc}`, settings); // Requête
+    const response = await fetch(`/get/histo/pokemon/${numero}/${idacc}`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
         console.log(log)
@@ -171,7 +106,7 @@ function createev(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
-    var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], "thev" + i));
@@ -189,16 +124,8 @@ function createev(log) {
 
         tr.appendChild(createtd(log[i].id));
         tr.appendChild(createtd(log[i].name));
-        tr.appendChild(createtd(log[i].givenname));
+        tr.appendChild(createtd(log[i].surnom));
         tr.appendChild(createtd(log[i].username));
-        tr.appendChild(createtd(log[i].pv));
-        tr.appendChild(createtd(log[i].forcer));
-        tr.appendChild(createtd(log[i].def));
-        tr.appendChild(createtd(log[i].vitesse));
-        tr.appendChild(createtd(log[i].specialatt));
-        tr.appendChild(createtd(log[i].specialdef));
-        tr.appendChild(createtd(log[i].iv));
-        tr.appendChild(createtd(log[i].nature));
 
         tbody.appendChild(tr);
     }
@@ -248,23 +175,23 @@ function creertable(log) {
         const td1= document.createElement("td");
         const button1 = document.createElement("button");
         button1.setAttribute("class", "button");
-        button1.setAttribute("onclick", `openpopup(${log[i].idacc1},1);`);
-        button1.innerText = `N°${log[i].idacc1}`;
+        button1.setAttribute("onclick", `openpopup(${log[i].idpok1},1);`);
+        button1.innerText = `N°${log[i].idpok1}`;
         td1.appendChild(button1);
         tr.appendChild(td1);
 
         const td = document.createElement("td");
         const button = document.createElement("button");
         button.setAttribute("class", "button");
-        button.setAttribute("onclick", `openpopup(${log[i].idacc2},2);`);
-        button.innerText = `N°${log[i].idacc2}`;
+        button.setAttribute("onclick", `openpopup(${log[i].idpok2},2);`);
+        button.innerText = `N°${log[i].idpok2}`;
         td.appendChild(button);
         tr.appendChild(td);
 
-        tr.appendChild(createtd(log[i].pv));
-        tr.appendChild(createtd(log[i].vainqueur));
+        tr.appendChild(createtd(log[i].pvrestant));
+        tr.appendChild(createtd(log[i].uservainqueur));
 
-        tr.appendChild(createtd(log[i].perdant));
+        tr.appendChild(createtd(log[i].id_perdant));
 
 
         tbody.appendChild(tr);
