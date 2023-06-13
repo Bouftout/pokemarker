@@ -142,7 +142,7 @@ control.get("/historique", (req, res) => {
 
     console.log("[SQL] Get historique");
 
-    connection.query(`SELECT accounts.username AS "uservainqueur",id_pokemon_p1_combat AS "idpok1",id_pokemon_p2_combat AS "idpok2",date,pvrestant,id_vainqueur,id_perdant FROM combat INNER JOIN accounts ON combat.id_vainqueur GROUP by combat.id`, function (error, results, fields) {
+    connection.query(`SELECT accounts.username AS "uservainqueur",id_pokemon_p1_combat AS "idpok1",id_pokemon_p2_combat AS "idpok2",date,pvrestant,id_vainqueur,id_perdant FROM combat INNER JOIN accounts ON combat.id_vainqueur = accounts.id GROUP by combat.id`, function (error, results, fields) {
         if (error) throw error;
 
 

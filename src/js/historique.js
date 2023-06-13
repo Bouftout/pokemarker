@@ -106,7 +106,7 @@ function createev(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
-    var allname = ["Pokedex", "Nom Du pokémon", "Nom données", "Appartient"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Surnom", "Appartient"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], "thev" + i));
