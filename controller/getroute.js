@@ -10,7 +10,7 @@ const express = require("express"),
 
 control.get("/user/pokemon", (req, res) => {
 
-    connection.query(`SELECT pokemon.id,name,surnom,id_equipe FROM pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE accounts.id = ?`, [req.session.userid], function (error, results, fields) {
+    connection.query(`SELECT equipe.id,name,surnom,id_equipe FROM pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id INNER JOIN equipe ON pokemon.id_equipe = equipe.id WHERE accounts.id = ?`, [req.session.userid], function (error, results, fields) {
         if (error) throw error;
         res.json(results);
     });

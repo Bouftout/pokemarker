@@ -16,10 +16,6 @@ function createth(text, nb) {
     const th = document.createElement("th");
     th.setAttribute("scope", "col");
     th.setAttribute("id", nb);
-    if (nb == 1) {
-        th.setAttribute("class", "actifsearch");
-    }
-
     th.innerText = text;
     return th;
 }
@@ -112,7 +108,7 @@ function creertable(log) {
 }
 
 
-async function envoiedeck() {
+async function envoieequipe() {
 
 
     let err = document.getElementById("err");
@@ -155,7 +151,7 @@ async function envoiedeck() {
         if (response.status >= 200 && response.status <= 299) {
             // const log = await response.json();
 
-            alert("Envoie du deck a la bdd")
+            alert("Envoie de l'equipe a la bdd")
 
         } else {
             // Handle errors

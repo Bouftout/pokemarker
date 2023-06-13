@@ -60,6 +60,19 @@ function searchname() {
 
 }
 
+function searchnameonev(id) {
+    const tableev = dquery("tbody")[0]
+
+    for (let i = 0; i < tableev.getElementsByTagName("tr").length; i++) {
+
+        if (tableev.getElementsByTagName('tr')[i].getElementsByTagName("td")[0].innerText != id) {
+            tableev.getElementsByTagName('tr')[i].remove()
+        }
+
+    }
+
+}
+
 
 
 function createth(text, nb) {
@@ -154,8 +167,9 @@ function createev(log) {
         console.log("createev", log[1])
 
         try {
+            let nbskip = 7 * log[0].length;
             tr.appendChild(createtd(log[0][i].id));
-            for (let b = 7; b < (log[1].length); b++) {
+            for (let b = nbskip; b < (log[1].length); b++) {
 
                 if (log[0][i].id == log[1][b].id_pokemon) {
 
@@ -163,16 +177,9 @@ function createev(log) {
 
 
                 }
+
             }
 
-
-            // tr.appendChild(createtd(log[1][i].valeur));
-            // tr.appendChild(createtd(log[1][i].valeur));
-            // tr.appendChild(createtd(log[1][i].valeur));
-            // tr.appendChild(createtd(log[1][i].valeur));
-            // tr.appendChild(createtd(log[1][i].valeur));
-            // tr.appendChild(createtd(log[1][i].valeur));
-            //<button id="cev">Close</button>
             tbody.appendChild(tr);
         } catch (e) {
             console.log(e)
@@ -315,17 +322,16 @@ async function deletepokemon(id) {
 
 //Ouvrir la popup avec des argument qui corresponde
 function openpopup(popev) {
-    console.log("Ouverte de la popup")
     try {
         var el = document.getElementById('popev');
         el.style.display = 'block';
-        console.log(popev);
+        console.log("Id de la popup ouvert: " + popev);
 
-        const tableev = document.getElementById("tableev");
-        (tableev.firstElementChild.firstChild.firstChild).setAttribute("class", "actifsearch")
 
     } catch (e) {
         console.log(e);
+    } finally {
+        searchnameonev(popev)
     }
 
 }
