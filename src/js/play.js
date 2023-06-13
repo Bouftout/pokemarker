@@ -78,7 +78,7 @@ window.onload = function () {
 
 
 
-
+            //ggqui permet de déterminer quel joueurs joue
             var ggqui = null;
 
             if (p1vitesse > p2vitesse) {
@@ -98,10 +98,10 @@ window.onload = function () {
                 }
 
             }
-            
+
             let nIntervId;
 
-            nIntervId = setInterval(fighto, 500); //Tout un certain temps je lance un function fighto
+            nIntervId = setInterval(fighto, 500); //Tout un certain temps je lance la function fighto
 
             //Calcul automatique pour faire le combat(ça vérifie que il en a 1 des 2 qui est mort si c'est le cas ça dit a l'autre que il a gagnée) sinon ça vérifie la varible ggqui(calculer par rapport a la vitesse) 
             function fighto() {
@@ -120,24 +120,29 @@ window.onload = function () {
 
                     if (p1hp.value > 0) {
                         // P1 a gagnée car il est vivant:
-                        if (oksocketemit == true) {
-                            socket.emit("servpasdenvoiedeuxfois", roominput.value)
-                            socket.emit("winner", document.getElementById("p1hp").value, p1user, p2user, p1pokename, p2pokename)
-                        }
 
-                        alert(`${p1user} a gagnée`)
+                        setTimeout(function () {
+                            socket.emit("servpasdenvoiedeuxfois", roominput.value)
+                            if (oksocketemit == true) {
+                                socket.emit("winner", document.getElementById("p1hp").value, p1user, p2user, p1pokename, p2pokename)
+                            }
+                        }, 1000)
+
+                        alert(`${p1user} a gagnée`) //Alert pour prévenir qui a gagnée
                     } else if (p2hp.value > 0) {
                         // P2 a gagnée car il est vivant:
-                        if (oksocketemit == true) {
+
+                        setTimeout(function () {
                             socket.emit("servpasdenvoiedeuxfois", roominput.value)
-                            socket.emit("winner", document.getElementById("p2hp").value, p2user, p1user, p1pokename, p2pokename)
-                        }
+                            if (oksocketemit == true) {
+                                socket.emit("winner", document.getElementById("p2hp").value, p2user, p1user, p1pokename, p2pokename)
+                            }
+                        }, 1000)
 
-
-
-                        alert(`${p2user} a gagnée`)
+                        alert(`${p2user} a gagnée`) //Alert pour prévenir qui a gagnée
                     }
                 } else {
+
                     //Sinon commencer le fight si il sont toujours vivant :
                     console.log("[Fight] " + username + " play !")
                     if (ggqui == "p1") {
@@ -157,15 +162,7 @@ window.onload = function () {
 
             }
 
-
-
-
-
-
-
         }
-
-
 
     })
 
@@ -250,7 +247,7 @@ async function quelpokemonatu(usernamefunc) {
             let select = document.createElement("select"); //Création d'un select
             select.setAttribute("id", "pokemon"); // Set id a "pokemon"
             select.setAttribute("name", "pokemon"); // Set name a "pokemon"
-            for (let i = 0; i < data.length / 2; i++) { // Boucle qui se fait par le nombre de pokemon a disposition dans le "data"
+            for (let i = 0; i < data.length; i++) { // Boucle qui se fait par le nombre de pokemon a disposition !
 
                 let option = document.createElement("option");
                 option.setAttribute("value", data[i].surnom);

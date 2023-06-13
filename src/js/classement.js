@@ -50,7 +50,7 @@ async function getpokemon() {
 
         } else {
             alldiv.style.display = "none";
-            err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !";
+            err.innerText = "Il n'y a aucun historique de combat !";
             err.style.fontSize = "50px"
             err.style.color = "red";
         }
@@ -59,7 +59,7 @@ async function getpokemon() {
     } else {
         if (response.status == 503) {
             alldiv.style.display = "none";
-            err.innerText = "Il n'y a aucun pokemon ajouter pour l'instant !\nVeuillez en rajouter pour voir un tableau !";
+            err.innerText = "Il n'y a aucun historique de combat";
             err.style.fontSize = "50px"
             err.style.color = "red";
             // alert("Pokémon en maintenance !")
