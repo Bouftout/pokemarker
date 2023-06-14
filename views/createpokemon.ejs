@@ -42,6 +42,48 @@
             <label>Spéciale Defense</label>
             <input type="number" name="specialdef"></input>
 
+            <label>Spéciale Defense</label>
+            <input type="number" name="specialdef"></input>
+
+            <label>IvPv</label>
+            <input type="number" class="iv" name="ivpv" min="0" max="31"></input>
+
+            <label>IvForce</label>
+            <input type="number" class="iv" name="ivforcer" min="0" max="31"></input>
+
+            <label>IvDefense</label>
+            <input type="number" class="iv" name="ivdefense" min="0" max="31"></input>
+
+            <label>Ivvitesse</label>
+            <input type="number" class="iv" name="ivvitesse" min="0" max="31"></input>
+
+            <label>IvSpéciale Attaque</label>
+            <input type="number" class="iv" name="ivspecialatt" min="0" max="31"></input>
+
+            <label>IvSpéciale Defense</label>
+            <input type="number" class="iv"name="ivspecialdef" min="0" max="31"></input>
+
+            <label>IvSpéciale Defense</label>
+            <input type="number" class="iv" name="ivspecialdef" min="0" max="31"></input>
+
+            <label>EvPv</label>
+            <input type="number" class="ev" name="evpv" min="0" max="252"></input>
+
+            <label>EvForce</label>
+            <input type="number" class="ev" name="evforcer" min="0" max="252"></input>
+
+            <label>EvDefense</label>
+            <input type="number" class="ev" name="evdefense" min="0" max="252"></input>
+
+            <label>Evvitesse</label>
+            <input type="number" class="ev" name="evvitesse" min="0" max="252"></input>
+
+            <label>EvSpéciale Attaque</label>
+            <input type="number" class="ev" name="evspecialatt" min="0" max="252"></input>
+
+            <label>EvSpéciale Defense</label>
+            <input type="number" class="ev" name="evspecialdef" min="0" max="252"></input>
+
             <label for="nature-select">Nature</label>
 
             <select name="nature" id="nature-select">
@@ -72,7 +114,7 @@
 
             </select>
 
-            <input style="display: none" value="<%= sprite %>" name="sprite"></input>
+            <input value="<%= sprite %>" name="sprite"></input>
 
             <input type="submit"></input>
         </form>

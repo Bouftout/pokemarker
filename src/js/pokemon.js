@@ -148,7 +148,7 @@ function createev(log) {
     const thead = document.createElement("thead");
     const tr = document.createElement("tr");
 
-    var allname = ["id", "Vitesse", "Spécial Attaque", "Spécial Défense", "Défense", "Attaque", "P.V"];
+    var allname = ["id", "EvVitesse", "EvSpécial Attaque", "EvSpécial Défense", "EvDéfense", "EvAttaque", "EvP.V"];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], "thev" + i));
@@ -167,13 +167,12 @@ function createev(log) {
         console.log("createev", log[1])
 
         try {
-            let nbskip = 7 * log[0].length;
             tr.appendChild(createtd(log[0][i].id));
-            for (let b = nbskip; b < (log[1].length); b++) {
+            for (let b = 0; b < (log[1].length); b++) {
 
                 if (log[0][i].id == log[1][b].id_pokemon) {
 
-                    tr.appendChild(createtd(log[1][b].valeur))
+                    tr.appendChild(createtd(log[1][b].ev))
 
 
                 }
@@ -210,7 +209,7 @@ function creertable(log) {
     const tr = document.createElement("tr");
 
     //Tout les nom en haut du tableau(dans le head)
-    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Description", "Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Iv", "Nature", "EV", "Supression"];
+    var allname = ["Pokedex", "Nom Du pokémon", "Niveau", "Surnom", "Description", "Créateur", "Pv", "Force", "Defense", "Vitesse", "Spécial Attaque", "Spécial Défense", "Nature","Ev", "Supression",];
 
     for (let i = 0; i < allname.length; i++) {
         tr.appendChild(createth(allname[i], i));
@@ -236,16 +235,11 @@ function creertable(log) {
             tr.appendChild(createtd(log[0][i].description));
             tr.appendChild(createtd(log[0][i].username));
 
-            for (let b = 0; b < (log[1].length); b++) {
+            for (let b = 0; b < (log[1].length / log[0].length); b++) {
 
-                if (log[0][i].id == log[1][b].id_pokemon && log[1][b].namestat != 'evvitesse' && log[1][b].namestat != 'evspeatt' && log[1][b].namestat != 'evspedef' && log[1][b].namestat != 'evdef' && log[1][b].namestat != 'evatt' && log[1][b].namestat != 'evpv') {
+                tr.appendChild(createtd(log[1][b].valeur + " | " + log[1][b].iv + " | " + log[1][b].ev))
 
-                    tr.appendChild(createtd(log[1][b].valeur))
-
-
-                }
             }
-
 
             tr.appendChild(createtd(log[0][i].natur));
 
@@ -270,7 +264,6 @@ function creertable(log) {
         button.innerText = "Delete";
         td.appendChild(button);
         tr.appendChild(td);
-
 
         tbody.appendChild(tr);
     }

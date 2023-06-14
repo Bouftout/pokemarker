@@ -38,27 +38,34 @@ app.post('/create/pokemon', function (req, res) {
             vitesse = numvalidate(req.body.vitesse),
             specialatt = numvalidate(req.body.specialatt),
             specialdef = numvalidate(req.body.specialdef),
-            iv = rand(0, 31),
+            ivpv = numvalidate(req.body.ivpv),
+            ivforcer = numvalidate(req.body.ivforcer),
+            ivdefense = numvalidate(req.body.ivdefense),
+            ivvitesse = numvalidate(req.body.ivvitesse),
+            ivspecialatt = numvalidate(req.body.ivspecialatt),
+            ivspecialdef = numvalidate(req.body.ivspecialdef),
             nature = numvalidate(req.body.nature), // Récupe le chiffre de la valeur dans le select(chiffre qui correspond a l'id dans la bdd de la table nature)
             username = validate(req.body.username),
             userid = req.session.userid,
-            evvitesse = rand(0, 31),
-            evspeatt = rand(0, 31),
-            evspedef = rand(0, 31),
-            evdef = rand(0, 31),
-            evatt = rand(0, 31),
-            evpv = rand(0, 31),
+            evpv = numvalidate(req.body.evpv),
+            evforcer = numvalidate(req.body.evforcer),
+            evdef = numvalidate(req.body.evdefense),
+            evvitesse = numvalidate(req.body.evvitesse),
+            evspeatt = numvalidate(req.body.evspecialatt),
+            evspedef = numvalidate(req.body.evspecialdef),
+           
             sprite = req.body.sprite,
             description = req.body.description
             nv = 1;
 
+
         // evpv,evatt,evdef,evattspeatt,evdefspedef,evvitesse
         //(SELECT id FROM accounts WHERE username = "toni")
 
-        if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt && iv) { // si les champs sont remplis
+        if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt) { // si les champs sont remplis
 
             //IL a 16 statistique
-            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evatt, evpv, iv, sprite, description], function (error, results, fields) {
+            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evforcer, evpv, sprite, description, ivpv, ivforcer, ivdefense, ivvitesse, ivspecialatt, ivspecialdef, evforcer], function (error, results, fields) {
                 // If there is an issue with the query, output the error
                 if (error) {
                     console.log(error);

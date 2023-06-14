@@ -125,7 +125,7 @@ control.get("/pokemon", (req, res) => {
 
     console.log("[SQL] Get pokemon route");
 
-    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id;", function (error, results, fields) {
+    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon,iv,ev FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id;", function (error, results, fields) {
         if (error) throw error;
 
 

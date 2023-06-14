@@ -151,7 +151,7 @@ input {
   top: 550px;
   left: 50%;
   width: 400px;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -20%);
   padding: 50px;
   background: #0e003f;
   border-radius: 15px;
