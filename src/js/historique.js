@@ -37,7 +37,7 @@ async function getpokemon() {
     const response = await fetch(`/get/historique`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         const log = await response.json();
-        console.log(log)
+        console.log("[Get] Avoir tout l'historique nécessaire",log)
         let alldiv = document.getElementById("alldiv");
         if (log.length > 0) {
             alldiv.style.display = "block";
@@ -168,30 +168,30 @@ function creertable(log) {
     table.appendChild(tbody);
 
     //On fait une boucle de l'arguement pour remplir le tableau
-    for (let i = 0; i < log.length; i++) {
+    for (let i = 0; i < log[0].length; i++) {
         const tr = document.createElement("tr");
 
         //Création du bouton de stats pokémon
         const td1= document.createElement("td");
         const button1 = document.createElement("button");
         button1.setAttribute("class", "button");
-        button1.setAttribute("onclick", `openpopup(${log[i].idpok1},1);`);
-        button1.innerText = `N°${log[i].idpok1}`;
+        button1.setAttribute("onclick", `openpopup(${log[0][i].idpok1},1);`);
+        button1.innerText = `N°${log[0][i].idpok1}`;
         td1.appendChild(button1);
         tr.appendChild(td1);
 
         const td = document.createElement("td");
         const button = document.createElement("button");
         button.setAttribute("class", "button");
-        button.setAttribute("onclick", `openpopup(${log[i].idpok2},2);`);
-        button.innerText = `N°${log[i].idpok2}`;
+        button.setAttribute("onclick", `openpopup(${log[0][i].idpok2},2);`);
+        button.innerText = `N°${log[0][i].idpok2}`;
         td.appendChild(button);
         tr.appendChild(td);
 
-        tr.appendChild(createtd(log[i].pvrestant));
-        tr.appendChild(createtd(log[i].uservainqueur));
+        tr.appendChild(createtd(Math.floor(log[0][i].pvrestant)));
+        tr.appendChild(createtd(log[0][i].uservainqueur));
 
-        tr.appendChild(createtd(log[i].id_perdant));
+        tr.appendChild(createtd(log[1][i].nomperdant));
 
 
         tbody.appendChild(tr);
@@ -216,7 +216,7 @@ async function deletepokemon(id) {
     const response = await fetch(`/delete/${id}/historique/`, settings); // Requête
     if (response.status >= 200 && response.status <= 299) {
         const resjson = await response.json();
-        console.log(resjson)
+        console.log("Delete pokemon",resjson)
         if (resjson.delete == true) {
             err.innerText = "Votre pokémon a bien était supprimé."; //Confirmation de suppression
             err.style.color = "green";
