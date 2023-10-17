@@ -56,7 +56,7 @@ control.get("/player1/pokemon/:surnom", (req, res) => {
 
         if (results[0] !== undefined) {
 
-            connection.query("SELECT statistique.namestat,valeur FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id where id_pokemon = ?;", [results[0].id], function (err, ress, fiel) {
+            connection.query("SELECT statistique.namestat FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id where id_pokemon = ?;", [results[0].id], function (err, ress, fiel) {
 
                 if (err) {
                     console.warn(err)
@@ -105,7 +105,7 @@ control.get("/player2/pokemon/:id", (req, res) => {
 
     console.log("[SQL] Get player2 pokemon with surnom");
 
-    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id WHERE possede.id_pokemon = ?;", [req.params.id, req.params.id], function (error, results, fields) {
+    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id WHERE pokemon.id = ? GROUP by pokemon.id;SELECT statistique.namestat,possede.id_pokemon FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id WHERE possede.id_pokemon = ?;", [req.params.id, req.params.id], function (error, results, fields) {
         if (error) throw error;
 
 
@@ -125,7 +125,7 @@ control.get("/pokemon", (req, res) => {
 
     console.log("[SQL] Get pokemon route");
 
-    connection.query("SELECT accounts.username,pokemon.id,name,surnom,nv,description,nature.natur FROM pokemon INNER JOIN nature ON pokemon.id_nature = nature.id INNER JOIN possede ON pokemon.id = possede.id_pokemon INNER JOIN accounts ON pokemon.id_accounts = accounts.id GROUP by pokemon.id;SELECT statistique.namestat,valeur,possede.id_pokemon,iv,ev FROM possede INNER JOIN statistique ON possede.id_statistique = statistique.id;", function (error, results, fields) {
+    connection.query(`SELECT id FROM pokemon`, function (error, results, fields) {
         if (error) throw error;
 
 

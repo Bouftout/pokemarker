@@ -53,9 +53,8 @@ app.post('/create/pokemon', function (req, res) {
             evvitesse = numvalidate(req.body.evvitesse),
             evspeatt = numvalidate(req.body.evspecialatt),
             evspedef = numvalidate(req.body.evspecialdef),
-           
             sprite = req.body.sprite,
-            description = req.body.description
+            description = req.body.description,
             nv = 1;
 
 
@@ -64,23 +63,26 @@ app.post('/create/pokemon', function (req, res) {
 
         if (nom && surnom && pv && forcer && defense && vitesse && specialdef && specialatt) { // si les champs sont remplis
 
-            //IL a 16 statistique
-            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt, evspedef, evdef, evforcer, evpv, sprite, description, ivpv, ivforcer, ivdefense, ivvitesse, ivspecialatt, ivspecialdef, evforcer], function (error, results, fields) {
-                // If there is an issue with the query, output the error
-                if (error) {
-                    console.log(error);
-                    return res.json({ "create": `${error}` })
-                }
-                if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
+            //IL a 26 statistique
+            connection.query(`CALL createpokemon(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [nv, nom, surnom, userid, nature, pv, forcer, defense, vitesse, specialatt, specialdef, evvitesse, evspeatt,
+                    evspedef, evdef, evforcer, evpv, sprite, description, ivpv, ivforcer, ivdefense, ivvitesse, ivspecialatt, ivspecialdef, evforcer],
+                function (error, results, fields) {
+                    // If there is an issue with the query, output the error
+                    if (error) {
+                        console.log(error);
+                        return res.json({ "create": `${error}` })
+                    }
+                    if (results.protocol41 == true) { // Si le compte existe déjà on enregistre son username dans la session, et fait que il soit loggé.
 
-                    console.log("crée");
-                    // petit message pour prevenir que le compte a bien été créer.
-                    res.json({ "create": true })
-                } else {
-                    res.json({ "create": false })
-                }
-                res.end();
-            });
+                        console.log("crée");
+                        // petit message pour prevenir que le compte a bien été créer.
+                        res.json({ "create": true })
+                    } else {
+                        res.json({ "create": false })
+                    }
+                    res.end();
+                });
 
         } else {
             res.json({ "create": false })
